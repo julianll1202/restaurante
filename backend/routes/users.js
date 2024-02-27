@@ -11,7 +11,7 @@ router.get('/login', async function(req, res, next) {
   const auth = await login(req, res);
   console.log(auth);
   if (auth.response === "Authorized entry")
-    res.status(200).json({"token": auth.token})
+    res.status(200).json({"user": auth.user,"token": auth.token})
   else
     res.status(401).json(auth)
 });

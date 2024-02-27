@@ -15,7 +15,7 @@ export const login = async (req, res) => {
         return {"response":"User not found"};
     if (user.password === password){
         const token = jwt.sign({userId: user.userId}, JWT_SECRET_KEY, { expiresIn: '1h'});
-        return {"response":"Authorized entry", "token": token};
+        return {"response":"Authorized entry", "user": user, "token": token};
     }
     else
         return {"response":"Invalid password"};
