@@ -1,20 +1,22 @@
 import { PrismaClient } from "@prisma/client";
+import jwt from 'jsonwebtoken';
+import { JWT_SECRET_KEY } from "../config/index.js";
+
 const prisma = new PrismaClient();
 
 export const login = async (req, res) => {
     const {username, password} = req.body;
-    let user = await prisma.user.findFirst({
+    let user = await prisma.users.findFirst({
         where: {
             username: username
         },
     })
-    console.log(user.username);
     if (!user)
-        return "User not found";
+        return {"response":"User not found"};
     if (user.password === password){
-        console.log("Password");
-        res.status(200);
+        const token = jwt.sign({userId: user.userId}, JWT_SECRET_KEY, { expiresIn: '1h'});
+        return {"response":"Authorized entry", "user": user, "token": token};
     }
     else
-        return "Invalid password";
+        return {"response":"Invalid password"};
 };
