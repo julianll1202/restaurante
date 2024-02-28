@@ -7,7 +7,7 @@ router.get('/', function(req, res, next) {
   res.send('respond with a resource');
 });
 
-router.get('/login', async function(req, res, next) {
+router.post('/login', async function(req, res, next) {
   const auth = await login(req, res);
   console.log(auth);
   if (auth.response === "Authorized entry")
