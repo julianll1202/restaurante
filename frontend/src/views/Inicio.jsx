@@ -12,7 +12,7 @@ const Inicio = () => {
         }}>
             <Title>Inicio</Title>
             <h2>Hola,</h2>
-            <p>{ user => user.user.username}</p>
+            <p>{ user.user.username}</p>
         </Container>
     );
 };
