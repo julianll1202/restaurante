@@ -75,7 +75,7 @@ model Empleados {
 
 model Puestos {
   puestoId Int @id @default(autoincrement())
-  puestoNombre String
+  puestoNombre String  @unique
   sueldo Decimal
   empleados Empleados[]
 }
