@@ -5,12 +5,9 @@ import indexRouter from './routes/index.js'
 import usersRouter from './routes/users.js'
 import empleadosRouter from './routes/empleados.js'
 import puestosRouter from './routes/puestos.js'
-import { fileURLToPath } from 'url'
 import cors from 'cors'
 
 const app = express()
-const __filename = fileURLToPath(import.meta.url) // get the resolved path to the file
-const __dirname = path.dirname(__filename) // get the name of the directory
 
 app.use(express.json())
 app.use(cookieParser())

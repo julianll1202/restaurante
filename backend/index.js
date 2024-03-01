@@ -1,9 +1,8 @@
-import app from './app.js'
-import { PORT } from './config/index.js'
+const app = require('./app.js')
+const { PORT } = require('./config/index.js')
 
 function main () {
-    app.listen(PORT)
+    app.default.listen(PORT)
     console.log(`Server listening on port ${PORT}`)
 }
-
 main()
