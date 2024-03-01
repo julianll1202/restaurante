@@ -27,3 +27,111 @@ model Roles {
   roleName String
   users Users[]
 }
+
+model Categorias {
+  categoriaId Int @id @default(autoincrement())
+  categoriaNombre String
+  descripcion String @db.Text
+  platillos Platillos[]
+}
+
+model Platillos {
+  platilloId Int @id @default(autoincrement())
+  platilloNombre String
+  descripcion String @db.Text
+  precio Decimal
+  categoriaId Int
+  categoria Categorias @relation(fields: [categoriaId], references: [categoriaId])
+  platillosEnComanda PlatillosEnComandas[]
+  productosEnPlatillo ProductosEnPlatillos[]
+}
+
+model Productos {
+  productoId Int @id @default(autoincrement())
+  productoNombre String
+  cantidad Int
+  cantidadMax Int
+  produdctosEnPlatillo ProductosEnPlatillos[]
+  productosEnCompra ProductosEnCompras[]
+}
+
+model Compras {
+  compraId Int @id @default(autoincrement())
+  fechaCompra DateTime
+  total Decimal
+  productosEnCompra ProductosEnCompras[]
+}
+
+model Empleados {
+  empleadoId Int @id @default(autoincrement())
+  empleadoNombre String
+  paterno String @db.VarChar(30)
+  materno String @db.VarChar(30)
+  telefono String @db.VarChar(10)
+  puestoId Int
+  puesto Puestos @relation(fields: [puestoId], references: [puestoId])
+  comandas Comandas[]
+}
+
+model Puestos {
+  puestoId Int @id @default(autoincrement())
+  puestoNombre String
+  sueldo Decimal
+  empleados Empleados[]
+}
+
+model Clientes {
+  clienteId Int @id @default(autoincrement())
+  clienteNombre String @db.VarChar(30)
+  paterno String @db.VarChar(30)
+  materno String @db.VarChar(30)
+  telefono String? @db.VarChar(10)
+  comandas Comandas[]
+}
+
+model Mesas {
+  mesaId Int @id @default(autoincrement())
+  capacidad Int
+  ubicacion String @db.Text
+  tipoMesa String
+  comandas Comandas[]
+}
+
+model Comandas {
+  comandaId Int @id @default(autoincrement())
+  clienteId Int
+  cliente Clientes @relation(fields: [clienteId], references: [clienteId])
+  empleadoId Int
+  empleado Empleados @relation(fields: [empleadoId], references: [empleadoId])
+  mesaId Int
+  mesa Mesas @relation(fields: [mesaId], references: [mesaId])
+  completada Boolean
+  precioFinal Decimal?
+  fechaCreacion DateTime
+  fechaCierre DateTime
+  platillosEnComanda PlatillosEnComandas[]
+}
+
+model PlatillosEnComandas {
+  platilloId Int
+  platillo Platillos @relation(fields: [platilloId], references: [platilloId])
+  comandaId Int
+  comanda Comandas @relation(fields: [comandaId], references: [comandaId])
+  @@id([platilloId, comandaId])
+}
+
+model ProductosEnPlatillos {
+  productoId Int
+  producto Productos @relation(fields: [productoId], references: [productoId])
+  platilloId Int
+  platillo Platillos @relation(fields: [platilloId], references: [platilloId])
+  @@id([productoId, platilloId])
+}
+
+model ProductosEnCompras {
+  compraId Int
+  compra Compras @relation(fields: [compraId], references: [compraId])
+  productoId Int
+  producto Productos @relation(fields: [productoId], references: [productoId])
+  @@id([compraId, productoId])
+}
