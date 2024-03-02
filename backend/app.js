@@ -10,6 +10,8 @@ import platillosRouter from './routes/platillos.js'
 import mesasRouter from './routes/mesas.js'
 import clientesRouter from './routes/clientes.js'
 import comandasRouter from './routes/comandas.js'
+import comprasRouter from './routes/compras.js'
+import productosRouter from './routes/productos.js'
 import { fileURLToPath } from 'url'
 import cors from 'cors'
 
@@ -32,5 +34,7 @@ app.use('/platillos', platillosRouter)
 app.use('/mesas', mesasRouter)
 app.use('/clientes', clientesRouter)
 app.use('/comandas', comandasRouter)
+app.use('/compras', comprasRouter)
+app.use('/productos', productosRouter)
 
 export default app
