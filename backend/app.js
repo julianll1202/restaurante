@@ -5,6 +5,11 @@ import indexRouter from './routes/index.js'
 import usersRouter from './routes/users.js'
 import empleadosRouter from './routes/empleados.js'
 import puestosRouter from './routes/puestos.js'
+import categoriasRouter from './routes/categorias.js'
+import platillosRouter from './routes/platillos.js'
+import mesasRouter from './routes/mesas.js'
+import clientesRouter from './routes/clientes.js'
+import comandasRouter from './routes/comandas.js'
 import { fileURLToPath } from 'url'
 import cors from 'cors'
 
@@ -22,5 +27,10 @@ app.use('/', indexRouter)
 app.use('/users', usersRouter)
 app.use('/empleados', empleadosRouter)
 app.use('/puestos', puestosRouter)
+app.use('/categorias', categoriasRouter)
+app.use('/platillos', platillosRouter)
+app.use('/mesas', mesasRouter)
+app.use('/clientes', clientesRouter)
+app.use('/comandas', comandasRouter)
 
 export default app
