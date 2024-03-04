@@ -5,7 +5,7 @@ const router = express.Router()
 router.post('/login', async function (req, res, next) {
     const auth = await login(req, res)
     if (auth.response === 'Authorized entry') {
-        res.status(200).json({ user: auth.user, token: auth.token })
+        res.status(200).send(auth)
     } else {
         res.status(401).json(auth)
     }

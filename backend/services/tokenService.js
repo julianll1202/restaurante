@@ -22,4 +22,3 @@ export const generateTokens = (user, jti) => {
         refreshToken
     }
 }
-

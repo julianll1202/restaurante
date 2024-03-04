@@ -31,7 +31,7 @@ model Roles {
 
 model RefreshToken {
   id String @id @unique @default(uuid())
-  hashedToken String
+  hashedToken String @db.VarChar(255)
   userId Int
   user Users @relation(fields: [userId], references: [userId])
   revoked Boolean @default(false)
