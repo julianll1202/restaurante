@@ -7,13 +7,15 @@ import { MantineProvider } from '@mantine/core';
 import MainLayout from './layouts/MainLayout';
 import Inicio from './views/Inicio';
 import GlobalContext from './contexts/GlobalContent';
+import restauranteTheme from './CustomProvider';
+import '@mantine/core/styles.css';
 
 const router = createBrowserRouter([
   {
     element: <MainLayout />,
     children: [
       {
-        path: '/inicio',
+        path: '/',
         element: <Inicio />,
       }
     ]
@@ -26,7 +28,7 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <MantineProvider withGlobalStyles withNormalizeCSS>
+    <MantineProvider theme={restauranteTheme}   >
       <GlobalContext >
         <RouterProvider router={router} />
       </GlobalContext>

@@ -1,9 +1,7 @@
 import { createContext } from "react";
 
 const UserContext = createContext({
-    user: {user: {
-        username: "",
-    }},
+    user: {},
     storeUser: () => {},
     isLoggedIn: false,
     setLoggedState: () => {},

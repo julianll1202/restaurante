@@ -4,6 +4,7 @@ import { login } from "../utils/auth";
 import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import UserContext from "../contexts/userContext";
+import Cookies from "js-cookie";
 
 const Login = () => {
     const setUser = useContext(UserContext).storeUser;
@@ -12,9 +13,10 @@ const Login = () => {
     const handleLogin = async(values) => {
         const res = await login(values.username, values.password);
         if (res.status === 200) {
-            setUser(res.data);
+            Cookies.set('accessToken', res.data.accessToken);
+            setUser(res.data.user);
             setLogState(true);
-            navigate('/inicio')
+            navigate('/')
         }
     };
 
@@ -26,11 +28,11 @@ const Login = () => {
     })
     return (
         <Group justify="center" align="center" >
-            <Title>Login</Title>
+            <Title >Login</Title>
             <form onSubmit={form.onSubmit(handleLogin)}>
                 <TextInput label="Username" withAsterisk required {...form.getInputProps('username')}/>
                 <PasswordInput label="Password" withAsterisk required {...form.getInputProps('password')}/>
-                <Button type="submit" >Iniciar sesión</Button>
+                <Button type="submit" mt={10} variant='filled' color='brown.9' >Iniciar sesión</Button>
             </form>
         </Group>
     );

@@ -3,7 +3,7 @@ import UserContext from "./userContext";
 import PropTypes from "prop-types";
 
 const GlobalContext = ({ children }) => {
-    const [user, setUser] = useState({});
+    const [user, setUser] = useState({ username: ''});
     const [logged, setLogged] = useState(false);
     const store = (newUser) => {
         setUser(newUser);

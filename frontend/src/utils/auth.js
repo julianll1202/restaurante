@@ -6,3 +6,8 @@ export const login = async(username, password) => {
     })
     return res;
 }
+
+export const prueba = async () => {
+    const res = await API.get('/')
+    return res;
+}
