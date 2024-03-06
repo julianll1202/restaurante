@@ -1,17 +1,17 @@
 import { Container, Title } from "@mantine/core";
 import { useContext, useEffect } from "react";
-import UserContext from "../contexts/userContext";
-import { prueba } from "../utils/auth";
+// import UserContext from "../contexts/userContext";
+import AuthContext from "../contexts/AuthProvider";
 
 const Inicio = () => {
-    const user = useContext(UserContext).user;
-    const callHelloWord = async () => {
-        const test = await prueba()
-        console.log(test)
-        return test
-    }
+    const { auth } = useContext(AuthContext)
+    // const callHelloWord = async () => {
+    //     const test = await prueba()
+    //     console.log(test)
+    //     return test
+    // }
     useEffect(() => {
-        callHelloWord()
+        // callHelloWord()
     }, [])
     return (
         <Container style={{
@@ -20,7 +20,7 @@ const Inicio = () => {
         }}>
             <Title>Inicio</Title>
             <h2>Hola,</h2>
-            <p>{ user.username }</p>
+            <p>{ auth.user.username }</p>
         </Container>
     );
 };

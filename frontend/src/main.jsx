@@ -1,14 +1,14 @@
+import './index.css'
+import '@mantine/core/styles.css';
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import './index.css'
 import { RouterProvider, createBrowserRouter } from 'react-router-dom'
 import Login from './views/Login';
 import { MantineProvider } from '@mantine/core';
 import MainLayout from './layouts/MainLayout';
 import Inicio from './views/Inicio';
-import GlobalContext from './contexts/GlobalContent';
 import restauranteTheme from './CustomProvider';
-import '@mantine/core/styles.css';
+import { AuthProvider } from './contexts/AuthProvider.jsx';
 
 const router = createBrowserRouter([
   {
@@ -29,9 +29,10 @@ const router = createBrowserRouter([
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <MantineProvider theme={restauranteTheme}   >
-      <GlobalContext >
-        <RouterProvider router={router} />
-      </GlobalContext>
+        <AuthProvider>
+          <RouterProvider router={router} />
+
+        </AuthProvider>
     </MantineProvider>
   </React.StrictMode>,
 )

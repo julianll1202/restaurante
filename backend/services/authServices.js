@@ -34,7 +34,7 @@ export function deleteRefreshToken (id) {
 export function revokeTokens (userId) {
     return prisma.refreshToken.updateMany({
         where: {
-            userId: userId
+            userId
         },
         data: {
             revoked: true

@@ -1,19 +1,12 @@
-import { useContext, useEffect } from "react";
-import { Outlet, useNavigate } from "react-router-dom";
-import UserContext from "../contexts/userContext";
+// import { useContext, useEffect } from "react";
+import { Navigate, Outlet, useLocation } from "react-router-dom";
+import useAuth from './../hooks/useAuth';
 
 const MainLayout = () => {
-    const isLogged = useContext(UserContext).isLoggedIn;
-    const navigate = useNavigate();
-    useEffect(() => {
-        console.log(isLogged);
-        if (!isLogged)
-            navigate('/iniciar-sesion');
-    });
+    const { auth } = useAuth()
+    const location = useLocation()
     return (
-        <>
-            <Outlet />
-        </>
+        auth?.user ? <Outlet /> : <Navigate to="/iniciar-sesion"  state={{ from: location }} replace/>
     );
 };
 

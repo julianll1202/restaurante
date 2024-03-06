@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken')
 
 export function generateAccessToken (user) {
     return jwt.sign({ userId: user.userId }, JWT_SECRET_KEY, {
-        expiresIn: '1h'
+        expiresIn: 300
     })
 }
 

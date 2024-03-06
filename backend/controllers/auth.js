@@ -1,7 +1,7 @@
 import { PrismaClient } from '@prisma/client'
 import { generateTokens } from '../services/tokenService.js'
 import { randomUUID } from 'crypto'
-import { addRefreshTokenToWhitelist } from '../services/authServices.js'
+import { addRefreshTokenToWhitelist, revokeTokens } from '../services/authServices.js'
 
 const prisma = new PrismaClient()
 
@@ -23,5 +23,16 @@ export const login = async (req, res) => {
         return { response: 'Authorized entry', user: user, accessToken: accessToken, refreshToken: refreshToken }
     } else {
         return { response: 'Invalid password' }
+    }
+}
+
+export const logout = async (req, res) => {
+    const { userId } = req.body
+    try {
+        await revokeTokens(userId)
+        return { response: 'Logged out successfully' }
+    } catch (err) {
+        res.status(401)
+        throw new Error({ response: 'Unauthorized' })
     }
 }
