@@ -5,7 +5,7 @@
 
 */
 -- AlterTable
-ALTER TABLE `users` ADD COLUMN `updatedAt` DATETIME(3) NOT NULL;
+ALTER TABLE `users` ADD COLUMN `updatedAt` DATETIME(3);
 
 -- CreateTable
 CREATE TABLE `RefreshToken` (
