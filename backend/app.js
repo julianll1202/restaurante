@@ -14,11 +14,10 @@ import comprasRouter from './routes/compras.js'
 import productosRouter from './routes/productos.js'
 import rolesRouter from './routes/roles.js'
 import { fileURLToPath } from 'url'
+
 import cors from 'cors'
 
 const app = express()
-const __filename = fileURLToPath(import.meta.url) // get the resolved path to the file
-const __dirname = path.dirname(__filename) // get the name of the directory
 
 app.use(express.json())
 app.use(cookieParser())

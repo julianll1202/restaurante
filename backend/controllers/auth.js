@@ -1,6 +1,7 @@
 import { PrismaClient } from '@prisma/client'
-import jwt from 'jsonwebtoken'
-import { JWT_SECRET_KEY } from '../config/index.js'
+import { generateTokens } from '../services/tokenService.js'
+import { randomUUID } from 'crypto'
+import { addRefreshTokenToWhitelist, revokeTokens } from '../services/authServices.js'
 
 const prisma = new PrismaClient()
 
@@ -14,10 +15,24 @@ export const login = async (req, res) => {
     if (!user) {
         return { response: 'User not found' }
     }
+
     if (user.password === password) {
-        const token = jwt.sign({ userId: user.userId }, JWT_SECRET_KEY, { expiresIn: '1h' })
-        return { response: 'Authorized entry', user: user, token: token }
+        const jti = randomUUID()
+        const { accessToken, refreshToken } = generateTokens(user, jti)
+        await addRefreshTokenToWhitelist({ jti, refreshToken, userId: user.userId })
+        return { response: 'Authorized entry', user: user, accessToken: accessToken, refreshToken: refreshToken }
     } else {
         return { response: 'Invalid password' }
+    }
+}
+
+export const logout = async (req, res) => {
+    const { userId } = req.body
+    try {
+        await revokeTokens(userId)
+        return { response: 'Logged out successfully' }
+    } catch (err) {
+        res.status(401)
+        throw new Error({ response: 'Unauthorized' })
     }
 }

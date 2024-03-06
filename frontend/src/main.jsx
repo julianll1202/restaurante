@@ -1,19 +1,21 @@
+import './index.css'
+import '@mantine/core/styles.css';
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import './index.css'
 import { RouterProvider, createBrowserRouter } from 'react-router-dom'
 import Login from './views/Login';
 import { MantineProvider } from '@mantine/core';
 import MainLayout from './layouts/MainLayout';
 import Inicio from './views/Inicio';
-import GlobalContext from './contexts/GlobalContent';
+import restauranteTheme from './CustomProvider';
+import { AuthProvider } from './contexts/AuthProvider.jsx';
 
 const router = createBrowserRouter([
   {
     element: <MainLayout />,
     children: [
       {
-        path: '/inicio',
+        path: '/',
         element: <Inicio />,
       }
     ]
@@ -26,10 +28,11 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <MantineProvider withGlobalStyles withNormalizeCSS>
-      <GlobalContext >
-        <RouterProvider router={router} />
-      </GlobalContext>
+    <MantineProvider theme={restauranteTheme}   >
+        <AuthProvider>
+          <RouterProvider router={router} />
+
+        </AuthProvider>
     </MantineProvider>
   </React.StrictMode>,
 )

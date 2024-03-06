@@ -1,10 +1,18 @@
 import { Container, Title } from "@mantine/core";
-import { useContext } from "react";
-import UserContext from "../contexts/userContext";
+import { useContext, useEffect } from "react";
+// import UserContext from "../contexts/userContext";
+import AuthContext from "../contexts/AuthProvider";
 
 const Inicio = () => {
-    const user = useContext(UserContext).user;
-
+    const { auth } = useContext(AuthContext)
+    // const callHelloWord = async () => {
+    //     const test = await prueba()
+    //     console.log(test)
+    //     return test
+    // }
+    useEffect(() => {
+        // callHelloWord()
+    }, [])
     return (
         <Container style={{
             maxWidth: '100vw',
@@ -12,7 +20,7 @@ const Inicio = () => {
         }}>
             <Title>Inicio</Title>
             <h2>Hola,</h2>
-            <p>{ user.user.username}</p>
+            <p>{ auth.user.username }</p>
         </Container>
     );
 };

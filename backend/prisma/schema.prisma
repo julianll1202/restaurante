@@ -17,15 +17,26 @@ model Users {
   userId Int @id @default(autoincrement())
   username String
   password String
+  updatedAt DateTime @updatedAt
   roleId Int
   role Roles @relation(fields: [roleId], references: [roleId])
-
+  refreshaTokens RefreshToken[]
 }
 
 model Roles {
   roleId Int @id @default(autoincrement())
   roleName String
   users Users[]
+}
+
+model RefreshToken {
+  id String @id @unique @default(uuid())
+  hashedToken String @db.VarChar(255)
+  userId Int
+  user Users @relation(fields: [userId], references: [userId])
+  revoked Boolean @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Categorias {
