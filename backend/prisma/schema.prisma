@@ -20,7 +20,7 @@ model Users {
   updatedAt DateTime @updatedAt
   roleId Int
   role Roles @relation(fields: [roleId], references: [roleId])
-  refreshaTokens RefreshToken[]
+  refreshTokens RefreshToken[]
 }
 
 model Roles {
