@@ -11,12 +11,17 @@ const MainLayout = () => {
         <AppShell>
             <AppShell.Header>
                 <Group justify="space-between" bg='orange' p={10}>
-                    <Group gap='xs'>
-                        <Soup color="white" />
-                        <Title c='white' order={3}>AltaServe</Title>
-                    </Group>
-                    <Group h="100%" px="md">
-                        <Anchor c="white">Comandas</Anchor>
+                    <Group>
+                        <Group gap='xs'>
+                            <Soup color="white" />
+                            <Title c='white' order={3}>AltaServe</Title>
+                        </Group>
+                        <Group h="100%" px="md">
+                            <Anchor c="white">Comandas</Anchor>
+                            <Anchor c="white">Platillos</Anchor>
+                            <Anchor c="white">Inventario</Anchor>
+                            <Anchor c="white">Empleados</Anchor>
+                        </Group>
                     </Group>
                     <Group>
                         <Button color="brown.9" >Crear comanda</Button>
