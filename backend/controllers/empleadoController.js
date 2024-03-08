@@ -3,7 +3,20 @@ import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 
 export const getAllEmpleados = async (req, res) => {
-    const empleados = await prisma.empleados.findMany()
+    const empleados = await prisma.empleados.findMany({
+        select: {
+            empleadoNombre: true,
+            paterno: true,
+            materno: true,
+            telefono: true,
+            puesto: {
+                select: {
+                    puestoNombre: true,
+                    sueldo: true
+                }
+            }
+        }
+    })
     return empleados
 }
 

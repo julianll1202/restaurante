@@ -12,12 +12,12 @@ function Tabla ({headers, content}) {
                 </Table.Thead>
                 {
                 <Table.Tbody>
-                    { content.map( (fila, index) => <Table.Tr key={index} >
+                    { content.length > 0 ? content.map( (fila, index) => <Table.Tr key={index} >
                         {
                             fila.map( (celda, i) => <Table.Td key={i}>{celda}</Table.Td>)
                         }
                         </Table.Tr>
-                    )}
+                    ) : <Table.Tr><Table.Td></Table.Td></Table.Tr>}
                 </Table.Tbody>
             }
             </Table>

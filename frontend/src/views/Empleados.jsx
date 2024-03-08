@@ -1,17 +1,39 @@
 import { Button, Group, Text, TextInput, Title, Flex, Select } from "@mantine/core"
 import { AdjustmentsHorizontal, CirclePlus, Search } from "tabler-icons-react"
 import Tabla from "../components/Tabla"
+import { useEffect, useState } from "react"
+import { getAllEmpleados } from "../controllers/empleadoControllers"
 
 const Empleados = () => {
     const header = [
-        "Nombre del empleado", "Puesto", "Número de teléfono", "Sueldo"
+        "Nombre del empleado", "Número de teléfono", "Puesto", "Sueldo"
     ]
-    const content = [
-        ["John Doe", "Mesero", "999-999-999", "$1,800"],
-        ["John Doe", "Mesero", "999-999-999", "$1,800"],
-        ["John Doe", "Mesero", "999-999-999", "$1,800"],
-        ["John Doe", "Mesero", "999-999-999", "$1,800"],
-    ]
+    const [content, setContent] = useState([])
+    // const content = [
+    //     ["John Doe", "Mesero", "999-999-999", "$1,800"],
+    //     ["John Doe", "Mesero", "999-999-999", "$1,800"],
+    //     ["John Doe", "Mesero", "999-999-999", "$1,800"],
+    //     ["John Doe", "Mesero", "999-999-999", "$1,800"],
+    // ]
+
+    const getEmpleadosList = async () => {
+        const res = await getAllEmpleados()
+        res.forEach((emp) => {
+            emp['puesto'] = Object.values(emp['puesto'])
+            emp['sueldo'] = emp['puesto'][1]
+            emp['puesto'] = emp['puesto'][0]
+        })
+        let data = res.map((e) => Object.values(e))
+        console.log(data)
+        data.forEach((emp) => {
+            emp[0] = `${emp[0]} ${emp[1]} ${emp[2]}`
+            emp.splice(1,2)
+        });
+        setContent(data)
+    }
+    useEffect(() => {
+        getEmpleadosList()
+    }, [])
     return (
         <div style={{
             width: '100vw',
