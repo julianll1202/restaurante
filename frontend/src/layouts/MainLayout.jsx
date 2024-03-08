@@ -1,4 +1,4 @@
-import { Navigate, Outlet, useLocation } from "react-router-dom";
+import { Link, Navigate, Outlet, useLocation } from "react-router-dom";
 import useAuth from './../hooks/useAuth';
 import { ActionIcon, Anchor, AppShell, Button, Group, Menu, Title } from "@mantine/core";
 import { Bell, Settings, Soup, UserCircle } from "tabler-icons-react";
@@ -14,13 +14,14 @@ const MainLayout = () => {
                     <Group>
                         <Group gap='xs'>
                             <Soup color="white" />
-                            <Title c='white' order={3}>AltaServe</Title>
+                            <Title c='white' order={3}><Link to='/'>AltaServe</Link></Title>
                         </Group>
                         <Group h="100%" px="md">
                             <Anchor c="white">Comandas</Anchor>
                             <Anchor c="white">Platillos</Anchor>
                             <Anchor c="white">Inventario</Anchor>
-                            <Anchor c="white">Empleados</Anchor>
+                            <Link to='/empleados'>Empleados</Link>
+                            {/* <Anchor onClick={() => <Navigate to="/empleados"/>} c="white">Empleados</Anchor> */}
                         </Group>
                     </Group>
                     <Group>
@@ -50,7 +51,7 @@ const MainLayout = () => {
                     </Group>
                 </Group>
             </AppShell.Header>
-            <AppShell.Main pt={25}>
+            <AppShell.Main mt={50} p={20}>
                 <Outlet />
             </AppShell.Main>
         </AppShell>
