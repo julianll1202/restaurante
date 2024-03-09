@@ -3,19 +3,15 @@ import { AdjustmentsHorizontal, CirclePlus, Search } from "tabler-icons-react"
 import Tabla from "../components/Tabla"
 import { useEffect, useState } from "react"
 import { getAllEmpleados } from "../controllers/empleadoControllers"
+import { useDisclosure } from "@mantine/hooks"
+import ModalEmpleados from "../components/ModalEmpleados"
 
 const Empleados = () => {
     const header = [
         "Nombre del empleado", "Número de teléfono", "Puesto", "Sueldo"
     ]
     const [content, setContent] = useState([])
-    // const content = [
-    //     ["John Doe", "Mesero", "999-999-999", "$1,800"],
-    //     ["John Doe", "Mesero", "999-999-999", "$1,800"],
-    //     ["John Doe", "Mesero", "999-999-999", "$1,800"],
-    //     ["John Doe", "Mesero", "999-999-999", "$1,800"],
-    // ]
-
+    const [opened, { open, close }] = useDisclosure(false);
     const getEmpleadosList = async () => {
         const res = await getAllEmpleados()
         res.forEach((emp) => {
@@ -46,10 +42,11 @@ const Empleados = () => {
                 <Group mb={15}>
                     <TextInput  rightSection={<Search />} />
                     <Select rightSection={<AdjustmentsHorizontal />}  />
-                    <Button leftSection={<CirclePlus />} color="brown.9">Agregar empleado</Button>
+                    <Button leftSection={<CirclePlus />} color="brown.9" onClick={open}>Agregar empleado</Button>
                 </Group>
                 <Tabla headers={header} content={content} />
             </Flex>
+            <ModalEmpleados opened={opened} close={close} />
         </div>
     )
 }
