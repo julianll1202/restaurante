@@ -13,7 +13,6 @@ import comandasRouter from './routes/comandas.js'
 import comprasRouter from './routes/compras.js'
 import productosRouter from './routes/productos.js'
 import rolesRouter from './routes/roles.js'
-import { fileURLToPath } from 'url'
 
 import cors from 'cors'
 

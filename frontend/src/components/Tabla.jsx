@@ -3,7 +3,7 @@ import { PropTypes } from 'prop-types';
 function Tabla ({headers, content}) {
     return(
 
-        <ScrollArea w="80vw" h="50vh" mah={500} maw={1200} type='always' >
+        <ScrollArea w="80vw" h="50vh" mah={500} maw={1200} type='always'  >
             <Table highlightOnHover stickyHeader withRowBorders borderColor='black' horizontalSpacing='xs' verticalSpacing='xs' id='tabla'>
                 <Table.Thead bg='#D9D9D9'>
                     <Table.Tr>

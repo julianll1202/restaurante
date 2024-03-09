@@ -22,6 +22,7 @@ export const getAllEmpleados = async (req, res) => {
 
 export const createEmpleado = async (req, res) => {
     const empInfo = req.body
+    console.log(empInfo)
     try {
         const empNuevo = await prisma.empleados.create({
             data: {
@@ -34,6 +35,7 @@ export const createEmpleado = async (req, res) => {
         })
         return empNuevo
     } catch (err) {
+        console.log(err)
         return 'Error: No se pudo crear el registro'
     }
 }

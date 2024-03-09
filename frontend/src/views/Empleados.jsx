@@ -11,7 +11,7 @@ const Empleados = () => {
         "Nombre del empleado", "Número de teléfono", "Puesto", "Sueldo"
     ]
     const [content, setContent] = useState([])
-    const [opened, { open, close }] = useDisclosure(false);
+    const [opened, handlers] = useDisclosure(false);
     const getEmpleadosList = async () => {
         const res = await getAllEmpleados()
         res.forEach((emp) => {
@@ -29,24 +29,24 @@ const Empleados = () => {
     }
     useEffect(() => {
         getEmpleadosList()
-    }, [])
+    }, [opened])
     return (
         <div style={{
-            width: '100vw',
+            width: '100%',
             padding: '3vw',
         }}>
-            <Flex direction="column" w='85vw'>
-                <Title order={2}>Empleados</Title>
-                <Title order={3}>Total de empleados</Title>
-                <Text>30</Text>
-                <Group mb={15}>
+            <Flex direction="column" w='85vw' justify='center' align='center' >
+                <Title ta='left' order={1} mb={10}>Empleados</Title>
+                <Title ta='left' order={4}>Total de empleados</Title>
+                <Text ta='left'>30</Text>
+                <Group mt={10} mb={15} align='flex-start' justify='flex-start'>
                     <TextInput  rightSection={<Search />} />
                     <Select rightSection={<AdjustmentsHorizontal />}  />
-                    <Button leftSection={<CirclePlus />} color="brown.9" onClick={open}>Agregar empleado</Button>
+                    <Button leftSection={<CirclePlus />} color="brown.9" onClick={handlers.open}>Agregar empleado</Button>
                 </Group>
                 <Tabla headers={header} content={content} />
             </Flex>
-            <ModalEmpleados opened={opened} close={close} />
+            <ModalEmpleados opened={opened} close={handlers.close} />
         </div>
     )
 }
