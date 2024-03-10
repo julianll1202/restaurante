@@ -5,6 +5,7 @@ const prisma = new PrismaClient()
 export const getAllEmpleados = async (req, res) => {
     const empleados = await prisma.empleados.findMany({
         select: {
+            empleadoId: true,
             empleadoNombre: true,
             paterno: true,
             materno: true,
@@ -22,7 +23,6 @@ export const getAllEmpleados = async (req, res) => {
 
 export const createEmpleado = async (req, res) => {
     const empInfo = req.body
-    console.log(empInfo)
     try {
         const empNuevo = await prisma.empleados.create({
             data: {
@@ -41,18 +41,20 @@ export const createEmpleado = async (req, res) => {
 }
 
 export const deleteEmpleado = async (req, res) => {
-    const empleado = req.body
-    if (!empleado.id) {
+    const empleado = req.params
+    console.log(empleado)
+    if (!empleado) {
         return 'Error: El id del empleado es necesario'
     }
     try {
         const deletedEmpleado = await prisma.empleados.delete({
             where: {
-                empleadoId: empleado.id
+                empleadoId: Number(req.params.empleadoId)
             }
         })
         return deletedEmpleado
     } catch (err) {
+        console.log(err)
         return 'Error: No se pudo eliminar el registro'
     }
 }
