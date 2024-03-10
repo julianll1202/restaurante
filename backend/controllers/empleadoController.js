@@ -35,7 +35,6 @@ export const createEmpleado = async (req, res) => {
         })
         return empNuevo
     } catch (err) {
-        console.log(err)
         return 'Error: No se pudo crear el registro'
     }
 }
@@ -54,7 +53,6 @@ export const deleteEmpleado = async (req, res) => {
         })
         return deletedEmpleado
     } catch (err) {
-        console.log(err)
         return 'Error: No se pudo eliminar el registro'
     }
 }

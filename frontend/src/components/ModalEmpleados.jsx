@@ -1,18 +1,22 @@
 'use client'
-import { Group, Modal, Button, Flex, Text,TextInput, NumberInput, FileButton, Select, Image,
+import { Group, Modal, Button, Flex, Text,TextInput, NumberInput, FileButton, Select, Image, Tabs,
 } from "@mantine/core";
 import { DeviceFloppy } from "tabler-icons-react";
 import { PropTypes } from 'prop-types';
 import "../styles/ModalEmpleados.css";
-import { getAllPuestosList } from './../controllers/puestoController';
+import { createPuesto, getAllPuestosList } from './../controllers/puestoController';
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "@mantine/form";
 import { createEmpleado, updateEmpleado } from "../controllers/empleadoControllers";
+import { useInputState } from "@mantine/hooks";
 
 function ModalEmpleados ({opened, close, update, updateInfo}) {
     const [puestos, setPuestos] = useState([])
     const [puestosC, setPuestosC] = useState([])
     const [puesto, setPuesto] = useState('')
+    const [newPuestoN, setNewPuestoN] = useInputState('')
+    const [newSueldo, setNewSueldo] = useInputState(0)
+    const [aciveTab, setActiveTab] = useState('seleccionar')
     const puestoIn = useRef()
     const [sueldo, setSueldo] = useState(0)
     const [file, setFile] = useState(null);
@@ -43,6 +47,7 @@ function ModalEmpleados ({opened, close, update, updateInfo}) {
         return id[0].toString()
     }
 
+
     const form = useForm({
         initialValues: {
             nombre: '',
@@ -50,6 +55,12 @@ function ModalEmpleados ({opened, close, update, updateInfo}) {
             materno: '',
             telefono: ''
         },
+        validate: {
+            nombre: (value) => (value === '' ? 'Teléfono no valido': null),
+            paterno: (value) => (value === '' ? 'Teléfono no valido': null),
+            materno: (value) => (value === '' ? 'Teléfono no valido': null),
+            telefono: (value) => (value.length > 10 || value.length < 10 ? 'Teléfono no valido': null)
+        }
     })
 
     useEffect(() => {
@@ -78,6 +89,7 @@ function ModalEmpleados ({opened, close, update, updateInfo}) {
 
 
     const handleCreateEmpleado = async (values) => {
+        form.validate()
         const res = await createEmpleado(values.nombre, values.paterno, values.materno, values.telefono, Number(puesto))
         if (res.status === 200) {
             console.log(res)
@@ -94,6 +106,15 @@ function ModalEmpleados ({opened, close, update, updateInfo}) {
         }
     }
 
+    const handleCreatePuesto = async () => {
+        const res = await createPuesto(newPuestoN, newSueldo)
+        if (res.status === 200) {
+            getPuestos()
+            setPuesto(res.data.puestoId)
+            setSueldo(Number(res.data.sueldo))
+            setActiveTab('seleccionar')
+        }
+    }
     return (
         <Modal.Root opened={opened} onClose={close} centered size="xl" closeOnClickOutside w={200} h={500}>
             <Modal.Overlay />
@@ -106,7 +127,7 @@ function ModalEmpleados ({opened, close, update, updateInfo}) {
                     { update ?
                         <form onSubmit={form.onSubmit(handleUpdateEmpleado)}>
                         <Flex direction="row" align="flex-start" justify="center" gap={20}>
-                            <Flex direction="column" className="datos" w="45%">
+                            <Flex direction="column"  w="45%">
                                 <Text fw="bold">Datos personales</Text>
                                 <TextInput {...form.getInputProps('nombre')} label="Nombre" w='95%' />
                                 <Group>
@@ -114,13 +135,26 @@ function ModalEmpleados ({opened, close, update, updateInfo}) {
                                     <TextInput {...form.getInputProps('materno')} label="Apellido materno" w='45%'  />
                                 </Group>
                                 <TextInput {...form.getInputProps('telefono')} label="Número de teléfono"  w='95%'  />
-                                <Select label="Puesto" ref={puestoIn}  w='95%' defaultValue={puesto}  onChange={(value, option) => {
-                                    setPuesto(value)
-                                    setSueldo(getSueldo(value))
-                                }}  data={puestos}/>
-                                <NumberInput label="Sueldo" w='95%'  readOnly value={sueldo} />
+                                <Tabs value={aciveTab} onChange={setActiveTab} >
+                                    <Tabs.List>
+                                        <Tabs.Tab value="seleccionar" >Seleccionar puesto</Tabs.Tab>
+                                        <Tabs.Tab value="crear" >Crear puesto</Tabs.Tab>
+                                    </Tabs.List>
+                                    <Tabs.Panel value="seleccionar">
+                                        <Select label="Puesto" ref={puestoIn}  w='95%' defaultValue={puesto}  onChange={(value, option) => {
+                                            setPuesto(value)
+                                            setSueldo(getSueldo(value))
+                                        }}  data={puestos}/>
+                                        <NumberInput label="Sueldo" w='95%'  readOnly value={sueldo} />
+                                    </Tabs.Panel>
+                                    <Tabs.Panel value="crear">
+                                            <TextInput name="puestoNombre" onChange={setNewPuestoN}  label="Nombre del puesto" w='95%' />
+                                            <NumberInput name="sueldo" onChange={setNewSueldo} label="Sueldo" w='95%' />
+                                            <Button mt={10} onClick={handleCreatePuesto} >Crear puesto</Button>
+                                    </Tabs.Panel>
+                                </Tabs>
                             </Flex>
-                            <Flex direction="column" className="datos" w="45%">
+                            <Flex direction="column" w="45%">
                                 <Text fw="bold">Foto de perfil</Text>
                                 <Group>
                                     <Image src={file ? URL.createObjectURL(file) : null} radius='md' w={150} h={150}  />
@@ -138,7 +172,7 @@ function ModalEmpleados ({opened, close, update, updateInfo}) {
                     :
                         <form onSubmit={form.onSubmit(handleCreateEmpleado)}>
                         <Flex direction="row" align="flex-start" justify="center" gap={20}>
-                            <Flex direction="column" className="datos" w="45%">
+                            <Flex direction="column" w="45%">
                                 <Text fw="bold">Datos personales</Text>
                                 <TextInput {...form.getInputProps('nombre')} label="Nombre" w='95%' />
                                 <Group>
@@ -146,15 +180,28 @@ function ModalEmpleados ({opened, close, update, updateInfo}) {
                                     <TextInput {...form.getInputProps('materno')} label="Apellido materno" w='45%'  />
                                 </Group>
                                 <TextInput {...form.getInputProps('telefono')} label="Número de teléfono"  w='95%'  />
-                                <Select label="Puesto" ref={puestoIn}  w='95%'  onChange={(value, option) => {
-                                    setPuesto(value)
-                                    setSueldo(getSueldo(value))
-                                }}  data={puestos}/>
-                                <NumberInput label="Sueldo" w='95%'  readOnly value={sueldo} />
+                                <Tabs value={aciveTab} onChange={setActiveTab} >
+                                    <Tabs.List>
+                                        <Tabs.Tab value="seleccionar" >Seleccionar puesto</Tabs.Tab>
+                                        <Tabs.Tab value="crear" >Crear puesto</Tabs.Tab>
+                                    </Tabs.List>
+                                    <Tabs.Panel value="seleccionar">
+                                        <Select label="Puesto" ref={puestoIn}  w='95%' defaultValue={puesto}  onChange={(value, option) => {
+                                            setPuesto(value)
+                                            setSueldo(getSueldo(value))
+                                        }}  data={puestos}/>
+                                        <NumberInput label="Sueldo" w='95%'  readOnly value={sueldo} />
+                                    </Tabs.Panel>
+                                    <Tabs.Panel value="crear">
+                                            <TextInput name="puestoNombre" onChange={setNewPuestoN}  label="Nombre del puesto" w='95%' />
+                                            <NumberInput name="sueldo" onChange={setNewSueldo} label="Sueldo" w='95%' />
+                                            <Button mt={10} onClick={handleCreatePuesto} >Crear puesto</Button>
+                                    </Tabs.Panel>
+                                </Tabs>
                             </Flex>
-                            <Flex direction="column" className="datos" w="45%">
+                            <Flex direction="column" w="45%">
                                 <Text fw="bold">Foto de perfil</Text>
-                                <Group>
+                                <Group mb={10}>
                                     <Image src={file ? URL.createObjectURL(file) : null} radius='md' w={150} h={150}  />
                                     <FileButton onChange={setFile} accept="image/png,image/jpeg">
                                         {(props) => <Button color="brown.9" {...props}>Subir imagen</Button>}
