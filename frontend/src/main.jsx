@@ -10,6 +10,8 @@ import Inicio from './views/Inicio';
 import restauranteTheme from './CustomProvider';
 import { AuthProvider } from './contexts/AuthProvider.jsx';
 import Empleados from './views/Empleados.jsx';
+import Mesas from './views/Mesas.jsx';
+import Comandas from './views/Comandas.jsx';
 
 const router = createBrowserRouter([
   {
@@ -22,6 +24,14 @@ const router = createBrowserRouter([
       {
         path: '/empleados',
         element: <Empleados />,
+      },
+      {
+        path: '/mesas',
+        element: <Mesas />,
+      },
+      {
+        path: '/comandas',
+        element: <Comandas />,
       }
     ]
   },

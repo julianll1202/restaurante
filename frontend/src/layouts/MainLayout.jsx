@@ -17,11 +17,13 @@ const MainLayout = () => {
                             <Title c='white' order={3}><Link to='/'>AltaServe</Link></Title>
                         </Group>
                         <Group h="100%" px="md">
-                            <Anchor c="white">Comandas</Anchor>
+                            {/*<Anchor c="white">Comandas</Anchor>*/}
+                            <Link to='/comandas'>Comandas</Link>
                             <Anchor c="white">Platillos</Anchor>
                             <Anchor c="white">Inventario</Anchor>
                             <Link to='/empleados'>Empleados</Link>
                             {/* <Anchor onClick={() => <Navigate to="/empleados"/>} c="white">Empleados</Anchor> */}
+                            <Link to='/mesas'>Mesas</Link>
                         </Group>
                     </Group>
                     <Group>
