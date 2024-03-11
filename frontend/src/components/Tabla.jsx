@@ -1,6 +1,7 @@
-import {  ActionIcon, ScrollArea, Table } from '@mantine/core';
+import {  ActionIcon, Avatar, ScrollArea, Table } from '@mantine/core';
 import { PropTypes } from 'prop-types';
 import { Edit, ListSearch, Trash } from 'tabler-icons-react';
+import { STORED_IMAGES_URL } from '../utils/constants';
 function Tabla ({headers, content, row, rowD}) {
     return(
 
@@ -16,7 +17,7 @@ function Tabla ({headers, content, row, rowD}) {
                 <Table.Tbody>
                     { content.length > 0 ? content.map( (fila, index) => <Table.Tr key={index} >
                         {
-                            fila.map( (celda, i) => <Table.Td key={i}>{celda}</Table.Td>)
+                            fila.map( (celda, i) => i === 0 ? <Table.Td key={i}><Avatar src={`${STORED_IMAGES_URL}${celda}`} /></Table.Td> : <Table.Td key={i}>{celda}</Table.Td>)
                         }
                         <Table.Td>
                             <ActionIcon onClick={() => row(index)} mr={10} size={28} radius='xl' color='light-brown'><ListSearch size={20} /></ActionIcon>

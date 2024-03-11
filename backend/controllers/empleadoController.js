@@ -15,6 +15,12 @@ export const getAllEmpleados = async (req, res) => {
                     puestoNombre: true,
                     sueldo: true
                 }
+            },
+            imagen: {
+                select: {
+                    imagenId: true,
+                    url: true
+                }
             }
         }
     })
@@ -73,7 +79,8 @@ export const updateEmpleado = async (req, res) => {
                 paterno: empleado.paterno,
                 materno: empleado.materno,
                 telefono: empleado.telefono,
-                puestoId: empleado.puestoId
+                puestoId: empleado.puestoId,
+                imagenId: empleado.imagenId
             }
         })
         return updatedEmpleado

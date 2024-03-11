@@ -10,6 +10,7 @@ import { useForm } from "@mantine/form";
 import { createEmpleado, updateEmpleado } from "../controllers/empleadoControllers";
 import { useInputState } from "@mantine/hooks";
 import { createImagen } from "../controllers/imagenController";
+import { STORED_IMAGES_URL } from "../utils/constants";
 
 function ModalEmpleados ({opened, close, update, updateInfo}) {
     const [puestos, setPuestos] = useState([])
@@ -109,7 +110,15 @@ function ModalEmpleados ({opened, close, update, updateInfo}) {
     }
 
     const handleUpdateEmpleado = async (values) => {
-        console.log(updateInfo)
+        console.log(file)
+        form.validate()
+        if (file !== null) {
+            const img = await saveImage()
+            console.log(img)
+            if (img.status === 200) {
+                updateInfo.imagenId = img.data.imagenId
+            }
+        }
         const res = await updateEmpleado(updateInfo.empleadoId, values.nombre, values.paterno, values.materno, values.telefono, Number(puesto), updateInfo.imagenId)
         if (res.status === 200) {
             close()
@@ -121,7 +130,7 @@ function ModalEmpleados ({opened, close, update, updateInfo}) {
         if (res.status === 200) {
             setActiveTab('seleccionar')
             getPuestos()
-            setPuesto(res.data.puestoId)
+            setPuesto(res.data.puestoNombre)
             setSueldo(Number(res.data.sueldo))
         }
     }
@@ -167,7 +176,7 @@ function ModalEmpleados ({opened, close, update, updateInfo}) {
                             <Flex direction="column" w="45%">
                                 <Text fw="bold">Foto de perfil</Text>
                                 <Group>
-                                    <Image src={file ? URL.createObjectURL(file) : null} radius='md' w={150} h={150}  />
+                                    <Image src={file ? URL.createObjectURL(file) : `${STORED_IMAGES_URL}${updateInfo.imagenUrl}`} radius='md' w={150} h={150}  />
                                     <FileButton onChange={setFile} accept="image/png,image/jpeg">
                                         {(props) => <Button color="brown.9" {...props}>Subir imagen</Button>}
                                     </FileButton>

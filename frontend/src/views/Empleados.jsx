@@ -8,34 +8,42 @@ import ModalEmpleados from "../components/ModalEmpleados"
 
 const Empleados = () => {
     const header = [
-        "Nombre del empleado", "Número de teléfono", "Puesto", "Sueldo"
-    ]
-    const [content, setContent] = useState([])
-    const [empleadosC, setEmpleadosC] = useState([])
-    const [opened, handlers] = useDisclosure(false);
-    const [row, setRow] = useState({puesto: ''})
-    const [rowD, setRowD] = useState(0)
+        "", "Nombre del empleado", "Número de teléfono", "Puesto", "Sueldo"
+    ] // Encabezado de la tabla
+    const [content, setContent] = useState([]) // Contenido de la tabla
+    const [empleadosC, setEmpleadosC] = useState([]) // Lista de empleados completa
+    const [opened, handlers] = useDisclosure(false); // Manejo de estado del modal
+    const [row, setRow] = useState({puesto: ''}) // Fila a editar
+    const [rowD, setRowD] = useState(0) // Fila a eliminar
+
     const setRowIndex = (data) => {
         setRow(empleadosC[data])
         console.log(empleadosC[data])
         handlers.open()
     }
+
     const openCreateModal = () => {
         setRow({puesto: ''})
         handlers.open()
     }
+
     const setRowDIndex = (data) => {
         setRowD(empleadosC[data]['empleadoId'])
         deleteOneEmpleado(empleadosC[data]['empleadoId'])
     }
+
     const deleteOneEmpleado = async (id) => {
         console.log(id)
         const deleteRes = await deleteEmpleado(id)
         console.log(deleteRes)
     }
+
     const getEmpleadosList = async () => {
         const res = await getAllEmpleados()
         res.forEach((emp) => {
+            emp['imagen'] = Object.values(emp['imagen'])
+            emp['imagenId'] = emp['imagen'][0]
+            emp['imagenUrl'] = emp['imagen'][1]
             emp['puesto'] = Object.values(emp['puesto'])
             emp['sueldo'] = emp['puesto'][1]
             emp['puesto'] = emp['puesto'][0]
@@ -45,11 +53,60 @@ const Empleados = () => {
         console.log(data)
         data.forEach((emp) => {
             emp[1] = `${emp[1]} ${emp[2]} ${emp[3]}`
-            emp.splice(2,2)
-            emp.splice(0,1)
+            emp.splice(2,2) // Elimina paterno y materno de la lista
+            emp.splice(0,1) // Elimina id de empleado
+            emp.splice(3,1) // Elimina objeto imagen
+            emp.splice(0,0, emp[4]) // Mueve la imagen al inicio del arreglo
+            emp.splice(4,2) // Elimina imagenId y el url de sus posiciones originales
         });
         setContent(data)
     }
+
+    const ordenarTabla = (filtro) => {
+        const contenido = [...content]
+        switch (filtro) {
+            case 'NOMBRE':
+                contenido.sort((a, b) => {
+                    if (a[1] > b[1]) {
+                        return 1;
+                      }
+                      if (a[1] < b[1]) {
+                        return -1;
+                      }
+                      // a es igual a b
+                      return 0;
+                })
+                setContent(contenido)
+                break;
+            case 'SUELDO':
+                contenido.sort((a, b) => {
+                    if (a[4] > b[4]) {
+                        return 1;
+                        }
+                        if (a[4] < b[4]) {
+                        return -1;
+                        }
+                        // a es igual a b
+                        return 0;
+                })
+                setContent(contenido)
+                break;
+            case 'PUESTO':
+                contenido.sort((a, b) => {
+                    if (a[3] > b[3]) {
+                        return 1;
+                        }
+                        if (a[3] < b[3]) {
+                        return -1;
+                        }
+                        // a es igual a b
+                        return 0;
+                })
+                setContent(contenido)
+                break;
+        }
+    }
+
     useEffect(() => {
         getEmpleadosList()
     }, [opened, rowD])
@@ -64,7 +121,11 @@ const Empleados = () => {
                 <Text ta='left'>30</Text>
                 <Group mt={10} mb={15} align='flex-start' justify='flex-start'>
                     <TextInput  rightSection={<Search />} />
-                    <Select rightSection={<AdjustmentsHorizontal />}  />
+                    <Select rightSection={<AdjustmentsHorizontal />} data={[
+                        {value: 'NOMBRE', label: 'Ordenar por nombre'},
+                        {value: 'PUESTO', label: 'Ordenar por puesto'},
+                        {value: 'SUELDO', label: 'Ordenar por sueldo'},
+                        ]} onChange={(_value, option) => ordenarTabla(_value)} />
                     <Button leftSection={<CirclePlus />} color="brown.9" onClick={openCreateModal}>Agregar empleado</Button>
                 </Group>
                 <Tabla headers={header} content={content} row={setRowIndex} rowD={setRowDIndex} />

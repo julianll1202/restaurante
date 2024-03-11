@@ -18,7 +18,7 @@ export const createEmpleado = async (empleadoNombre, paterno, materno, telefono,
     return res
 }
 
-export const updateEmpleado = async (empleadoId, empleadoNombre, paterno, materno, telefono, puestoId) => {
+export const updateEmpleado = async (empleadoId, empleadoNombre, paterno, materno, telefono, puestoId, imagenId) => {
     const res = await API.put('empleados/actualizar', {
         id: empleadoId,
         nombre: empleadoNombre,
@@ -26,6 +26,7 @@ export const updateEmpleado = async (empleadoId, empleadoNombre, paterno, matern
         materno: materno,
         telefono: telefono,
         puestoId: puestoId,
+        imagenId: imagenId
     })
     return res
 }
