@@ -3,7 +3,19 @@ import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 
 export const getAllProductos = async (req, res) => {
-    const productos = await prisma.productos.findMany()
+    const productos = await prisma.productos.findMany({
+        select: {
+            productoId: true,
+            productoNombre: true,
+            cantidad: true,
+            productosEnCompra: {
+                select: {
+                    cantidad: true,
+                    precioTotal: true
+                }
+            }
+        }
+    })
     return productos
 }
 

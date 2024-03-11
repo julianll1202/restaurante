@@ -19,9 +19,8 @@ const MainLayout = () => {
                         <Group h="100%" px="md">
                             <Anchor c="white">Comandas</Anchor>
                             <Anchor c="white">Platillos</Anchor>
-                            <Anchor c="white">Inventario</Anchor>
+                            <Link to='/inventario'>Inventario</Link>
                             <Link to='/empleados'>Empleados</Link>
-                            {/* <Anchor onClick={() => <Navigate to="/empleados"/>} c="white">Empleados</Anchor> */}
                         </Group>
                     </Group>
                     <Group>

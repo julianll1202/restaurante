@@ -66,8 +66,6 @@ model Productos {
   cantidadMax Int
   produdctosEnPlatillo ProductosEnPlatillos[]
   productosEnCompra ProductosEnCompras[]
-  imagenId Int
-  imagen Imagenes @relation(fields: [imagenId], references: [imagenId])
 }
 
 model Compras {
@@ -95,7 +93,6 @@ model Imagenes {
   tipo String
   url String
   empleado Empleados[]
-  producto Productos[]
   platillo Platillos[]
 
 }
@@ -156,6 +153,8 @@ model ProductosEnPlatillos {
 }
 
 model ProductosEnCompras {
+  cantidad Float
+  precioTotal Float
   compraId Int
   compra Compras @relation(fields: [compraId], references: [compraId])
   productoId Int
