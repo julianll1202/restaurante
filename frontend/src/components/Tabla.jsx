@@ -5,7 +5,7 @@ import { STORED_IMAGES_URL } from '../utils/constants';
 function Tabla ({headers, content, row, rowD}) {
     return(
 
-        <ScrollArea w="80vw" h="50vh" mah={500} maw={1200} type='always'  >
+        <ScrollArea w="90%" h="50vh" mah={500} maw={1200} type='always' ml='-8vw' >
             <Table highlightOnHover stickyHeader withRowBorders borderColor='black' horizontalSpacing='xs' verticalSpacing='xs' id='tabla'>
                 <Table.Thead bg='#D9D9D9'>
                     <Table.Tr>

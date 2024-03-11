@@ -51,7 +51,7 @@ const MainLayout = () => {
                     </Group>
                 </Group>
             </AppShell.Header>
-            <AppShell.Main mt={50} p={20}>
+            <AppShell.Main mt={50} p={20} w='100vw'>
                 <Outlet />
             </AppShell.Main>
         </AppShell>
