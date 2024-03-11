@@ -25,7 +25,7 @@ router.put('/actualizar', async function (req, res) {
         res.status(400).send(empleadoActualizado)
     }
 })
-router.delete('/eliminar', async function (req, res) {
+router.delete('/eliminar/:empleadoId', async function (req, res) {
     const empleadoD = await deleteEmpleado(req, res)
     if (!JSON.stringify(empleadoD).startsWith('"Error')) {
         res.status(200).send(empleadoD)

@@ -1,23 +1,18 @@
-import { Button, Group, PasswordInput, TextInput, Title, Text, Stack, Image, rem } from "@mantine/core";
+import { Button, Group, PasswordInput, TextInput, Title, Text, Stack, Image } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { login } from "../utils/auth";
 import { useContext } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import AuthContext from "../contexts/AuthProvider";
-import useAxiosClient from "../utils/createAxiosClient";
 
 const Login = () => {
     const { setAuth } = useContext(AuthContext)
-    const API = useAxiosClient()
-
     const location = useLocation()
     const from = location.state?.from?.pathname || '/'
     const navigate = useNavigate();
     const handleLogin = async(values) => {
-        const res = await API.post('users/login', {
-        username: values.username, password: values.password
-    })
+        const res = await login(values.username, values.password)
         if (res.status === 200) {
             Cookies.set('accessToken', res.data.accessToken);
             setAuth({ user: res.data.user, accessToken: res.data.accessToken });

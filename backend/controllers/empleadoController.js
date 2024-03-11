@@ -3,7 +3,27 @@ import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 
 export const getAllEmpleados = async (req, res) => {
-    const empleados = await prisma.empleados.findMany()
+    const empleados = await prisma.empleados.findMany({
+        select: {
+            empleadoId: true,
+            empleadoNombre: true,
+            paterno: true,
+            materno: true,
+            telefono: true,
+            puesto: {
+                select: {
+                    puestoNombre: true,
+                    sueldo: true
+                }
+            },
+            imagen: {
+                select: {
+                    imagenId: true,
+                    url: true
+                }
+            }
+        }
+    })
     return empleados
 }
 
@@ -16,24 +36,26 @@ export const createEmpleado = async (req, res) => {
                 paterno: empInfo.paterno,
                 materno: empInfo.materno,
                 telefono: empInfo.telefono,
-                puestoId: empInfo.puestoId
+                puestoId: empInfo.puestoId,
+                imagenId: empInfo.imagenId
             }
         })
         return empNuevo
     } catch (err) {
+        console.error(err)
         return 'Error: No se pudo crear el registro'
     }
 }
 
 export const deleteEmpleado = async (req, res) => {
-    const empleado = req.body
-    if (!empleado.id) {
+    const empleado = req.params
+    if (!empleado) {
         return 'Error: El id del empleado es necesario'
     }
     try {
         const deletedEmpleado = await prisma.empleados.delete({
             where: {
-                empleadoId: empleado.id
+                empleadoId: Number(req.params.empleadoId)
             }
         })
         return deletedEmpleado
@@ -57,7 +79,8 @@ export const updateEmpleado = async (req, res) => {
                 paterno: empleado.paterno,
                 materno: empleado.materno,
                 telefono: empleado.telefono,
-                puestoId: empleado.puestoId
+                puestoId: empleado.puestoId,
+                imagenId: empleado.imagenId
             }
         })
         return updatedEmpleado
