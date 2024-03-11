@@ -80,11 +80,11 @@ const Empleados = () => {
                 break;
             case 'SUELDO':
                 contenido.sort((a, b) => {
-                    if (a[4] > b[4]) {
-                        return 1;
-                        }
-                        if (a[4] < b[4]) {
+                    if (Number(a[4]) > Number(b[4])) {
                         return -1;
+                        }
+                        if (Number(a[4]) < Number(b[4])) {
+                        return 1;
                         }
                         // a es igual a b
                         return 0;
