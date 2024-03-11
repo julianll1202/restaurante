@@ -30,18 +30,19 @@ export const createEmpleado = async (req, res) => {
                 paterno: empInfo.paterno,
                 materno: empInfo.materno,
                 telefono: empInfo.telefono,
-                puestoId: empInfo.puestoId
+                puestoId: empInfo.puestoId,
+                imagenId: 1
             }
         })
         return empNuevo
     } catch (err) {
+        console.log(err)
         return 'Error: No se pudo crear el registro'
     }
 }
 
 export const deleteEmpleado = async (req, res) => {
     const empleado = req.params
-    console.log(empleado)
     if (!empleado) {
         return 'Error: El id del empleado es necesario'
     }

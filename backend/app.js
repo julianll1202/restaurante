@@ -13,6 +13,7 @@ import comandasRouter from './routes/comandas.js'
 import comprasRouter from './routes/compras.js'
 import productosRouter from './routes/productos.js'
 import rolesRouter from './routes/roles.js'
+import imgRouter from './routes/imagenes.js'
 
 import cors from 'cors'
 
@@ -36,6 +37,6 @@ app.use('/comandas', comandasRouter)
 app.use('/compras', comprasRouter)
 app.use('/productos', productosRouter)
 app.use('/roles', rolesRouter)
-
+app.use('/imagenes', imgRouter)
 
 export default app

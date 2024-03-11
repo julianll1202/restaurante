@@ -9,6 +9,7 @@ import { useEffect, useRef, useState } from "react";
 import { useForm } from "@mantine/form";
 import { createEmpleado, updateEmpleado } from "../controllers/empleadoControllers";
 import { useInputState } from "@mantine/hooks";
+import { createImagen } from "../controllers/imagenController";
 
 function ModalEmpleados ({opened, close, update, updateInfo}) {
     const [puestos, setPuestos] = useState([])
@@ -47,13 +48,18 @@ function ModalEmpleados ({opened, close, update, updateInfo}) {
         return id[0].toString()
     }
 
-
+    const saveImage = async () => {
+        const formData = new FormData()
+        formData.append('image', file)
+        const res = await createImagen(formData)
+        console.log(res)
+    }
     const form = useForm({
         initialValues: {
             nombre: '',
             paterno: '',
             materno: '',
-            telefono: ''
+            telefono: '',
         },
         validate: {
             nombre: (value) => (value === '' ? 'Teléfono no valido': null),
@@ -90,6 +96,7 @@ function ModalEmpleados ({opened, close, update, updateInfo}) {
 
     const handleCreateEmpleado = async (values) => {
         form.validate()
+        saveImage()
         const res = await createEmpleado(values.nombre, values.paterno, values.materno, values.telefono, Number(puesto))
         if (res.status === 200) {
             console.log(res)
@@ -109,10 +116,10 @@ function ModalEmpleados ({opened, close, update, updateInfo}) {
     const handleCreatePuesto = async () => {
         const res = await createPuesto(newPuestoN, newSueldo)
         if (res.status === 200) {
+            setActiveTab('seleccionar')
             getPuestos()
             setPuesto(res.data.puestoId)
             setSueldo(Number(res.data.sueldo))
-            setActiveTab('seleccionar')
         }
     }
     return (
