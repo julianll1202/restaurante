@@ -1,4 +1,4 @@
-import { Button, Group, Text, TextInput, Title, Flex, Select, Stack } from "@mantine/core"
+import { Button, Group, Title, Stack } from "@mantine/core"
 import { useEffect, useState } from "react"
 import { getAllMesas } from "../controllers/mesaController"
 import { useNavigate } from "react-router-dom";
@@ -9,7 +9,7 @@ const Mesas = () => {
         const res = await getAllMesas()
         setContent(res)
     }
-    const navigate = useNavigate(); 
+    const navigate = useNavigate();
     const cambioRuta = async (mesaId) => {
         navigate('/comandas', {
             state: {
