@@ -52,7 +52,7 @@ function ModalEmpleados ({opened, close, update, updateInfo}) {
         const formData = new FormData()
         formData.append('image', file)
         const res = await createImagen(formData)
-        console.log(res)
+        return res
     }
     const form = useForm({
         initialValues: {
@@ -62,10 +62,10 @@ function ModalEmpleados ({opened, close, update, updateInfo}) {
             telefono: '',
         },
         validate: {
-            nombre: (value) => (value === '' ? 'Teléfono no valido': null),
-            paterno: (value) => (value === '' ? 'Teléfono no valido': null),
-            materno: (value) => (value === '' ? 'Teléfono no valido': null),
-            telefono: (value) => (value.length > 10 || value.length < 10 ? 'Teléfono no valido': null)
+            nombre: (value) => (value === '' ? 'Nombre no válido': null),
+            paterno: (value) => (value === '' ? 'Apellido paterno no válido': null),
+            materno: (value) => (value === '' ? 'Apellido materno no válido': null),
+            telefono: (value) => (value.length > 10 || value.length < 10 ? 'Teléfono no válido': null)
         }
     })
 
@@ -89,6 +89,8 @@ function ModalEmpleados ({opened, close, update, updateInfo}) {
                 telefono: ''
             })
             setSueldo(0)
+            setPuesto('')
+            setFile(null)
         }
     }, [updateInfo])
 
@@ -96,19 +98,20 @@ function ModalEmpleados ({opened, close, update, updateInfo}) {
 
     const handleCreateEmpleado = async (values) => {
         form.validate()
-        saveImage()
-        const res = await createEmpleado(values.nombre, values.paterno, values.materno, values.telefono, Number(puesto))
-        if (res.status === 200) {
-            console.log(res)
-            close()
+        const img = await saveImage()
+        if (img.status === 200) {
+            const res = await createEmpleado(values.nombre, values.paterno, values.materno, values.telefono, Number(puesto), img.data.imagenId)
+            if (res.status === 200) {
+                console.log(res)
+                close()
+            }
         }
     }
 
     const handleUpdateEmpleado = async (values) => {
-        console.log(values)
-        const res = await updateEmpleado(updateInfo.empleadoId, values.nombre, values.paterno, values.materno, values.telefono, Number(puesto))
+        console.log(updateInfo)
+        const res = await updateEmpleado(updateInfo.empleadoId, values.nombre, values.paterno, values.materno, values.telefono, Number(puesto), updateInfo.imagenId)
         if (res.status === 200) {
-            console.log(res)
             close()
         }
     }

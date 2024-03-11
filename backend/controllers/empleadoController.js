@@ -31,12 +31,12 @@ export const createEmpleado = async (req, res) => {
                 materno: empInfo.materno,
                 telefono: empInfo.telefono,
                 puestoId: empInfo.puestoId,
-                imagenId: 1
+                imagenId: empInfo.imagenId
             }
         })
         return empNuevo
     } catch (err) {
-        console.log(err)
+        console.error(err)
         return 'Error: No se pudo crear el registro'
     }
 }

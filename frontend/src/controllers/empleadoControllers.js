@@ -6,13 +6,14 @@ export const getAllEmpleados = async () => {
     return res.data
 }
 
-export const createEmpleado = async (empleadoNombre, paterno, materno, telefono, puestoId) => {
+export const createEmpleado = async (empleadoNombre, paterno, materno, telefono, puestoId, imagenId) => {
     const res = await API.post('empleados/crear', {
         nombre: empleadoNombre,
         paterno: paterno,
         materno: materno,
         telefono: telefono,
         puestoId: puestoId,
+        imagenId: imagenId
     })
     return res
 }
