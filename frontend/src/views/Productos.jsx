@@ -4,12 +4,13 @@ import Tabla from "../components/Tabla"
 import { useEffect, useState } from "react"
 import { deleteEmpleado } from "../controllers/empleadoControllers"
 import { useDisclosure } from "@mantine/hooks"
-import ModalEmpleados from "../components/ModalEmpleados"
 import { getAllProductos } from "../controllers/productoController"
+import ModalProductos from "../components/ModalProductos"
+import { DateTimePicker } from "@mantine/dates"
 
 const Productos = () => {
     const header = [
-        "Nombre del producto", "Fecha de caducidad", "Cantidad", "Valor total"
+        "Id", "Nombre del producto", "Fecha de caducidad", "Cantidad", "Valor total"
     ] // Encabezado de la tabla
     const [content, setContent] = useState([]) // Contenido de la tabla
     const [productosC, setProductosC] = useState([]) // Lista de empleados completa
@@ -18,8 +19,8 @@ const Productos = () => {
     const [rowD, setRowD] = useState(0) // Fila a eliminar
 
     const setRowIndex = (data) => {
-        setRow(empleadosC[data])
-        console.log(empleadosC[data])
+        setRow(productosC[data])
+        console.log(productosC[data])
         handlers.open()
     }
 
@@ -29,8 +30,8 @@ const Productos = () => {
     }
 
     const setRowDIndex = (data) => {
-        setRowD(empleadosC[data]['empleadoId'])
-        deleteOneEmpleado(empleadosC[data]['empleadoId'])
+        setRowD(productosC[data]['productoId'])
+        deleteOneEmpleado(productosC[data]['productoId'])
     }
 
     const deleteOneEmpleado = async (id) => {
@@ -122,6 +123,7 @@ const Productos = () => {
                     <Flex direction='column'>
                         <Title ta='left' order={4}>Valor total de inventario</Title>
                         <Text ta='left'>{content.length}</Text>
+                        <DateTimePicker withSeconds label='Fecha de caducidad' />
                     </Flex>
                 </Group>
                 <Group mt={10} mb={15} align='flex-start' justify='flex-start'>
@@ -135,7 +137,7 @@ const Productos = () => {
                 </Group>
                 <Tabla headers={header} content={content} row={setRowIndex} rowD={setRowDIndex} />
             </Container>
-            <ModalEmpleados opened={opened} close={handlers.close} update={row.puesto !== '' ? true : false} updateInfo={row}  />
+            <ModalProductos opened={opened} close={handlers.close} update={row.puesto !== '' ? true : false} updateInfo={row}  />
         </div>
     )
 }
