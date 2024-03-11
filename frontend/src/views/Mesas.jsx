@@ -27,9 +27,18 @@ const Mesas = () => {
             <Group gap={48} justify="flex-start" w="100%" bg="white">
             {
                 content.map((mesa, index) => {
-                    return (
-                        <Button size="1.6rem" h="10rem" w="13rem" onClick={async () => cambioRuta(mesa.mesaId)} key={index}>Mesa {mesa.mesaId} <br/> {mesa.capacidad} asientos</Button>
-                    )
+                    {
+                        if (mesa.ocupada == 1) {
+                            return (
+                                <Button size="1.6rem" h="10rem" w="13rem" onClick={async () => cambioRuta(mesa.mesaId)} key={index} disabled>Mesa {mesa.mesaId} <br/> {mesa.capacidad} asientos</Button>
+                            )
+                        } else {
+                            return (
+                                <Button size="1.6rem" h="10rem" w="13rem" onClick={async () => cambioRuta(mesa.mesaId)} key={index}>Mesa {mesa.mesaId} <br/> {mesa.capacidad} asientos</Button>
+                            )
+                        
+                        }
+                    }
                 })
             }
             </Group>
