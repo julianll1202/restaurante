@@ -17,7 +17,7 @@ function Tabla ({headers, content, row, rowD, useImage, useDetailView, useBadge}
                 <Table.Tbody>
                     { content.length > 0 ? content.map( (fila, index) => <Table.Tr key={index} >
                         { useImage ?
-                            fila.map( (celda, i) => i === 0 ? <Table.Td ta='center' key={i}><Avatar src={`${STORED_IMAGES_URL}${celda}`} /></Table.Td> : <Table.Td key={i}>{celda}</Table.Td>)
+                            fila.map( (celda, i) => i === 0 ? <Table.Td ta='center' key={i}><Avatar src={`${STORED_IMAGES_URL}${celda}`} /></Table.Td> : <Table.Td ta='center' key={i}>{celda}</Table.Td>)
                             :
                             fila.map( (celda, i) => i === 3 ? <Table.Td ta='center' key={i}><Badge variant='light' color='orange' size='lg' radius='sm'>{celda}</Badge></Table.Td> : <Table.Td ta='center' key={i}>{celda}</Table.Td>)
                         }
