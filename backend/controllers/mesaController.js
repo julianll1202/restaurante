@@ -53,7 +53,28 @@ export const updateMesa = async (req, res) => {
             data: {
                 capacidad: mesa.capacidad,
                 ubicacion: mesa.ubicacion,
-                tipoMesa: mesa.tipoMesa
+                tipoMesa: mesa.tipoMesa,
+                ocupada: mesa.ocupada
+            }
+        })
+        return updatedMesa
+    } catch (err) {
+        return 'Error: No se pudo actualizar el registro'
+    }
+}
+
+export const updateEstatusMesa = async (req, res) => {
+    const mesa = req.body
+    if (!mesa.id) {
+        return 'Error: El id de la mesa es necesario'
+    }
+    try {
+        const updatedMesa = await prisma.mesas.update({
+            where: {
+                mesaId: mesa.id
+            },
+            data: {
+                ocupada: mesa.ocupada
             }
         })
         return updatedMesa

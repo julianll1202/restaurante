@@ -21,6 +21,23 @@ export const createComanda = async (req, res) => {
                 fechaCierre: comandaInfo.fechaCierre
             }
         })
+        await prisma.mesas.update({
+            where: {
+                mesaId: comandaInfo.mesaId
+            },
+            data: {
+                ocupada: true
+            }
+        })
+        const platillos = comandaInfo.platillos
+        platillos.forEach((p) => {
+            p.comandaId = comandaNueva.comandaId
+        })
+        await prisma.platillosEnComandas.createMany({
+            data: {
+                platillos
+            }
+        })
         return comandaNueva
     } catch (err) {
         return 'Error: No se pudo crear el registro'

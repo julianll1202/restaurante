@@ -1,5 +1,5 @@
 import express from 'express'
-import { createMesa, deleteMesa, getAllMesas, updateMesa } from '../controllers/mesaController.js'
+import { createMesa, deleteMesa, getAllMesas, updateEstatusMesa, updateMesa } from '../controllers/mesaController.js'
 
 const router = express.Router()
 
@@ -19,6 +19,15 @@ router.post('/crear', async function (req, res) {
 
 router.put('/actualizar', async function (req, res) {
     const mesaActualizada = await updateMesa(req, res)
+    if (!JSON.stringify(mesaActualizada).startsWith('"Error')) {
+        res.status(200).send(mesaActualizada)
+    } else {
+        res.status(400).send(mesaActualizada)
+    }
+})
+
+router.put('/cambiar-estado', async function (req, res) {
+    const mesaActualizada = await updateEstatusMesa(req, res)
     if (!JSON.stringify(mesaActualizada).startsWith('"Error')) {
         res.status(200).send(mesaActualizada)
     } else {

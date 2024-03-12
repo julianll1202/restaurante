@@ -15,11 +15,13 @@ export const createPlatillo = async (req, res) => {
                 platilloNombre: platilloInfo.nombre,
                 descripcion: platilloInfo.descripcion,
                 precio: platilloInfo.precio,
-                categoriaId: platilloInfo.categoriaId
+                categoriaId: platilloInfo.categoriaId,
+                imagenId: platilloInfo.imagenId
             }
         })
         return platilloNuevo
     } catch (err) {
+        console.error(err)
         return 'Error: No se pudo crear el registro'
     }
 }
