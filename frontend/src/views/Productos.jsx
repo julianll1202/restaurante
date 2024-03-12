@@ -25,7 +25,7 @@ const Productos = () => {
     const calcularValorTotal = () => {
         let valorTotal = 0
         for (let i = 0; i < content.length; i++) {
-            valorTotal += Number(content[i][4])
+            valorTotal += Number(content[i][5])
         }
         return valorTotal
     }

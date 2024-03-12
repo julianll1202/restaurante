@@ -77,7 +77,7 @@ function ModalProductos ({opened, close, update, updateInfo}) {
                             <TextInput {...form.getInputProps('nombre')} label="Nombre del producto" w='95%' />
                             <NumberInput {...form.getInputProps('cantidad')} label="Cantidad" w='95%' />
                             <NumberInput {...form.getInputProps('cantidadMax')} label="Cantidad máxima" w='95%' />
-                            <DateTimePicker onChange={setFechaCad} withSeconds label='Fecha de caducidad' defaultValue={new Date(updateInfo.fechaCaducidad)} popoverProps={{ zIndex: 10000 }}  />
+                            <DateTimePicker onChange={setFechaCad} withSeconds label='Fecha de caducidad' defaultValue={new Date(updateInfo.fechaCaducidad)} />
                         </Flex>
                         <Group justify='center' align="center" mt={16}>
                             <Button type="submit" leftSection={<DeviceFloppy />} >Actualizar</Button>
@@ -90,7 +90,7 @@ function ModalProductos ({opened, close, update, updateInfo}) {
                             <TextInput {...form.getInputProps('nombre')} label="Nombre del producto" w='95%' />
                             <NumberInput {...form.getInputProps('cantidad')} label="Cantidad" w='95%' />
                             <NumberInput {...form.getInputProps('cantidadMax')} label="Cantidad máxima" w='95%' />
-                            <DateTimePicker withSeconds label='Fecha de caducidad' valueFormat="YYYY-MM-DD hh:mm:ss" onChange={setFechaCad} w='95%' popoverProps={{ zIndex: 10000, withinPortal: true, width: '200px' }}  />
+                            <DateTimePicker withSeconds label='Fecha de caducidad' valueFormat="YYYY-MM-DD hh:mm:ss" onChange={setFechaCad} w='95%'  />
                         </Flex>
                         <Group justify='center' align="center" mt={16}>
                             <Button type="submit" leftSection={<DeviceFloppy />} >Guardar</Button>
