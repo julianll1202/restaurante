@@ -8,6 +8,8 @@ export const getAllProductos = async (req, res) => {
             productoId: true,
             productoNombre: true,
             cantidad: true,
+            cantidadMax: true,
+            fechaCaducidad: true,
             productosEnCompra: {
                 select: {
                     cantidad: true,
@@ -26,7 +28,8 @@ export const createProducto = async (req, res) => {
             data: {
                 productoNombre: productoInfo.productoNombre,
                 cantidad: productoInfo.cantidad,
-                cantidadMax: productoInfo.cantidadMax
+                cantidadMax: productoInfo.cantidadMax,
+                fechaCaducidad: productoInfo.fechaCaducidad
             }
         })
         return productoNuevo
@@ -36,14 +39,14 @@ export const createProducto = async (req, res) => {
 }
 
 export const deleteProducto = async (req, res) => {
-    const producto = req.body
-    if (!producto.id) {
+    const producto = req.params
+    if (!producto) {
         return 'Error: El id del producto es necesario'
     }
     try {
         const deletedProducto = await prisma.productos.delete({
             where: {
-                productoId: producto.id
+                productoId: Number(producto.id)
             }
         })
         return deletedProducto
@@ -65,7 +68,8 @@ export const updateProducto = async (req, res) => {
             data: {
                 productoNombre: producto.productoNombre,
                 cantidad: producto.cantidad,
-                cantidadMax: producto.cantidadMax
+                cantidadMax: producto.cantidadMax,
+                fechaCaducidad: producto.fechaCaducidad
             }
         })
         return updatedProducto

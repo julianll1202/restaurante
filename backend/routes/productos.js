@@ -25,7 +25,7 @@ router.put('/actualizar', async function (req, res) {
         res.status(400).send(productoActualizado)
     }
 })
-router.delete('/eliminar', async function (req, res) {
+router.delete('/eliminar/:id', async function (req, res) {
     const productoD = await deleteProducto(req, res)
     if (!JSON.stringify(productoD).startsWith('"Error')) {
         res.status(200).send(productoD)

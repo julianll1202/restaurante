@@ -128,7 +128,7 @@ const Empleados = () => {
                         ]} onChange={(_value, option) => ordenarTabla(_value)} />
                     <Button leftSection={<CirclePlus />} color="brown.9" onClick={openCreateModal}>Agregar empleado</Button>
                 </Group>
-                <Tabla headers={header} content={content} row={setRowIndex} rowD={setRowDIndex} />
+                <Tabla headers={header} useImage content={content} row={setRowIndex} rowD={setRowDIndex} />
             </Container>
             <ModalEmpleados opened={opened} close={handlers.close} update={row.puesto !== '' ? true : false} updateInfo={row}  />
         </div>

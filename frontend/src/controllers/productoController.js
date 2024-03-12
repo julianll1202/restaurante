@@ -6,32 +6,27 @@ export const getAllProductos = async () => {
     return res.data
 }
 
-export const createEmpleado = async (empleadoNombre, paterno, materno, telefono, puestoId, imagenId) => {
-    const res = await API.post('empleados/crear', {
-        nombre: empleadoNombre,
-        paterno: paterno,
-        materno: materno,
-        telefono: telefono,
-        puestoId: puestoId,
-        imagenId: imagenId
+export const createPropducto = async (productoNombre, cantidad, cantidadMax, fechaCaducidad) => {
+    const res = await API.post('productos/crear', {
+        productoNombre: productoNombre,
+        cantidad: cantidad,
+        cantidadMax: cantidadMax,
+        fechaCaducidad: fechaCaducidad,
     })
     return res
 }
 
-export const updateEmpleado = async (empleadoId, empleadoNombre, paterno, materno, telefono, puestoId, imagenId) => {
-    const res = await API.put('empleados/actualizar', {
-        id: empleadoId,
-        nombre: empleadoNombre,
-        paterno: paterno,
-        materno: materno,
-        telefono: telefono,
-        puestoId: puestoId,
-        imagenId: imagenId
+export const updateProducto = async (productoId, productoNombre, cantidad, cantidadMax, fechaCaducidad) => {
+    const res = await API.put('productos/actualizar', {
+        id: productoId,
+        productoNombre: productoNombre,
+        cantidad: cantidad,
+        cantidadMax: cantidadMax,
+        fechaCaducidad: fechaCaducidad,
     })
     return res
 }
-export const deleteEmpleado = async (empleadoId) => {
-    console.log(empleadoId)
-    const res = await API.delete(`empleados/eliminar/${empleadoId}`)
+export const deleteProducto = async (productoId) => {
+    const res = await API.delete(`productos/eliminar/${productoId}`)
     return res
 }
