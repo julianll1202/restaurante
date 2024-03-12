@@ -121,6 +121,7 @@ model Mesas {
   capacidad Int
   ubicacion String @db.Text
   tipoMesa String
+  ocupada Boolean @default(false)
   comandas Comandas[]
 }
 

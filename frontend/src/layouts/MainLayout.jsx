@@ -1,4 +1,4 @@
-import { Link, Navigate, Outlet, useLocation } from "react-router-dom";
+import { Link, Navigate, Outlet, useLocation, useNavigate } from "react-router-dom";
 import useAuth from './../hooks/useAuth';
 import { ActionIcon, Anchor, AppShell, Button, Group, Menu, Title } from "@mantine/core";
 import { Bell, Settings, Soup, UserCircle } from "tabler-icons-react";
@@ -6,6 +6,7 @@ import { Bell, Settings, Soup, UserCircle } from "tabler-icons-react";
 const MainLayout = () => {
     const { auth } = useAuth()
     const location = useLocation()
+    const navigate = useNavigate()
     return (
         auth?.user ?
         <AppShell>
@@ -17,7 +18,8 @@ const MainLayout = () => {
                             <Title c='white' order={3}><Link to='/'>AltaServe</Link></Title>
                         </Group>
                         <Group h="100%" px="md">
-                            <Anchor c="white">Comandas</Anchor>
+                            {/*<Anchor c="white">Comandas</Anchor>*/}
+                            <Link to='/comandas'>Comandas</Link>
                             <Anchor c="white">Platillos</Anchor>
                             <Anchor c="white">Inventario</Anchor>
                             <Link to='/empleados'>Empleados</Link>
@@ -25,7 +27,7 @@ const MainLayout = () => {
                         </Group>
                     </Group>
                     <Group>
-                        <Button color="brown.9" >Crear comanda</Button>
+                        <Button color="brown.9" onClick={async () => navigate('/mesas')}>Crear comanda</Button>
                         <ActionIcon>
                             <Settings />
                         </ActionIcon>
