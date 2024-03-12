@@ -16,6 +16,23 @@ export const createCompra = async (req, res) => {
                 total: compraInfo.total
             }
         })
+        const productos = compraInfo.productos
+        productos.forEach(async (prod) => {
+            prod.compraId = compraNueva.compraId
+            const updateProd = await prisma.productos.update({
+                where: {
+                    productoId: prod.productoId
+                },
+                data: {
+                    cantidad: {
+                        increment: prod.cantidad
+                    },
+                }
+            })
+        })
+        const prodCompras = await prisma.productosEnCompras.createMany({
+            data: productos
+        })
         return compraNueva
     } catch (err) {
         return 'Error: No se pudo crear el registro'

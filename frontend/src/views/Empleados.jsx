@@ -1,4 +1,4 @@
-import { Button, Group, Text, TextInput, Title, Flex, Select, Container } from "@mantine/core"
+import { Button, Group, Text, TextInput, Title, Select, Container } from "@mantine/core"
 import { AdjustmentsHorizontal, CirclePlus, Search } from "tabler-icons-react"
 import Tabla from "../components/Tabla"
 import { useEffect, useState } from "react"
@@ -128,7 +128,7 @@ const Empleados = () => {
                         ]} onChange={(_value, option) => ordenarTabla(_value)} />
                     <Button leftSection={<CirclePlus />} color="brown.9" onClick={openCreateModal}>Agregar empleado</Button>
                 </Group>
-                <Tabla headers={header} content={content} row={setRowIndex} rowD={setRowDIndex} />
+                <Tabla headers={header} useImage content={content} row={setRowIndex} rowD={setRowDIndex} />
             </Container>
             <ModalEmpleados opened={opened} close={handlers.close} update={row.puesto !== '' ? true : false} updateInfo={row}  />
         </div>

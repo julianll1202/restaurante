@@ -64,10 +64,9 @@ model Productos {
   productoNombre String
   cantidad Int
   cantidadMax Int
+  fechaCaducidad DateTime @default(now())
   produdctosEnPlatillo ProductosEnPlatillos[]
   productosEnCompra ProductosEnCompras[]
-  imagenId Int
-  imagen Imagenes @relation(fields: [imagenId], references: [imagenId])
 }
 
 model Compras {
@@ -95,7 +94,6 @@ model Imagenes {
   tipo String
   url String
   empleado Empleados[]
-  producto Productos[]
   platillo Platillos[]
 
 }
@@ -157,9 +155,11 @@ model ProductosEnPlatillos {
 }
 
 model ProductosEnCompras {
+  cantidad Float
+  precioTotal Float
   compraId Int
-  compra Compras @relation(fields: [compraId], references: [compraId])
+  compra Compras @relation(fields: [compraId], references: [compraId], onDelete: Cascade)
   productoId Int
-  producto Productos @relation(fields: [productoId], references: [productoId])
+  producto Productos @relation(fields: [productoId], references: [productoId], onDelete: Cascade)
   @@id([compraId, productoId])
 }
