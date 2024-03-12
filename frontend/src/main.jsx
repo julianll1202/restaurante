@@ -11,6 +11,8 @@ import restauranteTheme from './CustomProvider';
 import { AuthProvider } from './contexts/AuthProvider.jsx';
 import Empleados from './views/Empleados.jsx';
 import Productos from './views/Productos.jsx';
+import Mesas from './views/Mesas.jsx';
+import Comandas from './views/Comandas.jsx';
 
 const router = createBrowserRouter([
   {
@@ -26,7 +28,15 @@ const router = createBrowserRouter([
       },
       {
         path: '/inventario',
-        element: <Productos />,
+        element: <Productos />
+      },
+      {
+        path: '/mesas',
+        element: <Mesas />,
+      },
+      {
+        path: '/comandas',
+        element: <Comandas />,
       }
     ]
   },
