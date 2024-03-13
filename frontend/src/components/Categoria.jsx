@@ -1,15 +1,14 @@
 import { Card, Image, Text } from '@mantine/core';
 import { PropTypes } from 'prop-types';
-function Categoria ({imagenURL_categoria, titulo_categoria, descripcion_categoria}) {
+function Categoria ({direccionamiento, imagenURL_categoria, titulo_categoria, descripcion_categoria}) {
     return(
         <Card
         shadow="sm"
         padding="xl"
         component="a"
-        href=""
-        target="_blank"
         w="20rem"
         h="30rem"
+        onClick={direccionamiento}
       >
         <Card.Section h="80%">
           <Image
@@ -32,6 +31,7 @@ function Categoria ({imagenURL_categoria, titulo_categoria, descripcion_categori
 }
 
 Categoria.propTypes = {
+    direccionamiento : PropTypes.func,
     imagenURL_categoria : PropTypes.string,
     titulo_categoria : PropTypes.string,
     descripcion_categoria : PropTypes.string

@@ -20,7 +20,7 @@ const MainLayout = () => {
                         <Group h="100%" px="md">
                             {/*<Anchor c="white">Comandas</Anchor>*/}
                             <Link to='/comandas'>Comandas</Link>
-                            <Anchor c="white">Platillos</Anchor>
+                            <Link to='/platillos'>Platillos</Link>
                             <Link to='/inventario'>Inventario</Link>
                             <Link to='/empleados'>Empleados</Link>
                         </Group>
