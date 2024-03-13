@@ -1,5 +1,6 @@
 import './index.css'
 import '@mantine/core/styles.css';
+import '@mantine/dates/styles.css';
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { RouterProvider, createBrowserRouter } from 'react-router-dom'
@@ -10,6 +11,7 @@ import Inicio from './views/Inicio';
 import restauranteTheme from './CustomProvider';
 import { AuthProvider } from './contexts/AuthProvider.jsx';
 import Empleados from './views/Empleados.jsx';
+import Productos from './views/Productos.jsx';
 import Mesas from './views/Mesas.jsx';
 import Comandas from './views/Comandas.jsx';
 import Platillos from './views/Platillos.jsx';
@@ -25,6 +27,10 @@ const router = createBrowserRouter([
       {
         path: '/empleados',
         element: <Empleados />,
+      },
+      {
+        path: '/inventario',
+        element: <Productos />
       },
       {
         path: '/mesas',

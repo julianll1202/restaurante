@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE `productos` ADD COLUMN `fechaCaducidad` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3);
