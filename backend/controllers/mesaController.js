@@ -82,3 +82,19 @@ export const updateEstatusMesa = async (req, res) => {
         return 'Error: No se pudo actualizar el registro'
     }
 }
+
+export const isMesaOcupada = async (id) => {
+    try {
+        const mesa = await prisma.mesas.findUnique({
+            where: {
+                mesaId: id
+            },
+            select: {
+                ocupada: true
+            }
+        })
+        return mesa.ocupada
+    } catch (err) {
+        return 'Error'
+    }
+}

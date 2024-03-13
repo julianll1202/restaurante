@@ -50,6 +50,54 @@ const restauranteTheme = {
             "#8f6b55",
             "#815e4a",
             "#71503c"
+        ],
+        'yellow': [
+            "#fffae1",
+            "#fff3cc",
+            "#ffe69b",
+            "#ffd864",
+            "#ffcc38",
+            "#ffc41c",
+            "#ffc009",
+            "#e3a900",
+            "#ca9600",
+            "#af8100"
+        ],
+        'green': [
+            "#e6ffe7",
+            "#ceffd1",
+            "#9cffa3",
+            "#66ff71",
+            "#3cff47",
+            "#24ff2d",
+            "#14ff1e",
+            "#00e310",
+            "#00c905",
+            "#00ae00"
+        ],
+        'red': [
+            "#ffe8e8",
+            "#ffcfcf",
+            "#ff9c9c",
+            "#fe6565",
+            "#fd3937",
+            "#fe1e1a",
+            "#fe0e0b",
+            "#e30000",
+            "#ca0000",
+            "#b10000"
+        ],
+        'blue': [
+            "#e8efff",
+            "#cedaff",
+            "#9bb2ff",
+            "#6387ff",
+            "#3662ff",
+            "#184bff",
+            "#0240ff",
+            "#0031e5",
+            "#002ccd",
+            "#0024b5"
         ]
     },
     defaultRadius: 10,
