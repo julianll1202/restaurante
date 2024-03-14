@@ -1,5 +1,6 @@
 import { Container, Group, Text, Title } from '@mantine/core';
 import ResumenComanda from '../components/ResumenComanda';
+import CategoriaBlock from '../components/CategoriaBlock';
 
 const CrearComanda = () => {
     return (
@@ -8,10 +9,13 @@ const CrearComanda = () => {
             padding: '3vw',
         }}>
             <Container direction="column" size='xl' w='90vw' justify='center' align='center' >
-                <Title>Crear comanda</Title>
+                <Title ta='left'>Crear comanda</Title>
                 <Group justify='space-between'>
                     <Group>
                         <Text>Lista de platillos</Text>
+                        <CategoriaBlock />
+                        <CategoriaBlock />
+                        <CategoriaBlock />
                     </Group>
                     <ResumenComanda />
                 </Group>

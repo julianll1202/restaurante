@@ -6,6 +6,11 @@ export const getAllEmpleados = async () => {
     return res.data
 }
 
+export const getAllMeseros = async () => {
+    const res = await API.get('empleados/meseros/listar')
+    return res.data
+}
+
 export const createEmpleado = async (empleadoNombre, paterno, materno, telefono, puestoId, imagenId) => {
     const res = await API.post('empleados/crear', {
         nombre: empleadoNombre,

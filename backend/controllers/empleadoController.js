@@ -88,3 +88,21 @@ export const updateEmpleado = async (req, res) => {
         return 'Error: No se pudo actualizar el registro'
     }
 }
+
+export const getMeseros = async () => {
+    try {
+        const meseros = await prisma.empleados.findMany({
+            where: {
+                puesto: {
+                    puestoNombre: {
+                        contains: 'mesero'
+                    }
+                }
+            }
+        })
+        return meseros
+    } catch (err) {
+        console.log(err)
+        return 'Error: No se pudieron encontrar los registros'
+    }
+}

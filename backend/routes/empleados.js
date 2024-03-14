@@ -1,11 +1,16 @@
 import express from 'express'
-import { createEmpleado, deleteEmpleado, getAllEmpleados, updateEmpleado } from '../controllers/empleadoController.js'
+import { createEmpleado, deleteEmpleado, getAllEmpleados, getMeseros, updateEmpleado } from '../controllers/empleadoController.js'
 
 const router = express.Router()
 
 router.get('/listar', async function (req, res) {
     const empleados = await getAllEmpleados(req, res)
     res.status(200).send(empleados)
+})
+
+router.get('/meseros/listar', async function (req, res) {
+    const meseros = await getMeseros(req, res)
+    res.status(200).send(meseros)
 })
 
 router.post('/crear', async function (req, res) {
