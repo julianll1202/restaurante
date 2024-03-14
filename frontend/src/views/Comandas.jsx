@@ -4,9 +4,11 @@ import { useEffect, useState } from "react"
 import { AdjustmentsHorizontal, CirclePlus, Search } from "tabler-icons-react";
 import { getAllComandas } from "../controllers/comandaController";
 import Comanda from "../components/Comanda";
+import { useNavigate } from "react-router-dom";
 
 const Comandas = () => {
     // const location = useLocation();
+    const navigate = useNavigate();
     const [activeTab, setActiveTab] = useState('pendiente')
     const [comandas, setComandas] = useState([])
     // let mesaId;
@@ -35,7 +37,7 @@ const Comandas = () => {
                 <Title ta='left' order={1} mb={10}>Comandas</Title>
                 {/* { mesaId ? <Title ta='left' order={4}>{mesaId}</Title> : null} */}
                 <Group mt={10} mb={15} align='flex-start' justify='flex-start'>
-                    <Button leftSection={<CirclePlus />} onClick={getComandasList} color="brown.9" >Crear comanda</Button>
+                    <Button leftSection={<CirclePlus />} onClick={() => navigate('/crear-comanda')} color="brown.9" >Crear comanda</Button>
                     <TextInput  rightSection={<Search />} />
                     <Select rightSection={<AdjustmentsHorizontal />} data={[
                         {value: 'NOMBRE', label: 'Ordenar por nombre'},

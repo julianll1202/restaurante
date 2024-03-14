@@ -25,6 +25,7 @@ export const getAllComandas = async (req, res) => {
                         select: {
                             platilloNombre: true,
                             platilloId: true,
+                            precio: true,
                             imagen: {
                                 select: {
                                     url: true
