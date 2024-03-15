@@ -1,11 +1,17 @@
 import express from 'express'
-import { createPlatillo, deletePlatillo, getAllPlatillos, updatePlatillo } from '../controllers/platilloController.js'
+import { createPlatillo, deletePlatillo, getAllPlatillos, updatePlatillo, getPlatillosCategoria } from '../controllers/platilloController.js'
 
 const router = express.Router()
 
 router.get('/listar', async function (req, res) {
     const platillos = await getAllPlatillos(req, res)
     res.status(200).send(platillos)
+})
+
+router.get('/buscarCategoria', async function (req, res) {
+    const categoriaId = req.query.categoriaId
+    const platillosCategoria = await getPlatillosCategoria(req, res, categoriaId)
+    res.status(200).send(platillosCategoria)
 })
 
 router.post('/crear', async function (req, res) {

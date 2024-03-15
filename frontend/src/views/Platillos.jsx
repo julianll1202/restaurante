@@ -1,26 +1,42 @@
-import {Group, Title, Stack } from "@mantine/core"
+import {Group, Title, Stack, Text } from "@mantine/core"
 import { useEffect, useState } from "react"
 import { getAllCategorias } from "../controllers/categoriaController"
 import Categoria from "../components/Categoria"
 import Platillo from "../components/Platillo"
-import { getAllPlatillos } from "../controllers/platilloController"
-import { useNavigate } from "react-router-dom";
+import { getPlatillosCategoria } from "../controllers/platilloController"
+import { useNavigate, useLocation } from "react-router-dom";
 
 const Platillos = () => {
+    //Obtener categoriaId si es que existe.
+    const location = useLocation();
+    let categoriaId;
+    try {
+        categoriaId = location.state.categoriaId;
+    }catch(e){
+    }
+
     const [categorias, setCategorias] = useState([])
     const getCategoriasList = async () => {
         const res = await getAllCategorias()
+        if (res.length === 0) {
+            setCategorias(null)
+            return
+        }
         setCategorias(res)
     }
     const [platillos, setPlatillos] = useState([])
-    const getPlatillosList = async () => {
-        const res = await getAllPlatillos()
+    const getPlatillosCategoriaList = async (categoriaId) => {
+        const res = await getPlatillosCategoria(categoriaId)
+        if (res.length === 0) {
+            setPlatillos(null)
+            return
+        }
         setPlatillos(res)
     }
 
     const navigate = useNavigate();
     const cambioRuta_PlatillosCategoria = async (categoriaId) => {
-        navigate('/mesas', { //Esta ruta es temporal, mientras se define la ruta correcta
+        navigate('/platillos', {
             state: {
               categoriaId: categoriaId
             }
@@ -44,14 +60,34 @@ const Platillos = () => {
     }
 
     useEffect(() => {
-        getCategoriasList(),
-        getPlatillosList()
-    })
+        getCategoriasList()
+    }, [])
+    useEffect(() => {
+        getPlatillosCategoriaList(categoriaId)
+    }, [categoriaId])
     return (
         <Stack gap="lg" align="flex-start" justify="center" w="100%" bg="white" p="3vw">
-            <Title>Categorias</Title>
+            <Title>Platillos</Title>
+            {
+                categoriaId ?
+                <Group gap={48} justify="center" w="100%" bg="white">
+                    {
+                        platillos ?
+                            platillos.map((platillo, index) => {
+                                {
+                                    return (
+                                        <Platillo direccionamientoEliminar={async () => cambioRuta_direccionamientoEliminar(platillo.platilloId)}  direccionamientoEditar={async () => cambioRuta_direccionamientoEditar(platillo.platilloId)} imagenURL_platillo="https://cbx-prod.b-cdn.net/COLOURBOX25805277.jpg" precio_platillo={platillo.precio} descripcion_platillo={platillo.descripcion} titulo_platillo={platillo.platilloNombre} key={index}/>
+                                    );
+                                }
+                            })
+                            :
+                            <Text>No hay platillos para esta categoría</Text>
+                    }
+                </Group>
+            :
             <Group gap={48} justify="center" w="100%" bg="white">
             {
+                categorias ?
                 categorias.map((categoria, index) => {
                     {
                         return (
@@ -59,20 +95,11 @@ const Platillos = () => {
                         );
                     }
                 })
+                :
+                <Text>No hay categorías disponibles</Text>
             }
             </Group>
-            <Title>Platillos</Title>
-            <Group gap={48} justify="center" w="100%" bg="white">
-            {
-                platillos.map((platillo, index) => {
-                    {
-                        return (
-                            <Platillo direccionamientoEliminar={async () => cambioRuta_direccionamientoEliminar(platillo.platilloId)}  direccionamientoEditar={async () => cambioRuta_direccionamientoEditar(platillo.platilloId)} imagenURL_platillo="https://cbx-prod.b-cdn.net/COLOURBOX25805277.jpg" precio_platillo={platillo.precio} descripcion_platillo={platillo.descripcion} titulo_platillo={platillo.platilloNombre} key={index}/>
-                        );
-                    }
-                })
             }
-            </Group>
         </Stack>
     )
 }

@@ -7,6 +7,15 @@ export const getAllPlatillos = async (req, res) => {
     return platillos
 }
 
+export const getPlatillosCategoria = async (req, res, categoria) => {
+    const platillosCategoria = await prisma.platillos.findMany({
+        where: {
+            categoriaId: parseInt(categoria)
+        }
+    })
+    return platillosCategoria
+}
+
 export const createPlatillo = async (req, res) => {
     const platilloInfo = req.body
     try {
