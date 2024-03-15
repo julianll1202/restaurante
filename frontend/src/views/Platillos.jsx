@@ -1,4 +1,4 @@
-import {Group, Title, Stack, Text } from "@mantine/core"
+import {Group, Title, Stack, Text, Button } from "@mantine/core"
 import { useEffect, useState } from "react"
 import { getAllCategorias } from "../controllers/categoriaController"
 import Categoria from "../components/Categoria"
@@ -43,6 +43,10 @@ const Platillos = () => {
           });
     }
 
+    const cambioRuta_direccionamientoCrear = async () => {
+        navigate('/mesas'); //Esta ruta es temporal, mientras se define la ruta correcta
+    }
+
     const cambioRuta_direccionamientoEliminar = async (platilloId) => {
         navigate('/mesas', { //Esta ruta es temporal, mientras se define la ruta correcta
             state: {
@@ -68,6 +72,9 @@ const Platillos = () => {
     return (
         <Stack gap="lg" align="flex-start" justify="center" w="100%" bg="white" p="3vw">
             <Title>Platillos</Title>
+            <Button color="#4F4A45" w="10rem" radius="md" onClick={async () => cambioRuta_direccionamientoCrear()}>
+                Crear platillo
+            </Button>
             {
                 categoriaId ?
                 <Group gap={48} justify="center" w="100%" bg="white">
