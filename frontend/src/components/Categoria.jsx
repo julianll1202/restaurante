@@ -1,5 +1,6 @@
 import { Card, Image, Text } from '@mantine/core';
 import { PropTypes } from 'prop-types';
+import { STORED_IMAGES_URL } from '../utils/constants';
 function Categoria ({direccionamiento, imagenURL_categoria, titulo_categoria, descripcion_categoria}) {
     return(
         <Card
@@ -12,7 +13,7 @@ function Categoria ({direccionamiento, imagenURL_categoria, titulo_categoria, de
       >
         <Card.Section h="80%">
           <Image
-            src={imagenURL_categoria}
+            src={`${STORED_IMAGES_URL}${imagenURL_categoria}`}
             h="100%"
             w="100%"
             alt="Categoria de platillos"

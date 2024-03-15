@@ -12,7 +12,7 @@ export const getAllCategorias = async (dataM) => {
 
 export const createCategoria = async(categoriaNombre, descripcion, imagenId) => {
     const res = await API.post('categorias/crear', {
-        categoriaNombre: categoriaNombre,
+        nombre: categoriaNombre,
         descripcion: descripcion,
         imagenId: imagenId
     })

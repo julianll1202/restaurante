@@ -84,7 +84,7 @@ const Platillos = () => {
 
     useEffect(() => {
         getCategoriasList()
-    }, [])
+    }, [opened])
     useEffect(() => {
         getPlatillosCategoriaList(categoriaId)
     }, [categoriaId, opened, row])
@@ -120,7 +120,7 @@ const Platillos = () => {
                 categoriasPAG.map((categoria, index) => {
                     {
                         return (
-                            <Categoria direccionamiento={async () => cambioRuta_PlatillosCategoria(categoria.categoriaId)} imagenURL_categoria="https://cbx-prod.b-cdn.net/COLOURBOX25805277.jpg" titulo_categoria={categoria.categoriaNombre} descripcion_categoria={categoria.descripcion} key={index}/>
+                            <Categoria direccionamiento={async () => cambioRuta_PlatillosCategoria(categoria.categoriaId)} imagenURL_categoria={categoria.imagen.url} titulo_categoria={categoria.categoriaNombre} descripcion_categoria={categoria.descripcion} key={index}/>
                             );
                         }
                     })

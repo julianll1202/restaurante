@@ -1,5 +1,5 @@
 import express from 'express'
-import { createImagen, deleteImagen, getAllImagenes, updateImagen } from '../controllers/imagenController'
+import { createImagen, deleteImagen, getAllImagenes, getCategoriaImagenes, updateImagen } from '../controllers/imagenController'
 import multer from 'multer'
 
 const path = require('path')
@@ -18,6 +18,11 @@ const upload = multer({
 })
 router.get('/listar', async function (req, res) {
     const imagenes = await getAllImagenes(req, res)
+    res.status(200).send(imagenes)
+})
+
+router.get('/listar/cat', async function (req, res) {
+    const imagenes = await getCategoriaImagenes(req, res)
     res.status(200).send(imagenes)
 })
 

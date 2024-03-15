@@ -9,7 +9,7 @@ import { useForm } from "@mantine/form";
 import { createPlatillo, updatePlatillo } from "../controllers/platilloController"
 import { getAllCategorias, createCategoria } from "./../controllers/categoriaController"
 import { useInputState } from "@mantine/hooks";
-import { createImagen } from "../controllers/imagenController";
+import { createImagen, getCatImagenes } from "../controllers/imagenController";
 import { STORED_IMAGES_URL } from "../utils/constants";
 
 function ModalPlatillos ({opened, close, update, updateInfo}) {
@@ -22,7 +22,24 @@ function ModalPlatillos ({opened, close, update, updateInfo}) {
     const categoriaIn = useRef()
     const [file, setFile] = useState(null);
     const [fileCategoria, setFileCategoria] = useState(null);
+    const [imgCategoria, setImgCategoria] = useState([])
+    const [imgList, setImgList] = useState([])
+    const [imgForCat, setImgForCat] = useState(0)
 
+    const getCategoriaImagenes = async() => {
+        const lista = await getCatImagenes()
+        const list = lista.data.map((p) => Object.values(p))
+        setImgList(list)
+        const listaI = []
+        list.forEach((c) =>{
+            const img = {
+                "value":c[0].toString(),
+                "label":`Imagen ${c[0].toString()}`
+            }
+            listaI.push(img)
+        })
+        setImgCategoria(listaI)
+    }
     const getCategorias = async() => {
         const lista = await getAllCategorias()
         const list = lista.data.map((p) => Object.values(p))
@@ -44,6 +61,13 @@ function ModalPlatillos ({opened, close, update, updateInfo}) {
         return id[0].toString()
     }*/
 
+    const findImagen = (id) => {
+        setImgForCat(Number(id))
+        const url = imgList.find((img) => img[0] === Number(id))
+        console.log(imgList)
+        setFileCategoria(url[2])
+    }
+
     const saveImage = async () => {
         const formData = new FormData()
         formData.append('image', file)
@@ -51,12 +75,12 @@ function ModalPlatillos ({opened, close, update, updateInfo}) {
         return res
     }
 
-    const saveImageCategoria = async () => {
-        const formData = new FormData()
-        formData.append('image', fileCategoria)
-        const res = await createImagen(formData)
-        return res
-    }
+    // const saveImageCategoria = async () => {
+    //     const formData = new FormData()
+    //     formData.append('image', fileCategoria)
+    //     const res = await createImagen(formData)
+    //     return res
+    // }
 
     const form = useForm({
         initialValues: {
@@ -74,6 +98,7 @@ function ModalPlatillos ({opened, close, update, updateInfo}) {
 
     useEffect(() => {
         getCategorias()
+        getCategoriaImagenes()
         if (update) {
             form.setValues({
                 platilloNombre: updateInfo.platilloNombre,
@@ -82,7 +107,7 @@ function ModalPlatillos ({opened, close, update, updateInfo}) {
                 categoria: updateInfo.categoriaId.toString()
             })
             console.log(updateInfo)
-            // setCategoria(updateInfo.categoriaId)
+            setCategoria(updateInfo.categoriaId)
             // setCategoria(getCategoriaId(updateInfo.categoria))
         } else {
             form.setValues({
@@ -91,7 +116,6 @@ function ModalPlatillos ({opened, close, update, updateInfo}) {
                 precio: '',
                 categoria: '0'
             })
-            // setCategoria('')
             setFile(null)
             setFileCategoria(null)
         }
@@ -131,14 +155,13 @@ function ModalPlatillos ({opened, close, update, updateInfo}) {
     }
 
     const handleCreateCategoria = async () => {
-        const img = await saveImageCategoria()
-        if (img.status === 200) {
-            const res = await createCategoria(newCategoriaN, newCategoriaDesc, img.data.imagenId)
+        // const img = await saveImageCategoria()
+        if (fileCategoria) {
+            const res = await createCategoria(newCategoriaN, newCategoriaDesc, imgForCat)
             if (res.status === 200) {
-                setActiveTab('seleccionar')
                 getCategorias()
                 setCategoria(res.data.categoriaNombre)
-                close()
+                setActiveTab('seleccionar')
             }
         }
     }
@@ -172,11 +195,9 @@ function ModalPlatillos ({opened, close, update, updateInfo}) {
                                     <Tabs.Panel value="crear">
                                         <TextInput name="categoriaNombre" onChange={setNewCategoriaN}  label="Nombre de la categoría" w='95%' />
                                         <TextInput name="descripcion" onChange={setNewCategoriaDesc}  label="Descripción de la categoría" w='95%' />
-                                        <Group mb={10}>
-                                        <Image src={file ? URL.createObjectURL(file) : null}radius='md' w={150} h={150}  />
-                                        <FileButton onChange={setFileCategoria} accept="image/png,image/jpeg">
-                                            {(props) => <Button color="brown.9" {...props}>Subir imagen</Button>}
-                                        </FileButton>
+                                        <Group mb={10} align="center">
+                                            <Select label='Imagenes' w='45%' data={imgCategoria} onChange={(value, option) => findImagen(value) }  />
+                                            <Image src={fileCategoria ? `${STORED_IMAGES_URL}${fileCategoria}`: null }radius='md' mt={10} w={80} h={80}  />
                                         </Group>
                                         <Button mt={10} onClick={handleCreateCategoria} >Crear categoría</Button>
                                     </Tabs.Panel>
@@ -216,15 +237,13 @@ function ModalPlatillos ({opened, close, update, updateInfo}) {
                                         }}  data={categorias}/>
                                     </Tabs.Panel>
                                     <Tabs.Panel value="crear">
-                                            <TextInput name="categoriaNombre" onChange={setNewCategoriaN}  label="Nombre de la categoría" w='95%' />
-                                            <TextInput name="descripcion" onChange={setNewCategoriaDesc}  label="Descripción de la categoría" w='95%' />
-                                            <Group mb={10}>
-                                            <Image src={fileCategoria ? URL.createObjectURL(fileCategoria) : null} radius='md' w={150} h={150}  />
-                                            <FileButton onChange={setFileCategoria} accept="image/png,image/jpeg">
-                                                {(props) => <Button color="brown.9" {...props}>Subir imagen</Button>}
-                                            </FileButton>
-                                            </Group>
-                                            <Button mt={10} onClick={handleCreateCategoria} >Crear categoría</Button>
+                                        <TextInput name="categoriaNombre" onChange={setNewCategoriaN}  label="Nombre de la categoría" w='95%' />
+                                        <TextInput name="descripcion" onChange={setNewCategoriaDesc}  label="Descripción de la categoría" w='95%' />
+                                        <Group mb={10} align="center">
+                                            <Select label='Imagenes' w='45%' data={imgCategoria} onChange={(value, option) => findImagen(value) }  />
+                                            <Image src={fileCategoria ? `${STORED_IMAGES_URL}${fileCategoria}`: null }radius='md' mt={10} w={80} h={80}  />
+                                        </Group>
+                                        <Button mt={10} onClick={handleCreateCategoria} >Crear categoría</Button>
                                     </Tabs.Panel>
                                 </Tabs>
                             </Flex>

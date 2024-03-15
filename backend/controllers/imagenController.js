@@ -7,6 +7,16 @@ export const getAllImagenes = async (req, res) => {
     return images
 }
 
+export const getCategoriaImagenes = async (req, res) => {
+    const images = await prisma.imagenes.findMany({
+        where: {
+            imagenId: {
+                lte: 20
+            }
+        }
+    })
+    return images
+}
 export const createImagen = async (req, res) => {
     const imgData = req.file
     try {
