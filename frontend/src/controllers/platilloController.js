@@ -17,3 +17,15 @@ export const getPlatillosCategoria = async (categoriaId) => {
     })
     return res.data
 }
+
+export const createPlatillo = async (platilloNombre, descripcion, precio, categoriaId, imagenId) => {
+    const res = await API.post('platillos/crear', {
+        platilloNombre: platilloNombre,
+        descripcion: descripcion,
+        precio: precio,
+        categoriaId: categoriaId,
+        imagenId: imagenId
+    })
+    return res
+}
+

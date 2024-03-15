@@ -13,7 +13,8 @@ export const createCategoria = async (req, res) => {
         const categoriaNueva = await prisma.categorias.create({
             data: {
                 categoriaNombre: categoriaInfo.nombre,
-                descripcion: categoriaInfo.descripcion
+                descripcion: categoriaInfo.descripcion,
+                imagenId: categoriaInfo.imagenId
             }
         })
         return categoriaNueva
