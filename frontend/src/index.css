@@ -66,3 +66,24 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+.glass-effect  {
+  img {
+    filter: blur(1.5px) grayscale();
+  }
+
+  p {
+    color: #d9d9d9;
+  }
+  /* background: rgba(234, 234, 234, 0.54);
+  border-radius: 16px;
+  box-shadow: 0 4px 30px rgba(17, 17, 17, 0.1);
+  backdrop-filter: blur(7.5px);
+  -webkit-backdrop-filter: blur(7.5px);
+  border: 1px solid rgba(255, 255, 255, 0.64); */
+}
+
+.selected-cat {
+  box-shadow: 0 0px 10px rgba(237, 124, 49, 0.767);
+  border: 1px solid #ed7c316c
+}

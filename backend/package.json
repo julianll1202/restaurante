@@ -2,6 +2,9 @@
   "name": "backend",
   "version": "0.0.0",
   "private": true,
+  "prisma": {
+    "seed": "node prisma/seed.js"
+  },
   "scripts": {
     "build": "babel-node ./index.js",
     "start": "node ./index.js",

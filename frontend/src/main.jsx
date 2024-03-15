@@ -1,6 +1,7 @@
 import './index.css'
 import '@mantine/core/styles.css';
 import '@mantine/dates/styles.css';
+import '@mantine/carousel/styles.css';
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { RouterProvider, createBrowserRouter } from 'react-router-dom'
@@ -15,6 +16,7 @@ import Productos from './views/Productos.jsx';
 import Mesas from './views/Mesas.jsx';
 import Comandas from './views/Comandas.jsx';
 import Platillos from './views/Platillos.jsx';
+import CrearComanda from './views/CrearComanda.jsx';
 
 const router = createBrowserRouter([
   {
@@ -42,7 +44,11 @@ const router = createBrowserRouter([
       },
       {
         path: '/platillos',
-        element: <Platillos />,
+        element: <Platillos />
+      },
+      {
+        path: '/crear-comanda',
+        element: <CrearComanda />,
       }
     ]
   },

@@ -43,7 +43,6 @@ export const createPlatillo = async (req, res) => {
         })
         return platilloNuevo
     } catch (err) {
-        console.log(err)
         return 'Error: No se pudo crear el registro'
     }
 }
