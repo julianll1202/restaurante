@@ -43,6 +43,8 @@ model Categorias {
   categoriaId Int @id @default(autoincrement())
   categoriaNombre String
   descripcion String @db.Text
+  imagenId Int @default(1)
+  imagen Imagenes @relation(fields: [imagenId], references: [imagenId])
   platillos Platillos[]
 }
 
@@ -95,7 +97,7 @@ model Imagenes {
   url String
   empleado Empleados[]
   platillo Platillos[]
-
+  categoria Categorias[]
 }
 
 model Puestos {
@@ -131,14 +133,23 @@ model Comandas {
   empleado Empleados @relation(fields: [empleadoId], references: [empleadoId])
   mesaId Int
   mesa Mesas @relation(fields: [mesaId], references: [mesaId])
-  completada Boolean
+  completada Estatus @default(PENDIENTE)
   precioFinal Decimal?
-  fechaCreacion DateTime
-  fechaCierre DateTime
+  fechaCreacion DateTime @default(now())
+  fechaCierre DateTime?
   platillosEnComanda PlatillosEnComandas[]
 }
 
+enum Estatus {
+  PENDIENTE
+  INICIADA
+  ENTREGADA
+  PAGADA
+  CANCELADA
+}
+
 model PlatillosEnComandas {
+  cantidad Int
   platilloId Int
   platillo Platillos @relation(fields: [platilloId], references: [platilloId])
   comandaId Int
@@ -147,6 +158,7 @@ model PlatillosEnComandas {
 }
 
 model ProductosEnPlatillos {
+  cantidad Float
   productoId Int
   producto Productos @relation(fields: [productoId], references: [productoId])
   platilloId Int

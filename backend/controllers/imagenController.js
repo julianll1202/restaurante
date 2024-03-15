@@ -9,7 +9,6 @@ export const getAllImagenes = async (req, res) => {
 
 export const createImagen = async (req, res) => {
     const imgData = req.file
-    // console.log(imgData)
     try {
         const img = await prisma.imagenes.create({
             data: {

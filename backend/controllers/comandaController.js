@@ -1,28 +1,78 @@
 import { PrismaClient } from '@prisma/client'
+import { isMesaOcupada } from './mesaController'
 
 const prisma = new PrismaClient()
 
 export const getAllComandas = async (req, res) => {
-    const comandas = await prisma.comandas.findMany()
+    const comandas = await prisma.comandas.findMany({
+        select: {
+            empleado: {
+                select: {
+                    empleadoId: true,
+                    empleadoNombre: true,
+                    paterno: true,
+                    materno: true
+                }
+            },
+            mesaId: true,
+            fechaCreacion: true,
+            precioFinal: true,
+            completada: true,
+            platillosEnComanda: {
+                select: {
+                    cantidad: true,
+                    platillo: {
+                        select: {
+                            platilloNombre: true,
+                            platilloId: true,
+                            precio: true,
+                            imagen: {
+                                select: {
+                                    url: true
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    })
     return comandas
 }
 
 export const createComanda = async (req, res) => {
     const comandaInfo = req.body
     try {
-        const comandaNueva = await prisma.comandas.create({
-            data: {
-                clienteId: comandaInfo.clienteId,
-                empleadoId: comandaInfo.empleadoId,
-                mesaId: comandaInfo.mesaId,
-                completada: comandaInfo.completada,
-                precioFinal: comandaInfo.precioFinal,
-                fechaCreacion: comandaInfo.fechaCreacion,
-                fechaCierre: comandaInfo.fechaCierre
-            }
-        })
-        return comandaNueva
+        if (!isMesaOcupada(comandaInfo.mesaId)) {
+            const comandaNueva = await prisma.comandas.create({
+                data: {
+                    clienteId: comandaInfo.clienteId,
+                    empleadoId: comandaInfo.empleadoId,
+                    mesaId: comandaInfo.mesaId,
+                    precioFinal: comandaInfo.precioFinal
+                }
+            })
+            await prisma.mesas.update({
+                where: {
+                    mesaId: comandaInfo.mesaId
+                },
+                data: {
+                    ocupada: true
+                }
+            })
+            const platillos = comandaInfo.platillos
+            platillos.forEach((p) => {
+                p.comandaId = comandaNueva.comandaId
+            })
+            await prisma.platillosEnComandas.createMany({
+                data: platillos
+            })
+            return comandaNueva
+        } else {
+            return 'Error: La mesa esta ocupada'
+        }
     } catch (err) {
+        console.log(err)
         return 'Error: No se pudo crear el registro'
     }
 }
