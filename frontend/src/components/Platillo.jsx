@@ -25,11 +25,11 @@ function Platillo ({direccionamientoEliminar, direccionamientoEditar, imagenURL_
         </Card.Section>
   
         <Text mt="md" size="sm">
-            <Text fw={700}>Descripción:</Text> {descripcion_platillo}
+            <b>Descripción:</b> {descripcion_platillo}
         </Text>
 
         <Text mt="xs" size="sm">
-            <Text fw={700}>Precio:</Text> ${precio_platillo}
+            <b>Precio:</b> ${precio_platillo}
         </Text>
       
       <Group justify="space-between" mt="md" mb="xs">
