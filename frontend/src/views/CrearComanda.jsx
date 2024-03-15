@@ -1,6 +1,6 @@
-import { Container, Group, Text, Title } from '@mantine/core';
+import { Container, Flex, Group, Title } from '@mantine/core';
 import ResumenComanda from '../components/ResumenComanda';
-import CategoriaBlock from '../components/CategoriaBlock';
+import CarruselCategorias from '../components/CarruselCategorias';
 
 const CrearComanda = () => {
     return (
@@ -10,13 +10,16 @@ const CrearComanda = () => {
         }}>
             <Container direction="column" size='xl' w='90vw' justify='center' align='center' >
                 <Title ta='left'>Crear comanda</Title>
-                <Group justify='space-between'>
-                    <Group>
-                        <Text>Lista de platillos</Text>
-                        <CategoriaBlock />
-                        <CategoriaBlock />
-                        <CategoriaBlock />
-                    </Group>
+                <Group justify='space-around'>
+                    <Flex direction='column'>
+                        <Title order={3}>Lista de platillos</Title>
+                        <CarruselCategorias />
+                        {/* <Group mt={10}>
+                            <CategoriaBlock />
+                            <CategoriaBlock selected />
+                            <CategoriaBlock />
+                        </Group> */}
+                    </Flex>
                     <ResumenComanda />
                 </Group>
             </Container>

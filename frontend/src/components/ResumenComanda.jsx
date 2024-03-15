@@ -67,7 +67,7 @@ const ResumenComanda = () => {
         getSelectInfo()
     }, [])
     return (
-        <Container size='lg' w={450} p={15} style={{
+        <Container size='sm' w={450} m='10px 50px' p={15} style={{
             border: '2px solid #D9D9D9',
             borderRadius: '20px',
         }}>

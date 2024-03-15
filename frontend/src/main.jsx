@@ -1,6 +1,7 @@
 import './index.css'
 import '@mantine/core/styles.css';
 import '@mantine/dates/styles.css';
+import '@mantine/carousel/styles.css';
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { RouterProvider, createBrowserRouter } from 'react-router-dom'
