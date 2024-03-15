@@ -18,12 +18,12 @@ function Platillo ({direccionamientoEliminar, direccionamientoEditar, imagenURL_
           <Image
             src={imagenURL_platillo}
             h="100%"
-            w="100%"
+            w="90%"
             alt="Categoria de platillos"
             radius="md"
           />
         </Card.Section>
-  
+
         <Text mt="md" size="sm">
             <b>Descripción:</b> {descripcion_platillo}
         </Text>
@@ -31,7 +31,7 @@ function Platillo ({direccionamientoEliminar, direccionamientoEditar, imagenURL_
         <Text mt="xs" size="sm">
             <b>Precio:</b> ${precio_platillo}
         </Text>
-      
+
       <Group justify="space-between" mt="md" mb="xs">
       <Button color="blue" w="45%" mt="md" radius="md" onClick={direccionamientoEliminar}>
         Eliminar

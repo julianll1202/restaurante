@@ -23,7 +23,7 @@ router.post('/crear', async function (req, res) {
     }
 })
 
-router.put('/actualizar', async function (req, res) {
+router.put('/actualizar/:id', async function (req, res) {
     const platilloActualizado = await updatePlatillo(req, res)
     if (!JSON.stringify(platilloActualizado).startsWith('"Error')) {
         res.status(200).send(platilloActualizado)
@@ -31,7 +31,7 @@ router.put('/actualizar', async function (req, res) {
         res.status(400).send(platilloActualizado)
     }
 })
-router.delete('/eliminar', async function (req, res) {
+router.delete('/eliminar/:id', async function (req, res) {
     const platilloD = await deletePlatillo(req, res)
     if (!JSON.stringify(platilloD).startsWith('"Error')) {
         res.status(200).send(platilloD)

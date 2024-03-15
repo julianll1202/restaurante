@@ -20,12 +20,28 @@ export const getPlatillosCategoria = async (categoriaId) => {
 
 export const createPlatillo = async (platilloNombre, descripcion, precio, categoriaId, imagenId) => {
     const res = await API.post('platillos/crear', {
-        platilloNombre: platilloNombre,
+        nombre: platilloNombre,
         descripcion: descripcion,
         precio: precio,
         categoriaId: categoriaId,
         imagenId: imagenId
     })
+    return res
+}
+
+export const updatePlatillo = async (platilloId, platilloNombre, descripcion, precio, categoriaId, imagenId) => {
+    const res = await API.put(`platillos/actualizar/${platilloId}`, {
+        nombre: platilloNombre,
+        descripcion: descripcion,
+        precio: precio,
+        categoriaId: categoriaId,
+        imagenId: imagenId
+    })
+    return res
+}
+
+export const deletePlatillo = async (platilloId) => {
+    const res = await API.delete(`platillos/eliminar/${platilloId}`)
     return res
 }
 

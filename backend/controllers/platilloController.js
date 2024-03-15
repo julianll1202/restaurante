@@ -11,6 +11,19 @@ export const getPlatillosCategoria = async (req, res, categoria) => {
     const platillosCategoria = await prisma.platillos.findMany({
         where: {
             categoriaId: parseInt(categoria)
+        },
+        select: {
+            platilloId: true,
+            platilloNombre: true,
+            precio: true,
+            descripcion: true,
+            categoriaId: true,
+            imagen: {
+                select: {
+                    imagenId: true,
+                    url: true
+                }
+            }
         }
     })
     return platillosCategoria
@@ -30,19 +43,20 @@ export const createPlatillo = async (req, res) => {
         })
         return platilloNuevo
     } catch (err) {
+        console.log(err)
         return 'Error: No se pudo crear el registro'
     }
 }
 
 export const deletePlatillo = async (req, res) => {
-    const platillo = req.body
+    const platillo = req.params
     if (!platillo.id) {
         return 'Error: El id del platillo es necesario'
     }
     try {
         const deletedPlatillo = await prisma.platillos.delete({
             where: {
-                platilloId: platillo.id
+                platilloId: Number(platillo.id)
             }
         })
         return deletedPlatillo
@@ -52,14 +66,15 @@ export const deletePlatillo = async (req, res) => {
 }
 
 export const updatePlatillo = async (req, res) => {
+    const p = req.params
     const platillo = req.body
-    if (!platillo.id) {
+    if (!p) {
         return 'Error: El id del platillo es necesario'
     }
     try {
         const updatedPlatillo = await prisma.platillos.update({
             where: {
-                platilloId: platillo.id
+                platilloId: Number(p.id)
             },
             data: {
                 platilloNombre: platillo.nombre,
