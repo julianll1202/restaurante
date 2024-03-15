@@ -118,7 +118,7 @@ const Empleados = () => {
             <Container direction="column" size='xl' w='90vw' justify='center' align='center' >
                 <Title ta='left' order={1} mb={10}>Empleados</Title>
                 <Title ta='left' order={4}>Total de empleados</Title>
-                <Text ta='left'>30</Text>
+                <Text ta='left'>{content.length}</Text>
                 <Group mt={10} mb={15} align='flex-start' justify='flex-start'>
                     <TextInput  rightSection={<Search />} />
                     <Select rightSection={<AdjustmentsHorizontal />} data={[
