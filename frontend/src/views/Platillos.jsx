@@ -8,6 +8,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import ModalPlatillos from "../components/ModalPlatillos"
 import { useDisclosure } from "@mantine/hooks"
 import { STORED_IMAGES_URL } from "../utils/constants"
+import { CirclePlus } from "tabler-icons-react"
 
 const Platillos = () => {
     const [opened, handlers] = useDisclosure(false); // Manejo de estado del modal
@@ -58,26 +59,6 @@ const Platillos = () => {
         navigate('/platillos', {
             state: {
               categoriaId: categoriaId
-            }
-          });
-    }
-
-    const cambioRuta_direccionamientoCrear = async () => {
-        navigate('/mesas'); //Esta ruta es temporal, mientras se define la ruta correcta
-    }
-
-    const cambioRuta_direccionamientoEliminar = async (platilloId) => {
-        navigate('/mesas', { //Esta ruta es temporal, mientras se define la ruta correcta
-            state: {
-                platilloId: platilloId
-            }
-          });
-    }
-
-    const cambioRuta_direccionamientoEditar = async (platilloId) => {
-        navigate('/mesas', { //Esta ruta es temporal, mientras se define la ruta correcta
-            state: {
-                platilloId: platilloId
             }
           });
     }
