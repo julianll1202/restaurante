@@ -79,7 +79,8 @@ export const updatePlatillo = async (req, res) => {
                 platilloNombre: platillo.nombre,
                 descripcion: platillo.descripcion,
                 precio: platillo.precio,
-                categoriaId: platillo.categoriaId
+                categoriaId: platillo.categoriaId,
+                imagenId: platillo.imagenId
             }
         })
         return updatedPlatillo

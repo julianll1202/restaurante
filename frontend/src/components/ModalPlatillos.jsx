@@ -55,11 +55,6 @@ function ModalPlatillos ({opened, close, update, updateInfo}) {
         setCategorias(listaP)
         console.log(list)
     }
-    /*
-    const getCategoriaId = (nombre) => {
-        const id = categoriasC.find((p) => p[1] === nombre)
-        return id[0].toString()
-    }*/
 
     const findImagen = (id) => {
         setImgForCat(Number(id))
@@ -75,12 +70,6 @@ function ModalPlatillos ({opened, close, update, updateInfo}) {
         return res
     }
 
-    // const saveImageCategoria = async () => {
-    //     const formData = new FormData()
-    //     formData.append('image', fileCategoria)
-    //     const res = await createImagen(formData)
-    //     return res
-    // }
 
     const form = useForm({
         initialValues: {
@@ -139,15 +128,14 @@ function ModalPlatillos ({opened, close, update, updateInfo}) {
     }
 
     const handleUpdatePlatillo = async (values) => {
-        console.log(file)
         form.validate()
         if (file !== null) {
             const img = await saveImage()
-            console.log(img)
             if (img.status === 200) {
                 updateInfo.imagenId = img.data.imagenId
             }
         }
+        console.log(updateInfo)
         const res = await updatePlatillo(updateInfo.platilloId, values.platilloNombre, values.descripcion, values.precio, Number(categoria), updateInfo.imagenId)
         if (res.status === 200) {
             close()
@@ -155,7 +143,6 @@ function ModalPlatillos ({opened, close, update, updateInfo}) {
     }
 
     const handleCreateCategoria = async () => {
-        // const img = await saveImageCategoria()
         if (fileCategoria) {
             const res = await createCategoria(newCategoriaN, newCategoriaDesc, imgForCat)
             if (res.status === 200) {
@@ -165,6 +152,7 @@ function ModalPlatillos ({opened, close, update, updateInfo}) {
             }
         }
     }
+    
     return (
         <Modal.Root opened={opened} onClose={close} centered size="xl" closeOnClickOutside w={200} h={500}>
             <Modal.Overlay />
