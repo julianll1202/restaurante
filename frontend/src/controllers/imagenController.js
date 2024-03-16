@@ -8,3 +8,8 @@ export const createImagen = async (imagen) => {
     })
     return res
 }
+
+export const getCatImagenes = async () => {
+    const res = await API.get('/imagenes/listar/cat')
+    return res
+}

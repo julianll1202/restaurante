@@ -15,6 +15,7 @@ import Empleados from './views/Empleados.jsx';
 import Productos from './views/Productos.jsx';
 import Mesas from './views/Mesas.jsx';
 import Comandas from './views/Comandas.jsx';
+import Platillos from './views/Platillos.jsx';
 import CrearComanda from './views/CrearComanda.jsx';
 
 const router = createBrowserRouter([
@@ -40,6 +41,10 @@ const router = createBrowserRouter([
       {
         path: '/comandas',
         element: <Comandas />,
+      },
+      {
+        path: '/platillos',
+        element: <Platillos />
       },
       {
         path: '/crear-comanda',

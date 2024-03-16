@@ -3,7 +3,19 @@ import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 
 export const getAllCategorias = async (req, res) => {
-    const categorias = await prisma.categorias.findMany()
+    const categorias = await prisma.categorias.findMany({
+        select: {
+            categoriaId: true,
+            categoriaNombre: true,
+            descripcion: true,
+            imagen: {
+                select: {
+                    imagenId: true,
+                    url: true,
+                }
+            }
+        }
+    })
     return categorias
 }
 
@@ -13,11 +25,13 @@ export const createCategoria = async (req, res) => {
         const categoriaNueva = await prisma.categorias.create({
             data: {
                 categoriaNombre: categoriaInfo.nombre,
-                descripcion: categoriaInfo.descripcion
+                descripcion: categoriaInfo.descripcion,
+                imagenId: categoriaInfo.imagenId
             }
         })
         return categoriaNueva
     } catch (err) {
+        console.log(err)
         return 'Error: No se pudo crear el registro'
     }
 }
