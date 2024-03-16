@@ -1,8 +1,9 @@
 import { Carousel } from "@mantine/carousel"
 import CategoriaBlock from "./CategoriaBlock"
 import { useCallback, useEffect, useState } from "react"
+import { PropTypes } from 'prop-types';
 
-const CarruselCategorias = () => {
+const CarruselCategorias = ({ categorias }) => {
     const [embla, setEmbla] = useState(null)
     const [catIndex, setCatIndex] = useState(1)
     const arrau = [1,2,3,4,5,6]
@@ -21,17 +22,19 @@ const CarruselCategorias = () => {
     return (
         <Carousel mt={15} w={300} getEmblaApi={setEmbla} initialSlide={1} slideGap='xs' slideSize='45%' loop orientation='horizontal' >
 
-                {arrau.map((cat, index) => {
+                { categorias !== null ? categorias.map((cat, index) => {
                     return (
                         <Carousel.Slide key={index}>
-                            <CategoriaBlock selected={catIndex === index} />
+                            <CategoriaBlock selected={catIndex === index} imgUrl={cat.imagen.url} nombre={cat.categoriaNombre} />
                         </Carousel.Slide>
 
                     )
-                })}
+                }) : null}
 
         </Carousel>
     )
 }
-
+CarruselCategorias.propTypes = {
+    categorias: PropTypes.array,
+}
 export default CarruselCategorias

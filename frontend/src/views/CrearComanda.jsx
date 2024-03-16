@@ -1,8 +1,23 @@
 import { Container, Flex, Group, Title } from '@mantine/core';
 import ResumenComanda from '../components/ResumenComanda';
 import CarruselCategorias from '../components/CarruselCategorias';
+import { useEffect, useState } from 'react';
+import { getAllCategorias } from '../controllers/categoriaController';
 
 const CrearComanda = () => {
+    const [categoriasPAG, setCategoriasPAG] = useState([])
+    const getCategoriasList = async () => {
+        const res = await getAllCategorias(1)
+        if (res.length === 0) {
+            setCategoriasPAG(null)
+            return
+        }
+        setCategoriasPAG(res)
+    }
+
+    useEffect(() => {
+        getCategoriasList()
+    }, [])
     return (
         <div style={{
             width: '100%',
@@ -13,7 +28,7 @@ const CrearComanda = () => {
                 <Group justify='space-around'>
                     <Flex direction='column'>
                         <Title order={3}>Lista de platillos</Title>
-                        <CarruselCategorias />
+                        <CarruselCategorias categorias={categoriasPAG} />
                         {/* <Group mt={10}>
                             <CategoriaBlock />
                             <CategoriaBlock selected />
