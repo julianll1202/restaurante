@@ -30,7 +30,8 @@ router.put('/actualizar', async function (req, res) {
         res.status(400).send(compraActualizada)
     }
 })
-router.delete('/eliminar', async function (req, res) {
+
+router.delete('/eliminar/:id', async function (req, res) {
     const compraD = await deleteCompra(req, res)
     if (!JSON.stringify(compraD).startsWith('"Error')) {
         res.status(200).send(compraD)
@@ -38,4 +39,5 @@ router.delete('/eliminar', async function (req, res) {
         res.status(400).send(compraD)
     }
 })
+
 export default router

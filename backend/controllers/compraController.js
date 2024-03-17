@@ -56,14 +56,14 @@ export const createCompra = async (req, res) => {
 }
 
 export const deleteCompra = async (req, res) => {
-    const compra = req.body
+    const compra = req.params
     if (!compra.id) {
         return 'Error: El id de la compra es necesario'
     }
     try {
         const deletedCompra = await prisma.compras.delete({
             where: {
-                compraId: compra.id
+                compraId: Number(compra.id)
             }
         })
         return deletedCompra
@@ -74,13 +74,13 @@ export const deleteCompra = async (req, res) => {
 
 export const updateCompra = async (req, res) => {
     const compra = req.body
-    if (!compra.id) {
+    if (!compra.compraId) {
         return 'Error: El id de la compra es necesario'
     }
     try {
         const updatedCompra = await prisma.compras.update({
             where: {
-                compraId: compra.id
+                compraId: compra.compraId
             },
             data: {
                 fechaCompra: compra.fechaCompra,

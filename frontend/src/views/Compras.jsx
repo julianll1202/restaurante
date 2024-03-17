@@ -4,8 +4,8 @@ import Tabla from "../components/Tabla"
 import { useEffect, useState } from "react"
 import { useDisclosure } from "@mantine/hooks"
 import { getOneProducto } from "../controllers/productoController"
-import ModalProductos from "../components/ModalProductos"
-import { comprasConProductos } from "../controllers/compraController"
+import ModalCompras from "../components/ModalCompras"
+import { deleteCompra, comprasConProductos } from "../controllers/compraController"
 import GraficoBarras from "../components/GraficoBarras"
 
 const Compras = () => {
@@ -46,16 +46,13 @@ const Compras = () => {
     }
 
     const setRowDIndex = (data) => {
-        /*
-        deleteOneProducto(productosC[data]['productoId'])*/
+        deleteOneCompra(comprasC[data]['compraId'])
         setRowD(comprasC[data]['compraId'])
     }
 
-    /*
-    const deleteOneProducto = async (id) => {
-        const deleteRes = await deleteProducto(id)
+    const deleteOneCompra = async (id) => {
+        const deleteRes = await deleteCompra(id)
     }
-    */
 
     const getComprasList = async () => {
         const res = await comprasConProductos()
@@ -180,15 +177,15 @@ const Compras = () => {
                 <Group grow wrap="nowrap">
                 <GraficoBarras data={data} dataKey={'month'} type={'stacked'} series={series}/>
                 <Stack>
-                    <Stack bg="#ECF2FF" w="30%" h="30%" justify="center" align="center">
+                    <Stack bg="#ECF2FF" justify="center" align="center" p={5} w="15rem">
                         <Image src="https://duralcor.es/wp-content/uploads/2021/10/servicio-de-almacenamiento-150x150.png" alt="Compras del mes" w="30%" h="30%"/>
                         <Title size='xs'>Compras del mes</Title>
-                        <Text size='xs'>{comprasdelMes}</Text>
+                        <Title order={2}>{comprasdelMes}</Title>
                     </Stack>
-                    <Stack bg="#E8F7FF" w="30%" h="30%" justify="center" align="center">
+                    <Stack bg="#E8F7FF" justify="center" align="center" p={5} w="15rem">
                         <Image src="https://duralcor.es/wp-content/uploads/2021/10/servicio-de-almacenamiento-150x150.png" alt="Compras del mes" w="30%" h="30%"/>
                         <Title size='xs'>Compras del año</Title>
-                        <Text size='xs'>{comprasdelAño}</Text>
+                        <Title order={2}>{comprasdelAño}</Title>
                     </Stack>
                 </Stack>
                 </Group>
@@ -205,7 +202,7 @@ const Compras = () => {
                 </Group>
                 <Tabla headers={header} content={content} row={setRowIndex} rowD={setRowDIndex} />
             </Container>
-            <ModalProductos opened={opened} close={handlers.close} update={row.puesto !== '' ? true : false} updateInfo={row}  />
+            <ModalCompras opened={opened} close={handlers.close} update={row.puesto !== '' ? true : false} updateInfo={row}  />
         </div>
     )
 }
