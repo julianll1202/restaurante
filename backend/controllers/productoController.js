@@ -21,6 +21,22 @@ export const getAllProductos = async (req, res) => {
     return productos
 }
 
+export const getOneProducto = async (req, res, productoId) => {
+    if (!productoId) {
+        return 'Error: El id del producto es necesario'
+    }
+    try {
+        const productoInfo = await prisma.productos.findUnique({
+            where: {
+                productoId: Number(productoId)
+            }
+        })
+        return productoInfo
+    } catch (err) {
+        return 'Error: No se pudo obtener el registro'
+    }
+}
+
 export const createProducto = async (req, res) => {
     const productoInfo = req.body
     try {

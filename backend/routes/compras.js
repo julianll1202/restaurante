@@ -1,11 +1,16 @@
 import express from 'express'
-import { createCompra, deleteCompra, getAllCompras, updateCompra } from '../controllers/compraController.js'
+import { createCompra, deleteCompra, getAllCompras, updateCompra, comprasConProductos } from '../controllers/compraController.js'
 
 const router = express.Router()
 
 router.get('/listar', async function (req, res) {
     const compras = await getAllCompras(req, res)
     res.status(200).send(compras)
+})
+
+router.get('/comprasConProductos', async function (req, res) {
+    const comprasList = await comprasConProductos(req, res)
+    res.status(200).send(comprasList)
 })
 
 router.post('/crear', async function (req, res) {

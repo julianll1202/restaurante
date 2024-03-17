@@ -23,6 +23,7 @@ const MainLayout = () => {
                             <Link to='/platillos'>Platillos</Link>
                             <Link to='/inventario'>Inventario</Link>
                             <Link to='/empleados'>Empleados</Link>
+                            <Link to='/compras'>Compras</Link>
                         </Group>
                     </Group>
                     <Group>

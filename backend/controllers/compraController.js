@@ -7,6 +7,22 @@ export const getAllCompras = async (req, res) => {
     return compras
 }
 
+export const comprasConProductos = async (req, res) => {
+    const compras = await prisma.compras.findMany({
+        select: {
+            compraId: true,
+            fechaCompra: true,
+            productosEnCompra: {
+                select: {
+                    productoId: true,
+                    cantidad: true,
+                    precioTotal: true
+            }
+        }
+    }})
+    return compras
+}
+
 export const createCompra = async (req, res) => {
     const compraInfo = req.body
     try {

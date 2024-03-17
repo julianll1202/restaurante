@@ -6,6 +6,11 @@ export const getAllProductos = async () => {
     return res.data
 }
 
+export const getOneProducto = async (productoId) => {
+    const res = await API.get(`productos/obtener/${productoId}`)
+    return res.data
+}
+
 export const createPropducto = async (productoNombre, cantidad, cantidadMax, fechaCaducidad) => {
     const res = await API.post('productos/crear', {
         productoNombre: productoNombre,
