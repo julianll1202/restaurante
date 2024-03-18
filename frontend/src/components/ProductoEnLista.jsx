@@ -29,7 +29,7 @@ const ProductoEnLista = ({producto, sendDataToParent}) => {
     }, [quantity])
     return (
         <Group mb={15}>
-            <Avatar size='lg' radius='md' src={`${STORED_IMAGES_URL}image-1710119778692.png`} />
+            {/* <Avatar size='lg' radius='md' src={`${STORED_IMAGES_URL}image-1710119778692.png`} /> */}
             <Text>{productoF.nombreProducto}</Text>
             <QuantityPicker setQty={setQuantity}/>
             <Text>{productoF.precio}</Text>

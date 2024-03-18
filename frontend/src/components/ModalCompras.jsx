@@ -1,5 +1,5 @@
 'use client'
-import { Group, Modal, Button, Flex, TextInput, NumberInput } from "@mantine/core";
+import { Group, Modal, Button, Flex, TextInput, NumberInput, Select } from "@mantine/core";
 import { DeviceFloppy } from "tabler-icons-react";
 import { PropTypes } from 'prop-types';
 import "../styles/ModalEmpleados.css";
@@ -14,23 +14,43 @@ function ModalCompras ({opened, close, update, updateInfo}) {
     const [ fechaCad, setFechaCad ] = useState(null)
     const [ fechaCompra, setFechaCompra ] = useState(null)
     const [ productos, setProductos ] = useState([])
+    const [ productosT, setProductosT ] = useState([])
+    const [ listaProductos, setListaProductos ] = useState([])
+    const [ currentlySelected, setCurrentlySelected ] = useState(0)
+    const [ productosCompra, setProductosCompra ] = useState([])
 
     const getComprasList = async() => {
         const lista = await getAllProductos()
         const listaM = []
+        setProductosT(lista)
+        generateData(lista)
         lista.forEach((productos) => {
             productos['precioP'] = Object.values(productos['productosEnCompra'])
+            console.log(productos)
             let precio = ((productos['precioP'][0].precioTotal)/(productos['precioP'][0].cantidad))
             if(isNaN(precio)) precio = 0
             const m = {
+                "productoId": productos['productoId'],
                 "nombreProducto": productos['productoNombre'],
                 "precio": precio
             }
             listaM.push(m)
         })
-        setProductos(listaM)
+        setProductosT(listaM)
     }
-    
+
+    const generateData = (lista) => {
+        const listaP = []
+        lista.forEach((p) => {
+            const prod = {
+                "value": p.productoId.toString(),
+                "label": p.productoNombre
+            }
+            listaP.push(prod)
+        })
+        setListaProductos(listaP)
+    }
+
     const form = useForm({
         initialValues: {
             nombre: '',
@@ -63,10 +83,30 @@ function ModalCompras ({opened, close, update, updateInfo}) {
 
     useEffect(() => {  
         getComprasList()
-    }, [])
+    }, [opened])
 
 
-
+    const addToList = () => {
+        const producto = productosT.find((p) => p.productoId === currentlySelected)
+        console.log(producto)
+        let lista = []
+        if (listaProductos.length > 0) {
+            lista = [...productos]
+        }
+        let existente = false
+        lista.forEach((i) => {
+            if (i.platilloId === currentlySelected) {
+                i.cantidad += 1
+                existente = true
+            }
+        })
+        if(!existente) {
+            producto['cantidad'] = 1
+            lista.push(producto)
+        }
+        console.log(lista)
+        setProductos(lista)
+    }
     const handleCreateProducto = async (values) => {
         console.log(fechaCad)
         if (form.validate()) {
@@ -113,6 +153,10 @@ function ModalCompras ({opened, close, update, updateInfo}) {
                         <form onSubmit={form.onSubmit(handleCreateProducto)}>
                         <Flex direction="column" align="center" justify="center" gap={20}>
                             <DateTimePicker withSeconds label='Fecha de compra' valueFormat="YYYY-MM-DD hh:mm:ss" onChange={setFechaCompra} w='95%'  />
+                            <Group>
+                                <Select label='Productos' data={listaProductos} onChange={(value, label) => setCurrentlySelected(Number(value))} />
+                                <Button onClick={addToList}>Agregar</Button>
+                            </Group>
                             <ResumenCompra productos={productos}/>
 
                         </Flex>
