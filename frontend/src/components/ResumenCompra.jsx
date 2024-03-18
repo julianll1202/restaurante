@@ -11,8 +11,6 @@ import { listaProd } from "./ModalCompras"
 
 const ResumenCompra = ({productos, setTotalCompra}) => {
     const [activeTab, setActiveTab] = useState('lista')
-    const [dataFromChild, setDataFromChild] = useState({})
-    const [total, setTotal] = useState(0)
     const listaP = useContext(listaProd).productos
     const [subTotal, setSubTotal] = useState(0)
 
@@ -24,45 +22,11 @@ const ResumenCompra = ({productos, setTotalCompra}) => {
         setSubTotal(total)
         setTotalCompra(total)
     }
-    const handleDataFromChild = async(data) => {
-        setDataFromChild(data)
-    }
-
-    let productosTOTAL = []
-
-    const filterDataFromChild = async(dataFromChild, productosTOTAL) => {
-        if(productosTOTAL.length == 0){
-            productosTOTAL.push(dataFromChild)
-            return
-        } else {
-            let index = productosTOTAL.findIndex((producto) => producto.nombreProducto === dataFromChild.nombreProducto)
-            if(index !== -1){
-                productosTOTAL[index] = dataFromChild
-            } else {
-                productosTOTAL.push(dataFromChild)
-            }
-        }
-        console.log(productosTOTAL)
-    }
-
-    const handleTotal = async(productosTOTAL) => {
-        let totalP = 0
-        for(let i = 0; i < productosTOTAL.length; i++){
-            totalP += productosTOTAL[i].precio
-        }
-        setTotal(totalP)
-    }
-
-    useEffect(() => {
-        filterDataFromChild(dataFromChild, productosTOTAL)
-    }, [dataFromChild])
-    useEffect(() => {
-        handleTotal(productosTOTAL)
-    }, [productosTOTAL])
 
     useEffect(() => {
         getSubTotal()
     }, [listaP])
+
     return (
         <Container size='sm' w={400} m='10px 50px' p={15} style={{
             border: '2px solid #D9D9D9',
@@ -77,7 +41,7 @@ const ResumenCompra = ({productos, setTotalCompra}) => {
                         {!productos ?
                         <ProductoEnLista producto={null} />
                         : 
-                        productos.map((producto, index) => <ProductoEnLista key={index} producto={producto} sendDataToParent={handleDataFromChild}/>)
+                        productos.map((producto, index) => <ProductoEnLista key={index} producto={producto} />)
                         }
                     </Flex>
                     <Container bg="#17C653" p='10px 15px' pb={0} style={{

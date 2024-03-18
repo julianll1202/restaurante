@@ -28,8 +28,13 @@ function ModalCompras ({opened, close, update, updateInfo}) {
         lista.forEach((productos) => {
             productos['precioP'] = Object.values(productos['productosEnCompra'])
             console.log(productos)
-            let precio = ((productos['precioP'][0].precioTotal)/(productos['precioP'][0].cantidad))
-            precio = Math.round(precio*100)/100
+            let precio = 0;
+            if(productos['precioP'].length === 0){
+                precio = 0;
+            } else {
+                precio = ((productos['precioP'][0].precioTotal)/(productos['precioP'][0].cantidad))
+                precio = Math.round(precio*100)/100
+            }
             if(isNaN(precio)) precio = 0
             const m = {
                 "productoId": productos['productoId'],
@@ -85,25 +90,56 @@ function ModalCompras ({opened, close, update, updateInfo}) {
 
 
     const addToList = () => {
-        const producto = productosT.find((p) => p.productoId === currentlySelected)
-        console.log(producto)
-        let lista = []
-        if (listaProductos.length > 0) {
-            lista = [...productos]
-        }
-        let existente = false
-        lista.forEach((i) => {
-            if (i.platilloId === currentlySelected) {
-                i.cantidad += 1
-                existente = true
+        if(currentlySelected === 0){
+            const producto = productosT.find((p) => p.productoId === currentlySelected)
+            let lista = []
+            if (listaProductos.length > 0) {
+                lista = [...productos]
             }
-        })
-        if(!existente) {
-            producto['cantidad'] = 1
-            lista.push(producto)
+            let existente = false
+            lista.forEach((i) => {
+                if (i.productoId === currentlySelected) {
+                    i.cantidad += 1
+                    existente = true
+                }
+            })
+            if(!existente) {
+                if(producto === undefined){
+                    console.log('No se puede agregar un producto inexistente')
+                    return;
+                } else {
+                    producto['cantidad'] = 1
+                    lista.push(producto)
+                }
+            }
+            console.log(lista)
+            setProductos(lista)
+        } else {
+            const producto = productosT.find((p) => p.productoId === currentlySelected)
+            let lista = []
+            if (listaProductos.length > 0) {
+                lista = [...productos]
+            }
+            let existente = false
+            lista.forEach((i) => {
+                if (i.productoId === currentlySelected) {
+                    i.cantidad += 1
+                    existente = true
+                }
+            })
+            if(!existente) {
+                if(producto === undefined){
+                    console.log('No se puede agregar un producto inexistente')
+                    return;
+                } else {
+                    producto['cantidad'] = 1
+                    lista.push(producto)
+                }
+            }
+            console.log(lista)
+            setProductos(lista)
         }
-        console.log(lista)
-        setProductos(lista)
+
     }
     const handleCreateCompra = async (values) => {
         const productosCompra = [...productos]
@@ -115,6 +151,7 @@ function ModalCompras ({opened, close, update, updateInfo}) {
         console.log('hola')
         if (form.validate()) {
             const res = await createCompra(values.fecha, total, productos)
+            setProductos([])
             if (res.status === 200) {
                 console.log(res)
                 close()
@@ -163,7 +200,6 @@ function ModalCompras ({opened, close, update, updateInfo}) {
                                         <Button onClick={addToList}>Agregar</Button>
                                     </Group>
                                     <ResumenCompra setTotalCompra={setTotal} productos={productos}/>
-
                                 </Flex>
                                 <Group justify='center' align="center" mt={16}>
                                     <Button type="submit" leftSection={<DeviceFloppy />} >Guardar</Button>
