@@ -11,39 +11,43 @@ import { PropTypes } from 'prop-types';
 const ResumenCompra = ({productos}) => {
     const [activeTab, setActiveTab] = useState('lista')
     const [dataFromChild, setDataFromChild] = useState({})
-    const [dataParent, setDataParent] = useState({})
     const [total, setTotal] = useState(0)
     
     const handleDataFromChild = async(data) => {
         setDataFromChild(data)
     }
 
-    const filterDataFromChild = async(dataFromChild) => {
-        if(!dataParent) {
-            setDataParent(oldArray => [...oldArray, dataFromChild]);
-        }
-        dataParent.map((producto) => {
-            if(producto.nombreProducto === dataFromChild.nombreProducto) {
-                producto.precio = dataFromChild.precio
+    let productosTOTAL = []
+
+    const filterDataFromChild = async(dataFromChild, productosTOTAL) => {
+        if(productosTOTAL.length == 0){
+            productosTOTAL.push(dataFromChild)
+            return
+        } else {
+            let index = productosTOTAL.findIndex((producto) => producto.nombreProducto === dataFromChild.nombreProducto)
+            if(index !== -1){
+                productosTOTAL[index] = dataFromChild
             } else {
-                setDataParent(oldArray => [...oldArray, dataFromChild]);
+                productosTOTAL.push(dataFromChild)
             }
-        })
+        }
+        console.log(productosTOTAL)
     }
 
-    const handleTotal = async(dataParent) => {
-        let total = dataParent.map((producto) => {
-            return total + producto.precio
-        })
-        setTotal(total)
+    const handleTotal = async(productosTOTAL) => {
+        let totalP = 0
+        for(let i = 0; i < productosTOTAL.length; i++){
+            totalP += productosTOTAL[i].precio
+        }
+        setTotal(totalP)
     }
 
     useEffect(() => {
-        filterDataFromChild(dataFromChild)
+        filterDataFromChild(dataFromChild, productosTOTAL)
     }, [dataFromChild])
     useEffect(() => {
-        handleTotal(dataParent)
-    }, [dataParent])
+        handleTotal(productosTOTAL)
+    }, [productosTOTAL])
     return (
         <Container size='sm' w={450} m='10px 50px' p={15} style={{
             border: '2px solid #D9D9D9',
