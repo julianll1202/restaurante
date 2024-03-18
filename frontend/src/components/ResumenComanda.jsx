@@ -7,12 +7,22 @@ import { useForm } from "@mantine/form"
 import { getAllMeseros } from "../controllers/empleadoControllers"
 import PlatilloEnLista from './PlatilloEnLista';
 import { listaP } from "../views/CrearComanda"
+import { createComanda } from "../controllers/comandaController"
 
 const ResumenComanda = () => {
     const [activeTab, setActiveTab] = useState('lista')
     const [mesas, setMesas] = useState([])
     const [meseros, setMeseros] = useState([])
     const { listaPlatillos} = useContext(listaP)
+    const [subTotal, setSubTotal] = useState(0)
+
+    const getSubTotal = () => {
+        let total = 0
+        listaPlatillos.forEach((p) => {
+            total += p.cantidad*p.precio
+        })
+        setSubTotal(total)
+    }
 
     const getMesas = async() => {
         const lista = await getAllMesas()
@@ -28,9 +38,18 @@ const ResumenComanda = () => {
         })
         setMesas(listaM)
     }
-    const crearComanda = (values) => {
+    const crearComanda = async(values) => {
         console.log(values)
-        form.validate()
+        const copyLista = [...listaPlatillos]
+        copyLista.forEach((p) => {
+            delete p['nombre']
+            delete p['precio']
+            delete p['url']
+        })
+        if (form.validate()) {
+            const res = await createComanda(Number(values.mesero), Number(values.mesa), (subTotal+(subTotal*0.16)), copyLista)
+            console.log(res)
+        }
     }
     const getMeseros = async() => {
         const lista = await getAllMeseros()
@@ -68,6 +87,10 @@ const ResumenComanda = () => {
     useEffect(() => {
         getSelectInfo()
     }, [])
+
+    useEffect(() => {
+        getSubTotal()
+    }, [listaPlatillos])
     return (
         <Container size='sm' w={500} m='10px 50px' p={15} style={{
             border: '2px solid #D9D9D9',
@@ -82,7 +105,7 @@ const ResumenComanda = () => {
                     <Flex direction='column'>
                         { listaPlatillos ?
                         listaPlatillos.map((item, index) => {
-                            return (<PlatilloEnLista cantidad={item.cantidad} nombre={item.nombre} id={item.id} precio={item.precio} imagen={item.url} key={index} />)
+                            return (<PlatilloEnLista cantidad={item.cantidad} nombre={item.nombre} id={item.platilloId} precio={item.precio} imagen={item.url} key={index} />)
                         }): null}
 
                     </Flex>
@@ -91,15 +114,15 @@ const ResumenComanda = () => {
                     }}>
                         <Group justify="space-between">
                             <Text fw='bold' c="white">Subtotal</Text>
-                            <Text fw='bold' c="white">$145.00</Text>
+                            <Text fw='bold' c="white">${subTotal}</Text>
                         </Group>
                         <Group justify="space-between">
-                            <Text fw='bold' c="white">IVA (10%)</Text>
-                            <Text fw='bold' c="white">$14.50</Text>
+                            <Text fw='bold' c="white">IVA (16%)</Text>
+                            <Text fw='bold' c="white">${subTotal*0.16}</Text>
                         </Group>
                         <Group justify="space-between">
                             <Text fz='2.2rem' fw='bold' c="white">Total</Text>
-                            <Text fz='2.2rem' fw='bold' c="white">$159.50</Text>
+                            <Text fz='2.2rem' fw='bold' c="white">${subTotal+(subTotal*0.16)}</Text>
                         </Group>
                     </Container>
                 </Tabs.Panel>

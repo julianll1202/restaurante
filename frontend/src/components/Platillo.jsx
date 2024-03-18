@@ -51,7 +51,7 @@ function Platillo ({direccionamientoEliminar, direccionamientoEditar, imagenURL_
         miniVersion ?
         <Card.Section inheritPadding mb={10}>
           <Center>
-            <Button ml='auto' mr='auto' justify='center' leftSection={<CirclePlus />} onClick={() => direccionamientoAgregar({id:platillo_Id, nombre:titulo_platillo, precio:precio_platillo, url:imagenURL_platillo})}>Agregar</Button>
+            <Button ml='auto' mr='auto' justify='center' leftSection={<CirclePlus />} onClick={() => direccionamientoAgregar({platilloId:platillo_Id, nombre:titulo_platillo, precio:precio_platillo, url:imagenURL_platillo})}>Agregar</Button>
           </Center>
         </Card.Section>
         :

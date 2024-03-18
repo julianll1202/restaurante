@@ -30,8 +30,8 @@ const Comanda = ({ comandaInfo, color }) => {
                 </Group>
             </Card.Section>
             {/* Imagen */}
-            <Card.Section >
-            <Image w="90%" radius={20} src={comandaInfo.platillosEnComanda.length > 0 ? `${STORED_IMAGES_URL}${comandaInfo.platillosEnComanda[0].platillo.imagen.url}` : null} />
+            <Card.Section  >
+            <Image w="90%" h={150}  radius={20} src={comandaInfo.platillosEnComanda.length > 0 ? `${STORED_IMAGES_URL}${comandaInfo.platillosEnComanda[0].platillo.imagen.url}` : null} />
             </Card.Section>
             {/* Informacion */}
             <Card.Section mt="sm" mb={5} inheritPadding>

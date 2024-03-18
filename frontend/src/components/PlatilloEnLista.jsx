@@ -14,7 +14,7 @@ const PlatilloEnLista = ({imagen, id, nombre, precio, cantidad}) => {
             oldListaP.splice(index,1)
         } else {
             oldListaP.forEach((item) => {
-                if (item.id === id) {
+                if (item.platilloId === id) {
                     item.cantidad = quantity
                 }
             })

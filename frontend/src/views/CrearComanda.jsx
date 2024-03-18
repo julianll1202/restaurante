@@ -26,7 +26,7 @@ const CrearComanda = () => {
         }
         let existente = false
         lista.forEach((i) => {
-            if (i.id === item.id) {
+            if (i.platilloId === item.platilloId) {
                 i.cantidad += 1
                 existente = true
             }
