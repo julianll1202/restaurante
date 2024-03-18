@@ -1,16 +1,18 @@
 import { Button, Container, Flex, Group, Select, Tabs, Text, Textarea } from "@mantine/core"
 import { DateTimePicker } from "@mantine/dates"
-import { useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import { Calendar } from "tabler-icons-react"
 import { getAllMesas } from "../controllers/mesaController"
 import { useForm } from "@mantine/form"
 import { getAllMeseros } from "../controllers/empleadoControllers"
 import PlatilloEnLista from './PlatilloEnLista';
+import { listaP } from "../views/CrearComanda"
 
 const ResumenComanda = () => {
     const [activeTab, setActiveTab] = useState('lista')
     const [mesas, setMesas] = useState([])
     const [meseros, setMeseros] = useState([])
+    const { listaPlatillos} = useContext(listaP)
 
     const getMesas = async() => {
         const lista = await getAllMesas()
@@ -67,7 +69,7 @@ const ResumenComanda = () => {
         getSelectInfo()
     }, [])
     return (
-        <Container size='sm' w={450} m='10px 50px' p={15} style={{
+        <Container size='sm' w={500} m='10px 50px' p={15} style={{
             border: '2px solid #D9D9D9',
             borderRadius: '20px',
         }}>
@@ -78,11 +80,13 @@ const ResumenComanda = () => {
                 </Tabs.List>
                 <Tabs.Panel value="lista">
                     <Flex direction='column'>
-                        <PlatilloEnLista />
-                        <PlatilloEnLista />
+                        { listaPlatillos ?
+                        listaPlatillos.map((item, index) => {
+                            return (<PlatilloEnLista cantidad={item.cantidad} nombre={item.nombre} id={item.id} precio={item.precio} imagen={item.url} key={index} />)
+                        }): null}
 
                     </Flex>
-                    <Container bg="#17C653" p='10px 15px' pb={0} style={{
+                    <Container bg="#17C653" p='10px' pb={0} style={{
                         borderRadius: '20px'
                     }}>
                         <Group justify="space-between">
@@ -132,5 +136,6 @@ const ResumenComanda = () => {
         </Container>
     )
 }
+
 
 export default ResumenComanda

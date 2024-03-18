@@ -1,11 +1,42 @@
-import { Container, Flex, Group, Title } from '@mantine/core';
+import { Container, Flex, Grid, Group, ScrollArea, Text, Title } from '@mantine/core';
 import ResumenComanda from '../components/ResumenComanda';
 import CarruselCategorias from '../components/CarruselCategorias';
-import { useEffect, useState } from 'react';
+import { createContext, useEffect, useState } from 'react';
 import { getAllCategorias } from '../controllers/categoriaController';
+import { getPlatillosCategoria } from '../controllers/platilloController';
+import { STORED_IMAGES_URL } from '../utils/constants';
+import Platillo from '../components/Platillo';
 
+export const listaP = createContext({})
 const CrearComanda = () => {
     const [categoriasPAG, setCategoriasPAG] = useState([])
+    const [ selectCat, setSelectCat] = useState(0)
+    const [listaPlatillos, setListaPlatillos] = useState([])
+
+    const setCategory = (data) => {
+        if (categoriasPAG.length !== 0)
+            setSelectCat(categoriasPAG[data].categoriaId)
+        console.log(selectCat)
+    }
+
+    const addItem = (item) => {
+        let lista = []
+        if (listaPlatillos.length > 0) {
+            lista = [...listaPlatillos]
+        }
+        let existente = false
+        lista.forEach((i) => {
+            if (i.id === item.id) {
+                i.cantidad += 1
+                existente = true
+            }
+        })
+        if(!existente) {
+            item['cantidad'] = 1
+            lista.push(item)
+        }
+        setListaPlatillos(lista)
+    }
     const getCategoriasList = async () => {
         const res = await getAllCategorias(1)
         if (res.length === 0) {
@@ -14,31 +45,64 @@ const CrearComanda = () => {
         }
         setCategoriasPAG(res)
     }
-
+    const [platillosPAG, setPlatillosPAG] = useState([])
+    const getPlatillosCategoriaList = async (categoriaId) => {
+        const res = await getPlatillosCategoria(categoriaId)
+        console.log(res)
+        if (res.length === 0) {
+            setPlatillosPAG(null)
+            return
+        }
+        setPlatillosPAG(res)
+    }
     useEffect(() => {
         getCategoriasList()
     }, [])
+
+    useEffect(() => {
+        getPlatillosCategoriaList(selectCat)
+    }, [selectCat])
     return (
-        <div style={{
-            width: '100%',
-            padding: '3vw',
-        }}>
-            <Container direction="column" size='xl' w='90vw' justify='center' align='center' >
-                <Title ta='left'>Crear comanda</Title>
-                <Group justify='space-around'>
-                    <Flex direction='column'>
-                        <Title order={3}>Lista de platillos</Title>
-                        <CarruselCategorias categorias={categoriasPAG} />
-                        {/* <Group mt={10}>
-                            <CategoriaBlock />
-                            <CategoriaBlock selected />
-                            <CategoriaBlock />
-                        </Group> */}
-                    </Flex>
-                    <ResumenComanda />
-                </Group>
-            </Container>
-        </div>
+        <listaP.Provider value={{listaPlatillos, setListaPlatillos}}>
+            <div style={{
+                width: '100%',
+                padding: '20px',
+            }}>
+                <Container direction="column" size='100vw' w='100vw' justify='center' align='center' style={{
+                    paddingInline: 'none',
+                    marginInline: 'none'
+                }} >
+                    <Title ta='left'>Crear comanda</Title>
+                    <Group justify='center' align='center' w='100%'>
+                        <Flex direction='column' w='55%' justify='center' align='center'>
+                            <Title order={3}>Lista de platillos</Title>
+                            <CarruselCategorias categorias={categoriasPAG} setCatIndex={setCategory} />
+                            <ScrollArea h={550} offsetScrollbars>
+                                <Grid gap={48} mt={15}  w="100%" bg="white">
+                                {
+                                    platillosPAG ?
+                                    platillosPAG.map((platillo, index) => {
+                                        {
+                                            return (
+                                                <Grid.Col span={3}>
+                                                    <Platillo miniVersion direccionamientoAgregar={addItem} platillo_Id={platillo.platilloId} imagenURL_platillo={`${STORED_IMAGES_URL}${platillo.imagen.url}`} precio_platillo={platillo.precio} descripcion_platillo={platillo.descripcion} titulo_platillo={platillo.platilloNombre} key={index}/>
+                                                </Grid.Col>
+                                                );
+                                            }
+                                        })
+                                        :
+                                        <Text>No hay platillos para esta categoría</Text>
+                                        }
+                                </Grid>
+                            </ScrollArea>
+                        </Flex>
+                        <Group w='40%'>
+                            <ResumenComanda items={listaPlatillos} />
+                        </Group>
+                    </Group>
+                </Container>
+            </div>
+        </listaP.Provider>
     )
 }
 
