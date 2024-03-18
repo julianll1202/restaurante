@@ -1,18 +1,29 @@
 import { Button, Container, Flex, Group, Select, Tabs, Text, Textarea } from "@mantine/core"
 import { DateTimePicker } from "@mantine/dates"
-import { useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import { Calendar } from "tabler-icons-react"
 import { getAllMesas } from "../controllers/mesaController"
 import { useForm } from "@mantine/form"
 import { getAllMeseros } from "../controllers/empleadoControllers"
 import ProductoEnLista from './ProductoEnLista';
 import { PropTypes } from 'prop-types';
+import { listaProd } from "./ModalCompras"
 
-const ResumenCompra = ({productos}) => {
+const ResumenCompra = ({productos, setTotalCompra}) => {
     const [activeTab, setActiveTab] = useState('lista')
     const [dataFromChild, setDataFromChild] = useState({})
     const [total, setTotal] = useState(0)
-    
+    const listaP = useContext(listaProd).productos
+    const [subTotal, setSubTotal] = useState(0)
+
+    const getSubTotal = () => {
+        let total = 0
+        listaP.forEach((p) => {
+            total += p.cantidad*p.precio
+        })
+        setSubTotal(total)
+        setTotalCompra(total)
+    }
     const handleDataFromChild = async(data) => {
         setDataFromChild(data)
     }
@@ -48,8 +59,12 @@ const ResumenCompra = ({productos}) => {
     useEffect(() => {
         handleTotal(productosTOTAL)
     }, [productosTOTAL])
+
+    useEffect(() => {
+        getSubTotal()
+    }, [listaP])
     return (
-        <Container size='sm' w={450} m='10px 50px' p={15} style={{
+        <Container size='sm' w={400} m='10px 50px' p={15} style={{
             border: '2px solid #D9D9D9',
             borderRadius: '20px',
         }}>
@@ -70,11 +85,11 @@ const ResumenCompra = ({productos}) => {
                     }}>
                         <Group justify="space-between">
                             <Text fw='bold' c="white">Subtotal</Text>
-                            <Text fw='bold' c="white">${total}</Text>
+                            <Text fw='bold' c="white">${subTotal}</Text>
                         </Group>
                         <Group justify="space-between">
                             <Text fz='2.2rem' fw='bold' c="white">Total</Text>
-                            <Text fz='2.2rem' fw='bold' c="white">${total}</Text>
+                            <Text fz='2.2rem' fw='bold' c="white">${subTotal}</Text>
                         </Group>
                     </Container>
                 </Tabs.Panel>
@@ -84,7 +99,8 @@ const ResumenCompra = ({productos}) => {
 }
 
 ResumenCompra.propTypes = {
-    productos: PropTypes.array
+    productos: PropTypes.array,
+    setTotalCompra: PropTypes.func
 }
 
 export default ResumenCompra

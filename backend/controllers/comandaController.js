@@ -43,7 +43,7 @@ export const getAllComandas = async (req, res) => {
 export const createComanda = async (req, res) => {
     const comandaInfo = req.body
     try {
-        if (!isMesaOcupada(comandaInfo.mesaId)) {
+        if (!(await isMesaOcupada(comandaInfo.mesaId))) {
             const comandaNueva = await prisma.comandas.create({
                 data: {
                     clienteId: comandaInfo.clienteId,

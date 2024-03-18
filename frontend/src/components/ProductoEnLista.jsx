@@ -1,13 +1,18 @@
-import { Avatar, Group, Text, Button } from "@mantine/core"
+import { Group, Text } from "@mantine/core"
 import QuantityPicker from "./QuantityPicker"
 import { PropTypes } from 'prop-types';
-import { useState, useEffect } from "react"
-import { STORED_IMAGES_URL } from "../utils/constants"
-import { DeviceFloppy } from "tabler-icons-react";
+import { useState, useEffect, useContext } from "react"
+import { listaProd } from "./ModalCompras";
 
 const ProductoEnLista = ({producto, sendDataToParent}) => {
     const [quantity, setQuantity] = useState(1)
     const [data, setData] = useState( {} );
+    const { productos, setProductos } = useContext(listaProd)
+
+    useEffect(() => {
+        handleData()
+        updateCantidad()
+    }, [quantity])
 
     if(!producto) return (
         <Group mb={15}>
@@ -20,13 +25,27 @@ const ProductoEnLista = ({producto, sendDataToParent}) => {
         precio: (producto.precio)*quantity
     }
 
+    const updateCantidad = () => {
+        const oldListaP = [...productos]
+        if (quantity === 0) {
+            const index = oldListaP.findIndex((i) => i.platilloId === producto.platilloId)
+            oldListaP.splice(index,1)
+        } else {
+            oldListaP.forEach((item) => {
+                if (item.platilloId === producto.platilloId) {
+                    item.cantidad = quantity
+                }
+            })
+        }
+        setProductos(oldListaP)
+        console.log(productos)
+    }
+
     const handleData = async() => {
         setData(productoF);
         sendDataToParent(data);
     }
-    useEffect(() => {
-        handleData()
-    }, [quantity])
+
     return (
         <Group mb={15}>
             {/* <Avatar size='lg' radius='md' src={`${STORED_IMAGES_URL}image-1710119778692.png`} /> */}
