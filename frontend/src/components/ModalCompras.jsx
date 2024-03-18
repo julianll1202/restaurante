@@ -6,13 +6,31 @@ import "../styles/ModalEmpleados.css";
 import { useEffect, useState } from "react";
 import { useForm } from "@mantine/form";
 import { DateTimePicker } from "@mantine/dates";
-import { createPropducto, updateProducto } from "../controllers/productoController";
+import { createPropducto, updateProducto,  getAllProductos } from "../controllers/productoController";
 import { createCompra, updateCompra } from "../controllers/compraController";
 import ResumenCompra from '../components/ResumenCompra';
 
 function ModalCompras ({opened, close, update, updateInfo}) {
     const [ fechaCad, setFechaCad ] = useState(null)
     const [ fechaCompra, setFechaCompra ] = useState(null)
+    const [ productos, setProductos ] = useState([])
+
+    const getComprasList = async() => {
+        const lista = await getAllProductos()
+        const listaM = []
+        lista.forEach((productos) => {
+            productos['precioP'] = Object.values(productos['productosEnCompra'])
+            let precio = ((productos['precioP'][0].precioTotal)/(productos['precioP'][0].cantidad))
+            if(isNaN(precio)) precio = 0
+            const m = {
+                "nombreProducto": productos['productoNombre'],
+                "precio": precio
+            }
+            listaM.push(m)
+        })
+        setProductos(listaM)
+    }
+    
     const form = useForm({
         initialValues: {
             nombre: '',
@@ -42,6 +60,10 @@ function ModalCompras ({opened, close, update, updateInfo}) {
             })
         }
     }, [updateInfo])
+
+    useEffect(() => {  
+        getComprasList()
+    }, [])
 
 
 
@@ -91,7 +113,7 @@ function ModalCompras ({opened, close, update, updateInfo}) {
                         <form onSubmit={form.onSubmit(handleCreateProducto)}>
                         <Flex direction="column" align="center" justify="center" gap={20}>
                             <DateTimePicker withSeconds label='Fecha de compra' valueFormat="YYYY-MM-DD hh:mm:ss" onChange={setFechaCompra} w='95%'  />
-                            <ResumenCompra />
+                            <ResumenCompra productos={productos}/>
 
                         </Flex>
                         <Group justify='center' align="center" mt={16}>
