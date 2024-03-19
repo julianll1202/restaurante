@@ -27,7 +27,7 @@ const Comandas = () => {
     useEffect(() => {
         getComandasList()
         console.log(comandas.length)
-    }, [])
+    }, [activeTab])
     return (
         <div style={{
             width: '100%',
@@ -59,7 +59,7 @@ const Comandas = () => {
                                 if (comanda.completada === activeTab.toUpperCase()){
                                     return (
                                         <Grid.Col span={3} key={index}>
-                                            <Comanda comandaInfo={comanda} color='yellow' />
+                                            <Comanda comandaInfo={comanda} color='yellow' prev={0} next={2} />
                                         </Grid.Col>
                                         )
                                 }
@@ -73,7 +73,7 @@ const Comandas = () => {
                                 if (comanda.completada === activeTab.toUpperCase()){
                                     return (
                                         <Grid.Col span={4} key={index}>
-                                            <Comanda comandaInfo={comanda} color='orange' />
+                                            <Comanda comandaInfo={comanda} color='orange' prev={1} next={3} />
                                         </Grid.Col>
                                         )
                                     }
@@ -87,7 +87,7 @@ const Comandas = () => {
                                 if (comanda.completada === activeTab.toUpperCase()){
                                     return (
                                         <Grid.Col span={4} key={index}>
-                                            <Comanda comandaInfo={comanda} color='blue' />
+                                            <Comanda comandaInfo={comanda} color='blue' prev={2} next={4} />
                                         </Grid.Col>
                                         )
                                     }
@@ -101,7 +101,7 @@ const Comandas = () => {
                                 if (comanda.completada === activeTab.toUpperCase()){
                                     return (
                                         <Grid.Col span={4} key={index}>
-                                            <Comanda comandaInfo={comanda} color='green' />
+                                            <Comanda comandaInfo={comanda} prev={3} next={0} color='green' />
                                         </Grid.Col>
                                         )
                                     }
@@ -115,7 +115,7 @@ const Comandas = () => {
                                 if (comanda.completada === activeTab.toUpperCase()){
                                     return (
                                         <Grid.Col span={3} key={index}>
-                                            <Comanda comandaInfo={comanda} color='red' />
+                                            <Comanda comandaInfo={comanda} color='red' prev={1} next={1}/>
                                         </Grid.Col>
                                         )
                                     }

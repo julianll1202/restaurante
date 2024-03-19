@@ -1,18 +1,26 @@
 import { Container, Flex, Grid, Group, ScrollArea, Text, Title } from '@mantine/core';
-import ResumenComanda from '../components/ResumenComanda';
 import CarruselCategorias from '../components/CarruselCategorias';
 import { createContext, useEffect, useState } from 'react';
 import { getAllCategorias } from '../controllers/categoriaController';
 import { getPlatillosCategoria } from '../controllers/platilloController';
 import { STORED_IMAGES_URL } from '../utils/constants';
 import Platillo from '../components/Platillo';
+import { useParams } from 'react-router';
+import { getComanda } from '../controllers/comandaController';
+import ResumenEditComanda from '../components/ResumenEditComanda';
 
-export const listaP = createContext({})
-const CrearComanda = () => {
+export const comandaE = createContext({})
+const EditarComanda = () => {
+    const { id } = useParams()
     const [categoriasPAG, setCategoriasPAG] = useState([])
     const [ selectCat, setSelectCat] = useState(0)
-    const [listaPlatillos, setListaPlatillos] = useState([])
-
+    // const [listaPlatillos, setListaPlatillos] = useState([])
+    const [comandaEdit, setComandaEdit] = useState({})
+    const getComandaInfo = async() => {
+        const res = await getComanda(id)
+        setComandaEdit(res.data[0])
+        console.log(res)
+    }
     const setCategory = (data) => {
         if (categoriasPAG.length !== 0)
             setSelectCat(categoriasPAG[data].categoriaId)
@@ -21,11 +29,11 @@ const CrearComanda = () => {
 
     const addItem = (item) => {
         let lista = []
-        if (listaPlatillos.length > 0) {
-            lista = [...listaPlatillos]
+        if (comandaEdit.platillosEnComanda.length > 0) {
+            lista = [...comandaEdit]
         }
         let existente = false
-        lista.forEach((i) => {
+        lista.platillosEnComanda.forEach((i) => {
             if (i.platilloId === item.platilloId) {
                 i.cantidad += 1
                 existente = true
@@ -35,7 +43,7 @@ const CrearComanda = () => {
             item['cantidad'] = 1
             lista.push(item)
         }
-        setListaPlatillos(lista)
+        setComandaEdit(lista)
     }
     const getCategoriasList = async () => {
         const res = await getAllCategorias(1)
@@ -56,6 +64,7 @@ const CrearComanda = () => {
         setPlatillosPAG(res)
     }
     useEffect(() => {
+        getComandaInfo()
         getCategoriasList()
     }, [])
 
@@ -63,7 +72,7 @@ const CrearComanda = () => {
         getPlatillosCategoriaList(selectCat)
     }, [selectCat])
     return (
-        <listaP.Provider value={{listaPlatillos, setListaPlatillos}}>
+        <comandaE.Provider value={{comandaEdit, setComandaEdit}}>
             <div style={{
                 width: '100%',
                 padding: '20px',
@@ -72,7 +81,7 @@ const CrearComanda = () => {
                     paddingInline: 'none',
                     marginInline: 'none'
                 }} >
-                    <Title ta='left'>Crear comanda</Title>
+                    <Title ta='left'>Editar comanda</Title>
                     <Group justify='center' align='center' w='100%'>
                         <Flex direction='column' w='55%' justify='center' align='center'>
                             <Title order={3}>Lista de platillos</Title>
@@ -97,16 +106,16 @@ const CrearComanda = () => {
                             </ScrollArea>
                         </Flex>
                         <Group w='40%'>
-                            <ResumenComanda items={listaPlatillos} />
+                            <ResumenEditComanda update  />
                         </Group>
                     </Group>
                 </Container>
             </div>
-        </listaP.Provider>
+        </comandaE.Provider>
     )
 }
 
-export default CrearComanda
+export default EditarComanda
 /*
     Estructura general
     Titulo
