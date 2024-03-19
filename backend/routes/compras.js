@@ -1,11 +1,20 @@
 import express from 'express'
-import { createCompra, deleteCompra, getAllCompras, updateCompra, comprasConProductos } from '../controllers/compraController.js'
+import { createCompra, deleteCompra, getAllCompras, updateCompra, comprasConProductos, getCompraPorId } from '../controllers/compraController.js'
 
 const router = express.Router()
 
 router.get('/listar', async function (req, res) {
     const compras = await getAllCompras(req, res)
     res.status(200).send(compras)
+})
+
+router.get('/obtener/:id', async function (req, res) {
+    const compra = await getCompraPorId(req, res, req.params.id)
+    if (!JSON.stringify(compra).startsWith('"Error')) {
+        res.status(200).send(compra)
+    } else {
+        res.status(400).send(compra)
+    }
 })
 
 router.get('/comprasConProductos', async function (req, res) {

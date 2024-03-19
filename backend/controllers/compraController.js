@@ -7,6 +7,11 @@ export const getAllCompras = async (req, res) => {
     return compras
 }
 
+export const getCompraPorId = async (req, res, compraId) => {
+    const compra = await prisma.$queryRaw`SELECT c.compraId, c.total, pc.productoId, pc.cantidad, pc.precioTotal, p.productoNombre AS 'nombreProducto' FROM Compras c INNER JOIN ProductosEnCompras pc ON c.compraId = pc.compraId INNER JOIN Productos p ON pc.productoId = p.productoId WHERE c.compraId = ${compraId};`
+    return compra
+}
+
 export const comprasConProductos = async (req, res) => {
     const compras = await prisma.compras.findMany({
         select: {
@@ -73,22 +78,105 @@ export const deleteCompra = async (req, res) => {
 }
 
 export const updateCompra = async (req, res) => {
-    const compra = req.body
-    if (!compra.compraId) {
+    const compraInfo = req.body
+    if (!compraInfo.compraId) {
         return 'Error: El id de la compra es necesario'
     }
-    try {
-        const updatedCompra = await prisma.compras.update({
-            where: {
-                compraId: compra.compraId
-            },
-            data: {
-                fechaCompra: compra.fechaCompra,
-                total: compra.total
+        try {
+            const updatedCompra = await prisma.compras.update({
+                where: {
+                    compraId: Number(compraInfo.compraId)
+                },
+                data: {
+                    fechaCompra: compraInfo.fechaCompra,
+                    total: Number(compraInfo.total)
+                }
+            })
+            const productosEnCompra = await prisma.productosEnCompras.findMany({
+                where: {
+                    compraId: Number(compraInfo.compraId)
+                }
+            })
+            const productos = compraInfo.productos
+            if(productos.length === 0) {
+                productosEnCompra.forEach(async (prod) => {
+                    const updateProd = await prisma.productos.update({
+                        where: {
+                            productoId: Number(prod.productoId)
+                        },
+                        data: {
+                            cantidad: {
+                                decrement: Number(prod.cantidad)
+                            }
+                        }
+                    })
+                    const deleteProd = await prisma.productosEnCompras.delete({
+                        where: {
+                            compraId_productoId: {
+                                compraId: Number(compraInfo.compraId),
+                                productoId: Number(prod.productoId)
+                            }
+                        }
+                    })
+                })
+            } else {
+                productosEnCompra.forEach(async (prod) => {
+                    productos.forEach(async (prod2) => {
+                        if (prod.productoId === prod2.productoId) {
+                            prod2.eliminado = false
+                        } else {
+                            prod2.eliminado = true
+                        }
+                    })
+                })
+                productos.forEach(async (prod) => {
+                    if(prod.eliminado) {
+                        const updateProd = await prisma.productos.update({
+                            where: {
+                                productoId: Number(prod.productoId)
+                            },
+                            data: {
+                                cantidad: {
+                                    decrement: Number(prod.cantidad)
+                                }
+                            }
+                        })
+                        const deleteProd = await prisma.productosEnCompras.delete({
+                            where: {
+                                compraId_productoId: {
+                                    compraId: Number(compraInfo.compraId),
+                                    productoId: Number(prod.productoId)
+                                }
+                            }
+                        })
+                    } else {
+                        /*
+                        const updateProd = await prisma.productos.update({
+                            where: {
+                                productoId: Number(prod.productoId)
+                            },
+                            data: {
+                                cantidad: Number(prod.cantidad)
+                            }
+                        })*/
+                        
+                        const updateMM = await prisma.productosEnCompras.update({
+                            where: {
+                                compraId_productoId: {
+                                    compraId: Number(compraInfo.compraId),
+                                    productoId: Number(prod.productoId)
+                                }
+                            },
+                            data: {
+                                cantidad: Number(prod.cantidad),
+                                precioTotal: Number(prod.precioTotal)
+                            }
+                        })
+                    }
+                })
             }
-        })
-        return updatedCompra
+            return updatedCompra
     } catch (err) {
-        return 'Error: No se pudo actualizar el registro'
+        return 'Error: No se pudo eliminar el registro'
     }
 }

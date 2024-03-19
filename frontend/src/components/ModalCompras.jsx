@@ -7,7 +7,7 @@ import { createContext, useEffect, useState } from "react";
 import { useForm } from "@mantine/form";
 import { DateTimePicker } from "@mantine/dates";
 import { createPropducto, updateProducto,  getAllProductos, getOneProducto } from "../controllers/productoController";
-import { createCompra, updateCompra } from "../controllers/compraController";
+import { createCompra, updateCompra, getCompraPorId } from "../controllers/compraController";
 import ResumenCompra from '../components/ResumenCompra';
 
 export const listaProd = createContext({})
@@ -19,6 +19,7 @@ function ModalCompras ({opened, close, update, updateInfo}) {
     const [ listaProductos, setListaProductos ] = useState([])
     const [ currentlySelected, setCurrentlySelected ] = useState(0)
     const [total, setTotal] = useState(0)
+    const [compraIdUpdate, setCompraIdUpdate] = useState(0)
 
     const getComprasList = async() => {
         const lista = await getAllProductos()
@@ -58,6 +59,41 @@ function ModalCompras ({opened, close, update, updateInfo}) {
         setListaProductos(listaP)
     }
 
+    const getCompraInfo = async (updateInfo) => {
+        let Productos;
+        for(let key in updateInfo){
+            if(key ==='compraId'){
+                Productos  = await getCompraPorId(updateInfo[key])
+            }
+        }
+        const precioProductos = await getAllProductos()
+        let listaM = []
+        precioProductos.forEach((productos) => {
+            productos['precioP'] = Object.values(productos['productosEnCompra'])
+            let precio = 0;
+            if(productos['precioP'].length === 0){
+                precio = 0;
+            } else {
+                precio = ((productos['precioP'][0].precioTotal)/(productos['precioP'][0].cantidad))
+                precio = Math.round(precio*100)/100
+            }
+            if(isNaN(precio)) precio = 0
+            const m = {
+                "productoId": productos['productoId'],
+                "precio": precio
+            }
+            listaM.push(m)
+        })
+        for(let i = 0; i < Productos.length; i++){
+            for(let j = 0; j < listaM.length; j++){
+                if(Productos[i].productoId === listaM[j].productoId){
+                    Productos[i].precio = listaM[j].precio
+                }
+            }
+        }
+        setProductos(Productos)
+    }
+
     const form = useForm({
         initialValues: {
             fecha: null
@@ -69,20 +105,8 @@ function ModalCompras ({opened, close, update, updateInfo}) {
 
     useEffect(() => {
         if (update) {
-            let listaProductos = {}
-            for(let key in updateInfo){
-                if(key ==='productosEnCompra'){
-                    listaProductos = updateInfo[key]
-                }
-            }
-            for(let key in listaProductos){
-                let productoF = listaProductos[key]['productoId']
-                let productoFinal = getOneProducto(productoF)
-                console.log(productoFinal)
-                Object.assign(listaProductos[key], {nombreProducto: productoFinal.productoNombre})
-            }
-            console.log(listaProductos)
-            setProductos(listaProductos)
+            setCompraIdUpdate(updateInfo.compraId)
+            getCompraInfo(updateInfo)
             form.setValues({
                 fecha: new Date(updateInfo.fechaCompra)
             })
@@ -169,15 +193,8 @@ function ModalCompras ({opened, close, update, updateInfo}) {
     }
 
     const hadleUpdateCompra = async (values) => {
-        const productosCompra = [...productos]
-        productosCompra.forEach((p) => {
-            delete p['nombreProducto']
-            p['precioTotal'] = p['cantidad']*p['precio']
-            delete p['precio']
-        })
-        console.log('hola')
         if (form.validate()) {
-            const res = await createCompra(values.fecha, total, productos)
+            const res = await updateCompra(compraIdUpdate, values.fecha, total, productos)
             setProductos([])
             if (res.status === 200) {
                 console.log(res)
