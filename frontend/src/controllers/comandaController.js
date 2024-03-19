@@ -16,3 +16,21 @@ export const createComanda = async(empleadoId, mesaId, precioFinal, platillos) =
     })
     return res
 }
+
+export const cancelarComanda = async(comandaId) => {
+    const res = await API.put(`comandas/cancelar/${comandaId}`)
+    return res
+}
+
+export const cambiarEstatus = async(comandaId, estatus) => {
+    const res = await API.put(`comandas/cambiar/${comandaId}`, {
+        estatus: estatus
+    })
+    return res
+}
+
+export const getComanda = async(comandaId) => {
+    const res = await API.get(`comandas/ver/${comandaId}`)
+    console.log(res)
+    return res
+}

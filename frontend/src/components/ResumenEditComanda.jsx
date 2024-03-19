@@ -6,22 +6,22 @@ import { getAllMesas } from "../controllers/mesaController"
 import { useForm } from "@mantine/form"
 import { getAllMeseros } from "../controllers/empleadoControllers"
 import PlatilloEnLista from './PlatilloEnLista';
-import { listaP } from "../views/CrearComanda"
 import { createComanda } from "../controllers/comandaController"
 import { PropTypes } from 'prop-types';
+import { comandaE} from './../views/EditarComanda';
 
-const ResumenComanda = ({ update }) => {
+const ResumenEditComanda = ({ update }) => {
     const [activeTab, setActiveTab] = useState('lista')
     const [mesas, setMesas] = useState([])
     const [meseros, setMeseros] = useState([])
-    const { listaPlatillos} = useContext(listaP)
+    const { comandaEdit } = useContext(comandaE)
     const [subTotal, setSubTotal] = useState(0)
 
     const getSubTotal = () => {
         let total = 0
-        if (listaPlatillos) {
-            listaPlatillos.forEach((p) => {
-                total += p.cantidad*p.precio
+        if (comandaEdit) {
+            comandaEdit.platillosEnComanda.forEach((p) => {
+                total += p.cantidad*p.platillo.precio
             })
         }
         setSubTotal(total)
@@ -43,11 +43,11 @@ const ResumenComanda = ({ update }) => {
     }
     const crearComanda = async(values) => {
         console.log(values)
-        const copyLista = [...listaPlatillos]
+        const copyLista = [...comandaEdit.platillosEnComanda]
         copyLista.forEach((p) => {
-            delete p['nombre']
-            delete p['precio']
-            delete p['url']
+            delete p['platilloNombre']
+            delete p['platillo']['precio']
+            delete p['platillo']['imagen']['url']
         })
         if (form.validate()) {
             const res = await createComanda(Number(values.mesero), Number(values.mesa), (subTotal+(subTotal*0.16)), copyLista)
@@ -74,7 +74,6 @@ const ResumenComanda = ({ update }) => {
         initialValues: {
             mesero: '0',
             mesa: '0',
-            fecha: null,
         },
         validate: {
             mesa: (value) => ((value === '0' || value === null) ? 'Seleccione una mesa': null),
@@ -89,11 +88,17 @@ const ResumenComanda = ({ update }) => {
     }
     useEffect(() => {
         getSelectInfo()
+        if (update) {
+            form.setValues({
+                mesa: comandaEdit.mesaId,
+                mesero: comandaEdit.empleadoId,
+            })
+        }
     }, [])
 
     useEffect(() => {
         getSubTotal()
-    }, [listaPlatillos])
+    }, [comandaEdit])
     return (
         <Container size='sm' w={500} m='10px 50px' p={15} style={{
             border: '2px solid #D9D9D9',
@@ -106,9 +111,9 @@ const ResumenComanda = ({ update }) => {
                 </Tabs.List>
                 <Tabs.Panel value="lista">
                     <Flex direction='column'>
-                        { listaPlatillos ?
-                        listaPlatillos.map((item, index) => {
-                            return (<PlatilloEnLista cantidad={item.cantidad} nombre={item.nombre} id={item.platilloId} precio={item.precio} imagen={item.url} key={index} />)
+                        { comandaEdit ?
+                        comandaEdit.platillosEnComanda.map((item, index) => {
+                            return (<PlatilloEnLista cantidad={item.cantidad} nombre={item.platillo.platilloNombre} id={item.platillo.platilloId} precio={item.platillo.precio} imagen={item.platillo.imagen.url} key={index} />)
                         }): null}
 
                     </Flex>
@@ -142,11 +147,6 @@ const ResumenComanda = ({ update }) => {
                                 fontWeight: 'bold',
                                 textAlign: 'left'
                             }}} leftSection='#' ta='left' data={mesas} {...form.getInputProps('mesa')}  label='Mesa' w='30%' />
-                            <DateTimePicker ta='left' styles={{
-                            label: {
-                                fontWeight: 'bold',
-                                textAlign: 'left'
-                            }}} rightSection={<Calendar strokeWidth={1} />} {...form.getInputProps('fecha')}  valueFormat="YYYY-MM-DD hh:mm:ss" w='64%' withSeconds label='Fecha y hora' />
                         </Group>
                         <Textarea ta='left' styles={{
                             label: {
@@ -163,8 +163,8 @@ const ResumenComanda = ({ update }) => {
     )
 }
 
-ResumenComanda.propTypes = {
+ResumenEditComanda.propTypes = {
     update: PropTypes.bool
 }
 
-export default ResumenComanda
+export default ResumenEditComanda

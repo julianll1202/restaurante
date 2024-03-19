@@ -17,6 +17,7 @@ import Mesas from './views/Mesas.jsx';
 import Comandas from './views/Comandas.jsx';
 import Platillos from './views/Platillos.jsx';
 import CrearComanda from './views/CrearComanda.jsx';
+import EditarComanda from './views/EditarComanda.jsx';
 
 const router = createBrowserRouter([
   {
@@ -49,6 +50,10 @@ const router = createBrowserRouter([
       {
         path: '/crear-comanda',
         element: <CrearComanda />,
+      },
+      {
+        path: '/editar-comanda/:id',
+        element: <EditarComanda />,
       }
     ]
   },
