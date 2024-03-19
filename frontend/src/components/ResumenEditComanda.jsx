@@ -96,7 +96,7 @@ const ResumenEditComanda = ({ update }) => {
         initialValues: {
             mesero: '0',
             mesa: '0',
-            cliente: '0'
+            cliente: comandaEdit.clienteId ? comandaEdit.clienteId.toString() : '0'
         },
         validate: {
             mesa: (value) => ((value === '0' || value === null) ? 'Seleccione una mesa': null),

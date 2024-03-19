@@ -3,6 +3,7 @@ import QuantityPicker from "./QuantityPicker"
 import { useContext, useEffect, useState } from "react"
 import { PropTypes } from 'prop-types';
 import { comandaE } from "../views/EditarComanda";
+import { STORED_IMAGES_URL } from "../utils/constants";
 
 const PlatilloEditLista = ({imagen, id, nombre, precio, cantidad}) => {
     const [quantity, setQuantity] = useState(cantidad)
@@ -32,7 +33,7 @@ const PlatilloEditLista = ({imagen, id, nombre, precio, cantidad}) => {
     }, [quantity])
     return (
         <Group mb={15}>
-            <Avatar size='lg' radius='md' src={`${imagen}`} />
+            <Avatar size='lg' radius='md' src={`${STORED_IMAGES_URL}${imagen}`} />
             <Text w={70}  style={{
                 'overflow': 'hidden',
                 'textOverflow':'ellipsis'
