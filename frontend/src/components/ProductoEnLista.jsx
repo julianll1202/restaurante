@@ -47,6 +47,7 @@ const ProductoEnLista = ({producto}) => {
             oldListaP.forEach((item) => {
                 if (item.productoId === producto.productoId) {
                     item.cantidad = quantity
+                    item.precioTotal = quantity*item.precio
                 }
             })
         }

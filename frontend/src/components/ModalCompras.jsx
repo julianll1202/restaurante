@@ -20,7 +20,7 @@ function ModalCompras ({opened, close, update, updateInfo}) {
     const [ currentlySelected, setCurrentlySelected ] = useState(0)
     const [total, setTotal] = useState(0)
     const [compraIdUpdate, setCompraIdUpdate] = useState(0)
-
+    const [ precioU, setPrecioU ] = useState(0)
     const getComprasList = async() => {
         const lista = await getAllProductos()
         const listaM = []
@@ -96,7 +96,8 @@ function ModalCompras ({opened, close, update, updateInfo}) {
 
     const form = useForm({
         initialValues: {
-            fecha: null
+            fecha: null,
+            precio: 0
         },
         validate: {
             fecha: (value) => (value === null ? 'Fecha no válida': null),
@@ -123,6 +124,7 @@ function ModalCompras ({opened, close, update, updateInfo}) {
 
 
     const addToList = () => {
+        console.log(form.getInputProps('precio'))
         if(currentlySelected === 0){
             const producto = productosT.find((p) => p.productoId === currentlySelected)
             let lista = []
@@ -132,7 +134,9 @@ function ModalCompras ({opened, close, update, updateInfo}) {
             let existente = false
             lista.forEach((i) => {
                 if (i.productoId === currentlySelected) {
+                    i.precio = form.getInputProps('precio').value
                     i.cantidad += 1
+                    i.precioTotal = i.cantidad*precioU
                     existente = true
                 }
             })
@@ -142,6 +146,7 @@ function ModalCompras ({opened, close, update, updateInfo}) {
                     return;
                 } else {
                     producto['cantidad'] = 1
+                    producto['precio'] = form.getInputProps('precio').value
                     lista.push(producto)
                 }
             }
@@ -156,7 +161,9 @@ function ModalCompras ({opened, close, update, updateInfo}) {
             let existente = false
             lista.forEach((i) => {
                 if (i.productoId === currentlySelected) {
+                    i.precio = producto['precio'] = form.getInputProps('precio').value
                     i.cantidad += 1
+                    i.precioTotal = i.cantidad*i.precio
                     existente = true
                 }
             })
@@ -166,6 +173,7 @@ function ModalCompras ({opened, close, update, updateInfo}) {
                     return;
                 } else {
                     producto['cantidad'] = 1
+                    producto['precio'] = form.getInputProps('precio').value
                     lista.push(producto)
                 }
             }
@@ -229,11 +237,12 @@ function ModalCompras ({opened, close, update, updateInfo}) {
                             </Group>
                             </form>
                         :
-                            <form onSubmit={form.onSubmit(handleCreateCompra)}>
+                        <form onSubmit={form.onSubmit(handleCreateCompra)}>
                                 <Flex direction="column" align="center" justify="center" gap={20}>
                                     <DateTimePicker {...form.getInputProps('fecha')} withSeconds label='Fecha de compra' valueFormat="YYYY-MM-DD hh:mm:ss"  w='95%'  />
                                     <Group>
                                         <Select label='Productos' data={listaProductos} onChange={(value, label) => setCurrentlySelected(Number(value))} />
+                                        <NumberInput label='Precio individual' {...form.getInputProps('precio')} />
                                         <Button onClick={addToList}>Agregar</Button>
                                     </Group>
                                     <ResumenCompra setTotalCompra={setTotal} productos={productos}/>

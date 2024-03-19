@@ -159,15 +159,20 @@ export const updateCompra = async (req, res) => {
                                 cantidad: Number(prod.cantidad)
                             }
                         })*/
-                        
-                        const updateMM = await prisma.productosEnCompras.update({
+                        const updateMM = await prisma.productosEnCompras.upsert({
                             where: {
                                 compraId_productoId: {
                                     compraId: Number(compraInfo.compraId),
                                     productoId: Number(prod.productoId)
                                 }
                             },
-                            data: {
+                            update: {
+                                cantidad: Number(prod.cantidad),
+                                precioTotal: Number(prod.precioTotal)
+                            },
+                            create: {
+                                compraId: Number(compraInfo.compraId),
+                                productoId: Number(prod.productoId),
                                 cantidad: Number(prod.cantidad),
                                 precioTotal: Number(prod.precioTotal)
                             }
