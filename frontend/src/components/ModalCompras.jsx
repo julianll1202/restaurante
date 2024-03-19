@@ -6,7 +6,7 @@ import "../styles/ModalEmpleados.css";
 import { createContext, useEffect, useState } from "react";
 import { useForm } from "@mantine/form";
 import { DateTimePicker } from "@mantine/dates";
-import { createPropducto, updateProducto,  getAllProductos } from "../controllers/productoController";
+import { createPropducto, updateProducto,  getAllProductos, getOneProducto } from "../controllers/productoController";
 import { createCompra, updateCompra } from "../controllers/compraController";
 import ResumenCompra from '../components/ResumenCompra';
 
@@ -69,17 +69,26 @@ function ModalCompras ({opened, close, update, updateInfo}) {
 
     useEffect(() => {
         if (update) {
+            let listaProductos = {}
+            for(let key in updateInfo){
+                if(key ==='productosEnCompra'){
+                    listaProductos = updateInfo[key]
+                }
+            }
+            for(let key in listaProductos){
+                let productoF = listaProductos[key]['productoId']
+                let productoFinal = getOneProducto(productoF)
+                console.log(productoFinal)
+                Object.assign(listaProductos[key], {nombreProducto: productoFinal.productoNombre})
+            }
+            console.log(listaProductos)
+            setProductos(listaProductos)
             form.setValues({
-                nombre: updateInfo.productoNombre,
-                cantidad: updateInfo.cantidad,
-                cantidadMax: updateInfo.cantidadMax,
-
+                fecha: new Date(updateInfo.fechaCompra)
             })
         } else {
             form.setValues({
-                nombre: '',
-                cantidad: 0,
-                cantidadMax: 0,
+                fecha: null
             })
         }
     }, [updateInfo])
@@ -159,10 +168,19 @@ function ModalCompras ({opened, close, update, updateInfo}) {
         }
     }
 
-    const handleUpdateProducto = async (values) => {
+    const hadleUpdateCompra = async (values) => {
+        const productosCompra = [...productos]
+        productosCompra.forEach((p) => {
+            delete p['nombreProducto']
+            p['precioTotal'] = p['cantidad']*p['precio']
+            delete p['precio']
+        })
+        console.log('hola')
         if (form.validate()) {
-            const res = await updateProducto(updateInfo.productoId, values.nombre, values.cantidad, values.cantidadMax, fechaCad)
+            const res = await createCompra(values.fecha, total, productos)
+            setProductos([])
             if (res.status === 200) {
+                console.log(res)
                 close()
             }
         }
@@ -179,13 +197,15 @@ function ModalCompras ({opened, close, update, updateInfo}) {
                     </Modal.Header>
                     <Modal.Body>
                         { update ?
-                            <form onSubmit={form.onSubmit(handleUpdateProducto)}>
-                            <Flex direction="column" align="center" justify="center" gap={20}>
-                                <TextInput {...form.getInputProps('nombre')} label="Nombre del producto" w='95%' />
-                                <NumberInput {...form.getInputProps('cantidad')} label="Cantidad" w='95%' />
-                                <NumberInput {...form.getInputProps('cantidadMax')} label="Cantidad máxima" w='95%' />
-                                <DateTimePicker onChange={setFechaCad} withSeconds label='Fecha de caducidad' defaultValue={new Date(updateInfo.fechaCaducidad)} />
-                            </Flex>
+                            <form onSubmit={form.onSubmit(hadleUpdateCompra)}>
+                                <Flex direction="column" align="center" justify="center" gap={20}>
+                                    <DateTimePicker {...form.getInputProps('fecha')} withSeconds label='Fecha de compra' valueFormat="YYYY-MM-DD hh:mm:ss"  w='95%'  />
+                                    <Group>
+                                        <Select label='Productos' data={listaProductos} onChange={(value, label) => setCurrentlySelected(Number(value))} />
+                                        <Button onClick={addToList}>Agregar</Button>
+                                    </Group>
+                                    <ResumenCompra setTotalCompra={setTotal} productos={productos}/>
+                                </Flex>
                             <Group justify='center' align="center" mt={16}>
                                 <Button type="submit" leftSection={<DeviceFloppy />} >Actualizar</Button>
                                 <Button color="black" onClick={close}>Cancelar</Button>
