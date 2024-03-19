@@ -32,7 +32,7 @@ const PlatilloEnLista = ({imagen, id, nombre, precio, cantidad}) => {
                 'overflow': 'hidden',
                 'textOverflow':'ellipsis'
             }}>{ nombre }</Text>
-            <QuantityPicker setQty={setQuantity} />
+            <QuantityPicker setQty={setQuantity} cantInicial={cantidad} />
             <Text>{`$${precio}`}</Text>
         </Group>
     )

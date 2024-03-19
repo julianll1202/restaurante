@@ -20,6 +20,8 @@ const CrearComanda = () => {
     }
 
     const addItem = (item) => {
+        const items = JSON.parse(JSON.stringify({...item}))
+        console.log(items)
         let lista = []
         if (listaPlatillos.length > 0) {
             lista = [...listaPlatillos]
@@ -32,9 +34,9 @@ const CrearComanda = () => {
             }
         })
         if(!existente) {
-            item['cantidad'] = 1
-            lista.push(item)
+            lista.push(items)
         }
+        console.log(lista)
         setListaPlatillos(lista)
     }
     const getCategoriasList = async () => {
