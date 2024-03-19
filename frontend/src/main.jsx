@@ -65,7 +65,7 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <MantineProvider theme={restauranteTheme}   >
+    <MantineProvider theme={restauranteTheme} withGlobalStyles>
         <AuthProvider>
           <RouterProvider router={router} />
 
