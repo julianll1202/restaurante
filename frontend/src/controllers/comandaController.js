@@ -17,6 +17,18 @@ export const createComanda = async(empleadoId, mesaId, precioFinal, platillos) =
     return res
 }
 
+export const updateComanda = async(comandaId, empleadoId, mesaId, precioFinal, platillos) => {
+    const res = await API.put('comandas/actualizar', {
+        id: comandaId,
+        clienteId: 1,
+        empleadoId: empleadoId,
+        mesaId: mesaId,
+        precioFinal: precioFinal,
+        platillos: platillos
+    })
+    return res
+}
+
 export const cancelarComanda = async(comandaId) => {
     const res = await API.put(`comandas/cancelar/${comandaId}`)
     return res

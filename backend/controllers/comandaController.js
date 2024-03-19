@@ -56,6 +56,7 @@ export const getComandaById = async (id) => {
             platillosEnComanda: {
                 select: {
                     cantidad: true,
+                    comandaId: true,
                     platillo: {
                         select: {
                             platilloNombre: true,
@@ -142,14 +143,29 @@ export const updateComanda = async (req, res) => {
                 clienteId: comanda.clienteId,
                 empleadoId: comanda.empleadoId,
                 mesaId: comanda.mesaId,
-                completada: comanda.completada,
                 precioFinal: comanda.precioFinal,
                 fechaCreacion: comanda.fechaCreacion,
                 fechaCierre: comanda.fechaCierre
             }
         })
+        comanda.platillos.forEach(async(p) => {
+            await prisma.platillosEnComandas.upsert({
+                where: {
+                    platilloId_comandaId: {comandaId:p.comandaId,platilloId:p.platilloId}
+                },
+                update: {
+                    cantidad: p.cantidad,
+                },
+                create: {
+                    platilloId: p.platilloId,
+                    comandaId: p.comandaId,
+                    cantidad: p.cantidad
+                }
+            })
+        })
         return updatedComanda
     } catch (err) {
+        console.error(err)
         return 'Error: No se pudo actualizar el registro'
     }
 }

@@ -1,5 +1,4 @@
 import { Container, Flex, Grid, Group, ScrollArea, Text, Title } from '@mantine/core';
-import ResumenComanda from '../components/ResumenComanda';
 import CarruselCategorias from '../components/CarruselCategorias';
 import { createContext, useEffect, useState } from 'react';
 import { getAllCategorias } from '../controllers/categoriaController';
@@ -15,11 +14,11 @@ const EditarComanda = () => {
     const { id } = useParams()
     const [categoriasPAG, setCategoriasPAG] = useState([])
     const [ selectCat, setSelectCat] = useState(0)
-    const [listaPlatillos, setListaPlatillos] = useState([])
+    // const [listaPlatillos, setListaPlatillos] = useState([])
     const [comandaEdit, setComandaEdit] = useState({})
     const getComandaInfo = async() => {
         const res = await getComanda(id)
-        setListaPlatillos(res.data.platillosEnComanda)
+        setComandaEdit(res.data[0])
         console.log(res)
     }
     const setCategory = (data) => {
@@ -82,7 +81,7 @@ const EditarComanda = () => {
                     paddingInline: 'none',
                     marginInline: 'none'
                 }} >
-                    <Title ta='left'>Crear comanda</Title>
+                    <Title ta='left'>Editar comanda</Title>
                     <Group justify='center' align='center' w='100%'>
                         <Flex direction='column' w='55%' justify='center' align='center'>
                             <Title order={3}>Lista de platillos</Title>
@@ -107,7 +106,7 @@ const EditarComanda = () => {
                             </ScrollArea>
                         </Flex>
                         <Group w='40%'>
-                            <ResumenEditComanda  />
+                            <ResumenEditComanda update  />
                         </Group>
                     </Group>
                 </Container>

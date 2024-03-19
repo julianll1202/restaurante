@@ -1,14 +1,13 @@
 import { Button, Container, Flex, Group, Select, Tabs, Text, Textarea } from "@mantine/core"
-import { DateTimePicker } from "@mantine/dates"
 import { useContext, useEffect, useState } from "react"
-import { Calendar } from "tabler-icons-react"
 import { getAllMesas } from "../controllers/mesaController"
 import { useForm } from "@mantine/form"
 import { getAllMeseros } from "../controllers/empleadoControllers"
-import PlatilloEnLista from './PlatilloEnLista';
-import { createComanda } from "../controllers/comandaController"
+import { updateComanda } from "../controllers/comandaController"
 import { PropTypes } from 'prop-types';
 import { comandaE} from './../views/EditarComanda';
+import PlatilloEditLista from "./PlatilloEditLista"
+import { useNavigate } from "react-router"
 
 const ResumenEditComanda = ({ update }) => {
     const [activeTab, setActiveTab] = useState('lista')
@@ -16,10 +15,12 @@ const ResumenEditComanda = ({ update }) => {
     const [meseros, setMeseros] = useState([])
     const { comandaEdit } = useContext(comandaE)
     const [subTotal, setSubTotal] = useState(0)
+    const navigate =useNavigate()
 
     const getSubTotal = () => {
         let total = 0
-        if (comandaEdit) {
+        if (comandaEdit.platillosEnComanda) {
+            console.log(comandaEdit.platillosEnComanda)
             comandaEdit.platillosEnComanda.forEach((p) => {
                 total += p.cantidad*p.platillo.precio
             })
@@ -41,17 +42,20 @@ const ResumenEditComanda = ({ update }) => {
         })
         setMesas(listaM)
     }
-    const crearComanda = async(values) => {
+    const actualizarComanda = async(values) => {
         console.log(values)
         const copyLista = [...comandaEdit.platillosEnComanda]
         copyLista.forEach((p) => {
-            delete p['platilloNombre']
-            delete p['platillo']['precio']
-            delete p['platillo']['imagen']['url']
+            p['platilloId'] = p['platillo']['platilloId']
+            delete p['platillo']
         })
+        console.log(copyLista)
         if (form.validate()) {
-            const res = await createComanda(Number(values.mesero), Number(values.mesa), (subTotal+(subTotal*0.16)), copyLista)
-            console.log(res)
+            const res = await updateComanda(Number(comandaEdit.comandaId), Number(values.mesero), Number(values.mesa), (subTotal+(subTotal*0.16)), copyLista)
+            if (res.status === 200) {
+                console.log(res)
+                navigate('/comandas')
+            }
         }
     }
     const getMeseros = async() => {
@@ -90,8 +94,8 @@ const ResumenEditComanda = ({ update }) => {
         getSelectInfo()
         if (update) {
             form.setValues({
-                mesa: comandaEdit.mesaId,
-                mesero: comandaEdit.empleadoId,
+                mesa: comandaEdit.mesaId ? comandaEdit.mesaId.toString() : '0',
+                mesero: comandaEdit.empleadoId ? comandaEdit.empleadoId.toString() : '0',
             })
         }
     }, [])
@@ -111,9 +115,9 @@ const ResumenEditComanda = ({ update }) => {
                 </Tabs.List>
                 <Tabs.Panel value="lista">
                     <Flex direction='column'>
-                        { comandaEdit ?
+                        { comandaEdit.platillosEnComanda ?
                         comandaEdit.platillosEnComanda.map((item, index) => {
-                            return (<PlatilloEnLista cantidad={item.cantidad} nombre={item.platillo.platilloNombre} id={item.platillo.platilloId} precio={item.platillo.precio} imagen={item.platillo.imagen.url} key={index} />)
+                            return (<PlatilloEditLista cantidad={item.cantidad} nombre={item.platillo.platilloNombre} id={item.platillo.platilloId} precio={item.platillo.precio} imagen={item.platillo.imagen.url} key={index} />)
                         }): null}
 
                     </Flex>
@@ -135,18 +139,18 @@ const ResumenEditComanda = ({ update }) => {
                     </Container>
                 </Tabs.Panel>
                 <Tabs.Panel value="comanda">
-                    <form onSubmit={form.onSubmit(crearComanda)}>
+                    <form onSubmit={form.onSubmit(actualizarComanda)}>
                         <Select ta='left' label='Mesero' w='100%' styles={{
                             label: {
                                 fontWeight: 'bold',
                                 textAlign: 'left'
-                            }}} data={meseros} {...form.getInputProps('mesero')}  />
+                            }}}  data={meseros} {...form.getInputProps('mesero')}  />
                         <Group w='100%' mt={10} mb={10}>
                             <Select styles={{
                             label: {
                                 fontWeight: 'bold',
                                 textAlign: 'left'
-                            }}} leftSection='#' ta='left' data={mesas} {...form.getInputProps('mesa')}  label='Mesa' w='30%' />
+                            }}} leftSection='#'  ta='left' data={mesas} {...form.getInputProps('mesa')}  label='Mesa' w='30%' />
                         </Group>
                         <Textarea ta='left' styles={{
                             label: {
@@ -154,7 +158,7 @@ const ResumenEditComanda = ({ update }) => {
                                 textAlign: 'left'
                             }
                         }} label='Notas adicionales' />
-                        <Button mt={10} type="submit" w='100%'>Crear</Button>
+                        <Button mt={10} type="submit" w='100%'>Actualizar</Button>
 
                     </form>
                 </Tabs.Panel>
