@@ -14,7 +14,6 @@ const EditarComanda = () => {
     const { id } = useParams()
     const [categoriasPAG, setCategoriasPAG] = useState([])
     const [ selectCat, setSelectCat] = useState(0)
-    // const [listaPlatillos, setListaPlatillos] = useState([])
     const [comandaEdit, setComandaEdit] = useState({})
     const getComandaInfo = async() => {
         const res = await getComanda(id)

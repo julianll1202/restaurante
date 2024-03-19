@@ -9,7 +9,7 @@ const QuantityPicker = ({ setQty, cantInicial }) => {
     useEffect(() => {
         setQuantity(cantInicial)
         setQty(cantInicial)
-    }, [])
+    }, [cantInicial])
     return (
         <Group w={140} mb={10} gap='xs'>
             <ActionIcon ml={0} size='md' radius='lg'  onClick={() => {

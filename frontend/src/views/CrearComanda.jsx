@@ -86,7 +86,7 @@ const CrearComanda = () => {
                                     platillosPAG.map((platillo, index) => {
                                         {
                                             return (
-                                                <Grid.Col span={3}>
+                                                <Grid.Col span={6}>
                                                     <Platillo miniVersion direccionamientoAgregar={addItem} platillo_Id={platillo.platilloId} imagenURL_platillo={`${STORED_IMAGES_URL}${platillo.imagen.url}`} precio_platillo={platillo.precio} descripcion_platillo={platillo.descripcion} titulo_platillo={platillo.platilloNombre} key={index}/>
                                                 </Grid.Col>
                                                 );

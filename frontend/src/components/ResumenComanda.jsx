@@ -2,21 +2,24 @@ import { Button, Container, Flex, Group, Select, Tabs, Text, Textarea } from "@m
 import { DateTimePicker } from "@mantine/dates"
 import { useContext, useEffect, useState } from "react"
 import { Calendar } from "tabler-icons-react"
-import { getAllMesas } from "../controllers/mesaController"
+import { getMesasLibres } from "../controllers/mesaController"
 import { useForm } from "@mantine/form"
 import { getAllMeseros } from "../controllers/empleadoControllers"
 import PlatilloEnLista from './PlatilloEnLista';
 import { listaP } from "../views/CrearComanda"
 import { createComanda } from "../controllers/comandaController"
 import { PropTypes } from 'prop-types';
+import { useNavigate } from "react-router-dom"
+import { getAllClientes } from "../controllers/clienteController"
 
 const ResumenComanda = ({ update }) => {
     const [activeTab, setActiveTab] = useState('lista')
     const [mesas, setMesas] = useState([])
     const [meseros, setMeseros] = useState([])
+    const [clientes, setClientes] = useState([])
     const { listaPlatillos} = useContext(listaP)
     const [subTotal, setSubTotal] = useState(0)
-
+    const navigate = useNavigate()
     const getSubTotal = () => {
         let total = 0
         if (listaPlatillos) {
@@ -28,7 +31,7 @@ const ResumenComanda = ({ update }) => {
     }
 
     const getMesas = async() => {
-        const lista = await getAllMesas()
+        const lista = await getMesasLibres()
         const list = lista.map((p) => Object.values(p))
         console.log(list)
         const listaM = []
@@ -50,10 +53,29 @@ const ResumenComanda = ({ update }) => {
             delete p['url']
         })
         if (form.validate()) {
-            const res = await createComanda(Number(values.mesero), Number(values.mesa), (subTotal+(subTotal*0.16)), copyLista)
-            console.log(res)
+            const res = await createComanda(Number(values.mesero), Number(values.cliente), Number(values.mesa), (subTotal+(subTotal*0.16)), copyLista)
+            if (res.status === 200) {
+                navigate('/comandas')
+            }
         }
     }
+
+    const getClientes = async() => {
+        const lista = await getAllClientes()
+        const list = lista.map((p) => Object.values(p))
+        console.log(list)
+        const listaM = []
+        list.forEach((cliente) => {
+            const m = {
+                "value": cliente[0].toString(),
+                "label": cliente[0] === 'Anonimo' ? cliente[0] : `${cliente[1]} ${cliente[2]}`,
+            }
+            listaM.push(m)
+        })
+        console.log(listaM)
+        setClientes(listaM)
+    }
+
     const getMeseros = async() => {
         const lista = await getAllMeseros()
         const list = lista.map((p) => Object.values(p))
@@ -74,11 +96,13 @@ const ResumenComanda = ({ update }) => {
         initialValues: {
             mesero: '0',
             mesa: '0',
+            cliente: '0',
             fecha: null,
         },
         validate: {
             mesa: (value) => ((value === '0' || value === null) ? 'Seleccione una mesa': null),
             mesero: (value) => ((value === '0' || value === null) ? 'Seleccione un mesero': null),
+            cliente: (value) => ((value === '0' || value === null) ? 'Seleccione un cliente': null),
             fecha: (value) => ((new Date(value).getTime() < (new Date().getTime()-600000)) ? 'La fecha debe ser a partir de hoy' : null)
         }
     })
@@ -86,6 +110,7 @@ const ResumenComanda = ({ update }) => {
     const getSelectInfo = () => {
         getMesas()
         getMeseros()
+        getClientes()
     }
     useEffect(() => {
         getSelectInfo()
@@ -136,6 +161,11 @@ const ResumenComanda = ({ update }) => {
                                 fontWeight: 'bold',
                                 textAlign: 'left'
                             }}} data={meseros} {...form.getInputProps('mesero')}  />
+                        <Select ta='left' label='Cliente' w='100%' styles={{
+                            label: {
+                                fontWeight: 'bold',
+                                textAlign: 'left'
+                            }}} data={clientes} {...form.getInputProps('cliente')}  />
                         <Group w='100%' mt={10} mb={10}>
                             <Select styles={{
                             label: {
