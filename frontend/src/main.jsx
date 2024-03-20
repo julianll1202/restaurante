@@ -2,6 +2,7 @@ import './index.css'
 import '@mantine/core/styles.css';
 import '@mantine/dates/styles.css';
 import '@mantine/carousel/styles.css';
+import '@mantine/charts/styles.css';
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { RouterProvider, createBrowserRouter } from 'react-router-dom'
@@ -17,6 +18,7 @@ import Mesas from './views/Mesas.jsx';
 import Comandas from './views/Comandas.jsx';
 import Platillos from './views/Platillos.jsx';
 import CrearComanda from './views/CrearComanda.jsx';
+import Compras from './views/Compras.jsx';
 import EditarComanda from './views/EditarComanda.jsx';
 
 const router = createBrowserRouter([
@@ -50,6 +52,10 @@ const router = createBrowserRouter([
       {
         path: '/crear-comanda',
         element: <CrearComanda />,
+      },
+      {
+        path: '/compras',
+        element: <Compras />
       },
       {
         path: '/editar-comanda/:id',
