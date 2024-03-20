@@ -1,10 +1,15 @@
 import express from 'express'
-import { createMesa, deleteMesa, getAllMesas, updateEstatusMesa, updateMesa } from '../controllers/mesaController.js'
+import { createMesa, deleteMesa, getAllMesas, getMesasLibres, updateEstatusMesa, updateMesa } from '../controllers/mesaController.js'
 
 const router = express.Router()
 
 router.get('/listar', async function (req, res) {
     const mesas = await getAllMesas(req, res)
+    res.status(200).send(mesas)
+})
+
+router.get('/libres', async function (req, res) {
+    const mesas = await getMesasLibres()
     res.status(200).send(mesas)
 })
 

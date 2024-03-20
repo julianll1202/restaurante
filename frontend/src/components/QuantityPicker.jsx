@@ -1,25 +1,19 @@
 import { ActionIcon, Group, TextInput } from "@mantine/core"
 import { Minus, Plus } from "tabler-icons-react"
 import { PropTypes } from 'prop-types';
-import { useState, useEffect } from "react";
+import { useEffect, useState, useEffect } from "react";
 
-const QuantityPicker = ({ setQty, getQty }) => {
-    const [quantity, setQuantity] = useState(1)
+const QuantityPicker = ({ setQty, cantInicial }) => {
+    const [quantity, setQuantity] = useState(cantInicial)
 
-    const cantidadActualizada = () => {
-        setQuantity(getQty)
-    }
     useEffect(() => {
-        cantidadActualizada()
-    }, [getQty])
-
+        setQuantity(cantInicial)
+        setQty(cantInicial)
+    }, [cantInicial])
     return (
         <Group w={140} mb={10} gap='xs'>
             <ActionIcon ml={0} size='md' radius='lg'  onClick={() => {
-                if (quantity == 0){
-                    setQty(0);
-                    setQuantity(0)
-                } else {
+                if (quantity !== 1){
                     setQty(quantity-1);
                     setQuantity(quantity-1)
                 }
@@ -34,8 +28,7 @@ const QuantityPicker = ({ setQty, getQty }) => {
 }
 
 QuantityPicker.propTypes = {
-    setQty: PropTypes.func,
-    getQty: PropTypes.number
+    setQty: PropTypes.func
 }
 
 export default QuantityPicker

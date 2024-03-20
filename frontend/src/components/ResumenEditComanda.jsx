@@ -1,64 +1,24 @@
 import { Button, Container, Flex, Group, Select, Tabs, Text, Textarea } from "@mantine/core"
-import { DateTimePicker } from "@mantine/dates"
 import { useContext, useEffect, useState } from "react"
-import { Calendar } from "tabler-icons-react"
-import { getMesasLibres } from "../controllers/mesaController"
+import { getAllMesas } from "../controllers/mesaController"
 import { useForm } from "@mantine/form"
 import { getAllMeseros } from "../controllers/empleadoControllers"
-import PlatilloEnLista from './PlatilloEnLista';
-import { listaP } from "../views/CrearComanda"
-import { createComanda } from "../controllers/comandaController"
+import { updateComanda } from "../controllers/comandaController"
 import { PropTypes } from 'prop-types';
-import { useNavigate } from "react-router-dom"
+import { comandaE} from './../views/EditarComanda';
+import PlatilloEditLista from "./PlatilloEditLista"
+import { useNavigate } from "react-router"
 import { getAllClientes } from "../controllers/clienteController"
+import { STORED_IMAGES_URL } from "../utils/constants"
 
-const ResumenComanda = ({ update }) => {
+const ResumenEditComanda = ({ update }) => {
     const [activeTab, setActiveTab] = useState('lista')
     const [mesas, setMesas] = useState([])
-    const [meseros, setMeseros] = useState([])
     const [clientes, setClientes] = useState([])
-    const { listaPlatillos} = useContext(listaP)
+    const [meseros, setMeseros] = useState([])
+    const { comandaEdit } = useContext(comandaE)
     const [subTotal, setSubTotal] = useState(0)
-    const navigate = useNavigate()
-    const getSubTotal = () => {
-        let total = 0
-        if (listaPlatillos) {
-            listaPlatillos.forEach((p) => {
-                total += p.cantidad*p.precio
-            })
-        }
-        setSubTotal(total)
-    }
-
-    const getMesas = async() => {
-        const lista = await getMesasLibres()
-        const list = lista.map((p) => Object.values(p))
-        console.log(list)
-        const listaM = []
-        list.forEach((mesa) => {
-            const m = {
-                "value": mesa[0].toString(),
-                "label": mesa[0].toString(),
-            }
-            listaM.push(m)
-        })
-        setMesas(listaM)
-    }
-    const crearComanda = async(values) => {
-        console.log(values)
-        const copyLista = [...listaPlatillos]
-        copyLista.forEach((p) => {
-            delete p['nombre']
-            delete p['precio']
-            delete p['url']
-        })
-        if (form.validate()) {
-            const res = await createComanda(Number(values.mesero), Number(values.cliente), Number(values.mesa), (subTotal+(subTotal*0.16)), copyLista)
-            if (res.status === 200) {
-                navigate('/comandas')
-            }
-        }
-    }
+    const navigate =useNavigate()
 
     const getClientes = async() => {
         const lista = await getAllClientes()
@@ -76,6 +36,57 @@ const ResumenComanda = ({ update }) => {
         setClientes(listaM)
     }
 
+    const getSubTotal = () => {
+        let total = 0
+        if (comandaEdit.platillosEnComanda) {
+            console.log(comandaEdit.platillosEnComanda)
+            comandaEdit.platillosEnComanda.forEach((p) => {
+                if (p.platillo)
+                    total += p.cantidad*p.platillo.precio
+                else
+                    total += p.cantidad*p.precio
+            })
+        }
+        setSubTotal(total)
+    }
+
+    const getMesas = async() => {
+        const lista = await getAllMesas()
+        const list = lista.map((p) => Object.values(p))
+        console.log(list)
+        const listaM = []
+        list.forEach((mesa) => {
+            const m = {
+                "value": mesa[0].toString(),
+                "label": mesa[0].toString(),
+            }
+            listaM.push(m)
+        })
+        setMesas(listaM)
+    }
+    const actualizarComanda = async(values) => {
+        console.log(values)
+        const copyLista = [...comandaEdit.platillosEnComanda]
+        copyLista.forEach((p) => {
+            if (p.platillo) {
+                p['platilloId'] = p['platillo']['platilloId']
+                p['comandaId'] = comandaEdit.comandaId
+                delete p['platillo']
+            } else {
+                p['comandaId'] = comandaEdit.comandaId
+                delete p['precio']
+                delete p['url']
+            }
+        })
+        console.log(copyLista)
+        if (form.validate()) {
+            const res = await updateComanda(Number(comandaEdit.comandaId), Number(values.mesero),  Number(values.cliente), Number(values.mesa), (subTotal+(subTotal*0.16)), copyLista)
+            if (res.status === 200) {
+                console.log(res)
+                navigate('/comandas')
+            }
+        }
+    }
     const getMeseros = async() => {
         const lista = await getAllMeseros()
         const list = lista.map((p) => Object.values(p))
@@ -96,8 +107,7 @@ const ResumenComanda = ({ update }) => {
         initialValues: {
             mesero: '0',
             mesa: '0',
-            cliente: '0',
-            fecha: null,
+            cliente: comandaEdit.clienteId ? comandaEdit.clienteId.toString() : '0'
         },
         validate: {
             mesa: (value) => ((value === '0' || value === null) ? 'Seleccione una mesa': null),
@@ -114,11 +124,18 @@ const ResumenComanda = ({ update }) => {
     }
     useEffect(() => {
         getSelectInfo()
+        if (update) {
+            form.setValues({
+                mesa: comandaEdit.mesaId ? comandaEdit.mesaId.toString() : '0',
+                mesero: comandaEdit.empleadoId ? comandaEdit.empleadoId.toString() : '0',
+                cliente: comandaEdit.clienteId ? comandaEdit.clienteId.toString() : '0'
+            })
+        }
     }, [])
 
     useEffect(() => {
         getSubTotal()
-    }, [listaPlatillos])
+    }, [comandaEdit])
     return (
         <Container size='sm' w={500} m='10px 50px' p={15} style={{
             border: '2px solid #D9D9D9',
@@ -131,9 +148,10 @@ const ResumenComanda = ({ update }) => {
                 </Tabs.List>
                 <Tabs.Panel value="lista">
                     <Flex direction='column'>
-                        { listaPlatillos ?
-                        listaPlatillos.map((item, index) => {
-                            return (<PlatilloEnLista cantidad={item.cantidad} nombre={item.nombre} id={item.platilloId} precio={item.precio} imagen={item.url} key={index} />)
+                        { comandaEdit.platillosEnComanda ?
+                        comandaEdit.platillosEnComanda.map((item, index) => {
+                            console.log(item)
+                            return (<PlatilloEditLista cantidad={item.cantidad} nombre={item.platillo ? `${item.platillo.platilloNombre}` : item.nombre} id={item.platillo ? item.platillo.platilloId : item.platilloId} precio={item.platillo ? item.platillo.precio : item.precio} imagen={item.platillo ? `${STORED_IMAGES_URL}${item.platillo.imagen.url}` : item.url} key={index} />)
                         }): null}
 
                     </Flex>
@@ -155,28 +173,23 @@ const ResumenComanda = ({ update }) => {
                     </Container>
                 </Tabs.Panel>
                 <Tabs.Panel value="comanda">
-                    <form onSubmit={form.onSubmit(crearComanda)}>
+                    <form onSubmit={form.onSubmit(actualizarComanda)}>
                         <Select ta='left' label='Mesero' w='100%' styles={{
                             label: {
                                 fontWeight: 'bold',
                                 textAlign: 'left'
-                            }}} data={meseros} {...form.getInputProps('mesero')}  />
+                            }}}  data={meseros} {...form.getInputProps('mesero')}  />
                         <Select ta='left' label='Cliente' w='100%' styles={{
                             label: {
                                 fontWeight: 'bold',
                                 textAlign: 'left'
-                            }}} data={clientes} {...form.getInputProps('cliente')}  />
+                            }}}  data={clientes} {...form.getInputProps('cliente')}  />
                         <Group w='100%' mt={10} mb={10}>
                             <Select styles={{
                             label: {
                                 fontWeight: 'bold',
                                 textAlign: 'left'
-                            }}} leftSection='#' ta='left' data={mesas} {...form.getInputProps('mesa')}  label='Mesa' w='30%' />
-                            <DateTimePicker ta='left' styles={{
-                            label: {
-                                fontWeight: 'bold',
-                                textAlign: 'left'
-                            }}} rightSection={<Calendar strokeWidth={1} />} {...form.getInputProps('fecha')}  valueFormat="YYYY-MM-DD hh:mm:ss" w='64%' withSeconds label='Fecha y hora' />
+                            }}} leftSection='#'  ta='left' data={mesas} {...form.getInputProps('mesa')}  label='Mesa' w='30%' />
                         </Group>
                         <Textarea ta='left' styles={{
                             label: {
@@ -184,7 +197,7 @@ const ResumenComanda = ({ update }) => {
                                 textAlign: 'left'
                             }
                         }} label='Notas adicionales' />
-                        <Button mt={10} type="submit" w='100%'>Crear</Button>
+                        <Button mt={10} type="submit" w='100%'>Actualizar</Button>
 
                     </form>
                 </Tabs.Panel>
@@ -193,8 +206,8 @@ const ResumenComanda = ({ update }) => {
     )
 }
 
-ResumenComanda.propTypes = {
+ResumenEditComanda.propTypes = {
     update: PropTypes.bool
 }
 
-export default ResumenComanda
+export default ResumenEditComanda

@@ -1,12 +1,15 @@
-import { Button, Card, ColorSwatch, Group, Image, List, Text } from "@mantine/core"
+import { ActionIcon, Button, Card, ColorSwatch, Group, Image, List, Text } from "@mantine/core"
 import { PropTypes } from 'prop-types';
 import { useEffect, useState } from "react";
 import { STORED_IMAGES_URL } from "../utils/constants";
-import { ChevronDown, ChevronUp } from "tabler-icons-react";
+import { ChevronDown, ChevronLeft, ChevronRight, ChevronUp, Edit, Trash } from "tabler-icons-react";
+import { cambiarEstatus, cancelarComanda } from "../controllers/comandaController";
+import { useNavigate } from "react-router";
 
-const Comanda = ({ comandaInfo, color }) => {
+const Comanda = ({ comandaInfo, color, prev, next }) => {
     const [comanda, setComanda] = useState({})
     const [seeDetails, setSeeDetails] = useState(false)
+    const navigate = useNavigate()
     const getDateAndTime = () => {
         console.log(comanda)
         const fechaCreacion = new Date(comandaInfo.fechaCreacion)
@@ -30,8 +33,8 @@ const Comanda = ({ comandaInfo, color }) => {
                 </Group>
             </Card.Section>
             {/* Imagen */}
-            <Card.Section >
-            <Image w="90%" radius={20} src={comandaInfo.platillosEnComanda.length > 0 ? `${STORED_IMAGES_URL}${comandaInfo.platillosEnComanda[0].platillo.imagen.url}` : null} />
+            <Card.Section  >
+            <Image w="90%" h={150}  radius={20} src={comandaInfo.platillosEnComanda.length > 0 ? `${STORED_IMAGES_URL}${comandaInfo.platillosEnComanda[0].platillo.imagen.url}` : null} />
             </Card.Section>
             {/* Informacion */}
             <Card.Section mt="sm" mb={5} inheritPadding>
@@ -54,6 +57,14 @@ const Comanda = ({ comandaInfo, color }) => {
                 <Text ta='left' ><b>Hora: </b>{ comandaInfo ? comanda['hora'] : null }</Text>
                 <Text display={!seeDetails ? 'none': 'block'} ta='left'><b>Total: </b>${comandaInfo ? comandaInfo.precioFinal : null}</Text>
             </Card.Section>
+            <Card.Section>
+                <Group justify="center">
+                    <ActionIcon display={prev === 0 ? 'none' : 'block'} color="gray" radius='xl' size='lg' onClick={async() => cambiarEstatus(Number(comandaInfo.comandaId), prev)} ><ChevronLeft /></ActionIcon>
+                    <ActionIcon color="red" radius='xl' size='lg' p={5} onClick={async() => cancelarComanda(Number(comandaInfo.comandaId))}><Trash /></ActionIcon>
+                    <ActionIcon radius='xl' size='lg' onClick={() => navigate(`/editar-comanda/${comandaInfo.comandaId}`)}  ><Edit /></ActionIcon>
+                    <ActionIcon display={next === 0  ? 'none' : 'block'} color="gray" radius='xl' size='lg' onClick={async() => cambiarEstatus(Number(comandaInfo.comandaId), next)} ><ChevronRight /></ActionIcon>
+                </Group>
+            </Card.Section>
             <Card.Section inheritPadding mt="sm" mb={5}>
                 <Button onClick={() => setSeeDetails(!seeDetails)} leftSection={!seeDetails ? <ChevronDown /> : <ChevronUp />} color="light-brown">{!seeDetails ? 'Ver' : 'Ocultar'} detalles</Button>
             </Card.Section>
@@ -63,7 +74,9 @@ const Comanda = ({ comandaInfo, color }) => {
 
 Comanda.propTypes = {
     comandaInfo: PropTypes.object,
-    color: PropTypes.string
+    color: PropTypes.string,
+    prev: PropTypes.number,
+    next: PropTypes.number,
 }
 
 export default Comanda

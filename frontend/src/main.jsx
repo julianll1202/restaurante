@@ -19,6 +19,7 @@ import Comandas from './views/Comandas.jsx';
 import Platillos from './views/Platillos.jsx';
 import CrearComanda from './views/CrearComanda.jsx';
 import Compras from './views/Compras.jsx';
+import EditarComanda from './views/EditarComanda.jsx';
 
 const router = createBrowserRouter([
   {
@@ -55,6 +56,10 @@ const router = createBrowserRouter([
       {
         path: '/compras',
         element: <Compras />
+      },
+      {
+        path: '/editar-comanda/:id',
+        element: <EditarComanda />,
       }
     ]
   },
@@ -66,7 +71,7 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <MantineProvider theme={restauranteTheme}   >
+    <MantineProvider theme={restauranteTheme} withGlobalStyles>
         <AuthProvider>
           <RouterProvider router={router} />
 

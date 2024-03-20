@@ -29,6 +29,6 @@ En la tabla **roles** crear un registro llamado *Administrator*.
 
 En la tabla **users** crear un registro llamado *admin*.
 
-`` INSERT INTO roles VALUES (DEFAULT, 'admin', 'admin', 1); ``
+`` INSERT INTO users VALUES (DEFAULT, 'admin', 'admin', 1, '2024-03-11'); ``
 
 ***El servidor de backend puede funcionar por si solo, pero el servidor de frontend requiere de la conexion al servidor de backend para poder trabajar debido a que se necesita iniciar sesión para acceder al sistema***
