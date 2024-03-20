@@ -13,7 +13,7 @@ const QuantityPicker = ({ setQty, cantInicial }) => {
     return (
         <Group w={140} mb={10} gap='xs'>
             <ActionIcon ml={0} size='md' radius='lg'  onClick={() => {
-                if (quantity !== 1){
+                if (quantity > 0){
                     setQty(quantity-1);
                     setQuantity(quantity-1)
                 }
