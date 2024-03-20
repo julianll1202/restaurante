@@ -16,8 +16,14 @@ const PlatilloEditLista = ({imagen, id, nombre, precio, cantidad}) => {
                 oldListaP.platillosEnComanda.splice(index,1)
             } else {
                 oldListaP.platillosEnComanda.forEach((item) => {
-                    if (item.platillo.platilloId === id) {
-                        item.cantidad = quantity
+                    if (item.platillo) {
+                        if (item.platillo.platilloId === id) {
+                            item.cantidad = quantity
+                        }
+                    } else {
+                        if (item.platilloId === id) {
+                            item.cantidad = quantity
+                        }
                     }
                 })
             }
@@ -33,7 +39,7 @@ const PlatilloEditLista = ({imagen, id, nombre, precio, cantidad}) => {
     }, [quantity])
     return (
         <Group mb={15}>
-            <Avatar size='lg' radius='md' src={`${STORED_IMAGES_URL}${imagen}`} />
+            <Avatar size='lg' radius='md' src={`${imagen}`} />
             <Text w={70}  style={{
                 'overflow': 'hidden',
                 'textOverflow':'ellipsis'

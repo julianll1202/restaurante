@@ -144,8 +144,6 @@ export const updateComanda = async (req, res) => {
                 empleadoId: comanda.empleadoId,
                 mesaId: comanda.mesaId,
                 precioFinal: comanda.precioFinal,
-                fechaCreacion: comanda.fechaCreacion,
-                fechaCierre: comanda.fechaCierre
             }
         })
         comanda.platillos.forEach(async(p) => {

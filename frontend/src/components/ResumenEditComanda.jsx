@@ -9,6 +9,7 @@ import { comandaE} from './../views/EditarComanda';
 import PlatilloEditLista from "./PlatilloEditLista"
 import { useNavigate } from "react-router"
 import { getAllClientes } from "../controllers/clienteController"
+import { STORED_IMAGES_URL } from "../utils/constants"
 
 const ResumenEditComanda = ({ update }) => {
     const [activeTab, setActiveTab] = useState('lista')
@@ -40,7 +41,10 @@ const ResumenEditComanda = ({ update }) => {
         if (comandaEdit.platillosEnComanda) {
             console.log(comandaEdit.platillosEnComanda)
             comandaEdit.platillosEnComanda.forEach((p) => {
-                total += p.cantidad*p.platillo.precio
+                if (p.platillo)
+                    total += p.cantidad*p.platillo.precio
+                else
+                    total += p.cantidad*p.precio
             })
         }
         setSubTotal(total)
@@ -64,12 +68,19 @@ const ResumenEditComanda = ({ update }) => {
         console.log(values)
         const copyLista = [...comandaEdit.platillosEnComanda]
         copyLista.forEach((p) => {
-            p['platilloId'] = p['platillo']['platilloId']
-            delete p['platillo']
+            if (p.platillo) {
+                p['platilloId'] = p['platillo']['platilloId']
+                p['comandaId'] = comandaEdit.comandaId
+                delete p['platillo']
+            } else {
+                p['comandaId'] = comandaEdit.comandaId
+                delete p['precio']
+                delete p['url']
+            }
         })
         console.log(copyLista)
         if (form.validate()) {
-            const res = await updateComanda(Number(comandaEdit.comandaId), Number(values.mesero), Number(values.mesa), (subTotal+(subTotal*0.16)), copyLista)
+            const res = await updateComanda(Number(comandaEdit.comandaId), Number(values.mesero),  Number(values.cliente), Number(values.mesa), (subTotal+(subTotal*0.16)), copyLista)
             if (res.status === 200) {
                 console.log(res)
                 navigate('/comandas')
@@ -139,7 +150,8 @@ const ResumenEditComanda = ({ update }) => {
                     <Flex direction='column'>
                         { comandaEdit.platillosEnComanda ?
                         comandaEdit.platillosEnComanda.map((item, index) => {
-                            return (<PlatilloEditLista cantidad={item.cantidad} nombre={item.platillo.platilloNombre} id={item.platillo.platilloId} precio={item.platillo.precio} imagen={item.platillo.imagen.url} key={index} />)
+                            console.log(item)
+                            return (<PlatilloEditLista cantidad={item.cantidad} nombre={item.platillo ? `${item.platillo.platilloNombre}` : item.nombre} id={item.platillo ? item.platillo.platilloId : item.platilloId} precio={item.platillo ? item.platillo.precio : item.precio} imagen={item.platillo ? `${STORED_IMAGES_URL}${item.platillo.imagen.url}` : item.url} key={index} />)
                         }): null}
 
                     </Flex>

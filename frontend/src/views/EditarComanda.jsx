@@ -29,7 +29,7 @@ const EditarComanda = () => {
     const addItem = (item) => {
         let lista = []
         if (comandaEdit.platillosEnComanda.length > 0) {
-            lista = [...comandaEdit]
+            lista = {...comandaEdit}
         }
         let existente = false
         lista.platillosEnComanda.forEach((i) => {
@@ -40,7 +40,7 @@ const EditarComanda = () => {
         })
         if(!existente) {
             item['cantidad'] = 1
-            lista.push(item)
+            lista.platillosEnComanda.push(item)
         }
         setComandaEdit(lista)
     }
