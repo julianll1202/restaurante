@@ -16,6 +16,7 @@ import rolesRouter from './routes/roles.js'
 import imgRouter from './routes/imagenes.js'
 
 import cors from 'cors'
+import { isAuthenticated } from './middlewares/authentication.js'
 
 const app = express()
 

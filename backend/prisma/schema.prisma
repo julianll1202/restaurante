@@ -27,6 +27,33 @@ model Roles {
   roleId Int @id @default(autoincrement())
   roleName String
   users Users[]
+  permits PermitsInRole[]
+}
+
+model PermitsInRole {
+  roleId Int
+  role Roles @relation(fields: [roleId], references: [roleId])
+  permitId Int
+  permit Permits @relation(fields: [permitId], references: [permitId])
+  @@id([roleId, permitId])
+}
+model Permits {
+  permitId Int @id @default(autoincrement())
+  action Permisos
+  area Areas
+  roles PermitsInRole[]
+}
+enum Areas {
+  COMANDAS
+  EMPLEADOS
+  PRODUCTOS
+  PLATILLOS
+  COMPRAS
+  USUARIOS
+}
+enum Permisos {
+  VER
+  EDITAR
 }
 
 model RefreshToken {

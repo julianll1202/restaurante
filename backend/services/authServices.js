@@ -20,6 +20,7 @@ export function findRefreshTokenById (id) {
     })
 }
 
+
 export function deleteRefreshToken (id) {
     return prisma.refreshToken.update({
         where: {
