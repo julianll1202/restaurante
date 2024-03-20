@@ -25,7 +25,7 @@ const ProductoEnLista = ({producto}) => {
 
     let productoF = {
         nombreProducto: producto.nombreProducto,
-        precio: (producto.precio)*quantity
+        precio: Math.round(((producto.precio)*quantity)*100)/100
     }
 
     const cantidadActualizada = () => {
@@ -48,6 +48,7 @@ const ProductoEnLista = ({producto}) => {
                 if (item.productoId === producto.productoId) {
                     item.cantidad = quantity
                     item.precioTotal = quantity*item.precio
+                    item.precioTotal = Math.round(item.precioTotal*100)/100
                 }
             })
         }
@@ -56,9 +57,8 @@ const ProductoEnLista = ({producto}) => {
 
     return (
         <Group mb={15}>
-            {/* <Avatar size='lg' radius='md' src={`${STORED_IMAGES_URL}image-1710119778692.png`} /> */}
             <Text>{productoF.nombreProducto}</Text>
-            <QuantityPicker setQty={setQuantity} getQty={quantity}/>
+            <QuantityPicker setQty={setQuantity} cantInicial={producto.cantidad}/>
             <Text>{productoF.precio}</Text>
         </Group>
     )

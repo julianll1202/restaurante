@@ -1,19 +1,17 @@
 'use client'
-import { Group, Modal, Button, Flex, TextInput, NumberInput, Select } from "@mantine/core";
+import { Group, Modal, Button, Flex, NumberInput, Select } from "@mantine/core";
 import { DeviceFloppy } from "tabler-icons-react";
 import { PropTypes } from 'prop-types';
 import "../styles/ModalEmpleados.css";
 import { createContext, useEffect, useState } from "react";
 import { useForm } from "@mantine/form";
 import { DateTimePicker } from "@mantine/dates";
-import { createPropducto, updateProducto,  getAllProductos, getOneProducto } from "../controllers/productoController";
-import { createCompra, updateCompra, getCompraPorId } from "../controllers/compraController";
+import { getAllProductos } from "../controllers/productoController";
+import { createCompra, updateCompra, getCompraPorId, getCompraById } from "../controllers/compraController";
 import ResumenCompra from '../components/ResumenCompra';
 
 export const listaProd = createContext({})
 function ModalCompras ({opened, close, update, updateInfo}) {
-    const [ fechaCad, setFechaCad ] = useState(null)
-    const [ fechaCompra, setFechaCompra ] = useState(null)
     const [ productos, setProductos ] = useState([])
     const [ productosT, setProductosT ] = useState([])
     const [ listaProductos, setListaProductos ] = useState([])
@@ -21,6 +19,7 @@ function ModalCompras ({opened, close, update, updateInfo}) {
     const [total, setTotal] = useState(0)
     const [compraIdUpdate, setCompraIdUpdate] = useState(0)
     const [ precioU, setPrecioU ] = useState(0)
+
     const getComprasList = async() => {
         const lista = await getAllProductos()
         const listaM = []
@@ -63,35 +62,46 @@ function ModalCompras ({opened, close, update, updateInfo}) {
         let Productos;
         for(let key in updateInfo){
             if(key ==='compraId'){
-                Productos  = await getCompraPorId(updateInfo[key])
+                // Productos  = await getCompraPorId(updateInfo[key])
+                Productos  = await getCompraById(updateInfo[key])
+                Productos.productosEnCompra.forEach((p) => {
+                    p['compraId'] = Productos.compraId
+                    p['precio'] = p['precioTotal']/p['cantidad']
+                    p['precio'] = Math.round(p['precio']*100)/100
+                    p['nombreProducto'] = p['producto']['productoNombre']
+                    p['productoId'] = p['producto']['productoId']
+                    delete p['producto']
+                })
+                console.log(Productos.productosEnCompra)
+
             }
         }
-        const precioProductos = await getAllProductos()
-        let listaM = []
-        precioProductos.forEach((productos) => {
-            productos['precioP'] = Object.values(productos['productosEnCompra'])
-            let precio = 0;
-            if(productos['precioP'].length === 0){
-                precio = 0;
-            } else {
-                precio = ((productos['precioP'][0].precioTotal)/(productos['precioP'][0].cantidad))
-                precio = Math.round(precio*100)/100
-            }
-            if(isNaN(precio)) precio = 0
-            const m = {
-                "productoId": productos['productoId'],
-                "precio": precio
-            }
-            listaM.push(m)
-        })
-        for(let i = 0; i < Productos.length; i++){
-            for(let j = 0; j < listaM.length; j++){
-                if(Productos[i].productoId === listaM[j].productoId){
-                    Productos[i].precio = listaM[j].precio
-                }
-            }
-        }
-        setProductos(Productos)
+        // const precioProductos = await getAllProductos()
+        // let listaM = []
+        // precioProductos.forEach((productos) => {
+        //     productos['precioP'] = Object.values(productos['productosEnCompra'])
+        //     let precio = 0;
+        //     if(productos['precioP'].length === 0){
+        //         precio = 0;
+        //     } else {
+        //         precio = ((productos['precioP'][0].precioTotal)/(productos['precioP'][0].cantidad))
+        //         precio = Math.round(precio*100)/100
+        //     }
+        //     if(isNaN(precio)) precio = 0
+        //     const m = {
+        //         "productoId": productos['productoId'],
+        //         "precio": precio
+        //     }
+        //     listaM.push(m)
+        // })
+        // for(let i = 0; i < Productos.length; i++){
+        //     for(let j = 0; j < listaM.length; j++){
+        //         if(Productos[i].productoId === listaM[j].productoId){
+        //             Productos[i].precio = listaM[j].precio
+        //         }
+        //     }
+        // }
+        setProductos(Productos.productosEnCompra)
     }
 
     const form = useForm({
@@ -101,6 +111,7 @@ function ModalCompras ({opened, close, update, updateInfo}) {
         },
         validate: {
             fecha: (value) => (value === null ? 'Fecha no válida': null),
+            precio: (value) => (value <= 0 ? 'Precio no válido': null)
         }
     })
 
@@ -136,7 +147,7 @@ function ModalCompras ({opened, close, update, updateInfo}) {
                 if (i.productoId === currentlySelected) {
                     i.precio = form.getInputProps('precio').value
                     i.cantidad += 1
-                    i.precioTotal = i.cantidad*precioU
+                    i.precioTotal = i.cantidad*i.precio
                     existente = true
                 }
             })
@@ -147,6 +158,7 @@ function ModalCompras ({opened, close, update, updateInfo}) {
                 } else {
                     producto['cantidad'] = 1
                     producto['precio'] = form.getInputProps('precio').value
+                    producto['precio'] = Math.round(producto['precio']*100)/100
                     lista.push(producto)
                 }
             }
@@ -190,7 +202,7 @@ function ModalCompras ({opened, close, update, updateInfo}) {
             delete p['precio']
         })
         console.log('hola')
-        if (form.validate()) {
+        if (form.validateField('fecha')) {
             const res = await createCompra(values.fecha, total, productos)
             setProductos([])
             if (res.status === 200) {
@@ -201,7 +213,12 @@ function ModalCompras ({opened, close, update, updateInfo}) {
     }
 
     const hadleUpdateCompra = async (values) => {
-        if (form.validate()) {
+        console.log(values)
+        if (form.validateField('fecha')) {
+            const productosCompra = [...productos]
+            productosCompra.forEach((p) => {
+                p['compraId'] = productos[0].compraId
+            })
             const res = await updateCompra(compraIdUpdate, values.fecha, total, productos)
             setProductos([])
             if (res.status === 200) {
@@ -227,6 +244,7 @@ function ModalCompras ({opened, close, update, updateInfo}) {
                                     <DateTimePicker {...form.getInputProps('fecha')} withSeconds label='Fecha de compra' valueFormat="YYYY-MM-DD hh:mm:ss"  w='95%'  />
                                     <Group>
                                         <Select label='Productos' data={listaProductos} onChange={(value, label) => setCurrentlySelected(Number(value))} />
+                                        <NumberInput label='Precio individual' {...form.getInputProps('precio')} />
                                         <Button onClick={addToList}>Agregar</Button>
                                     </Group>
                                     <ResumenCompra setTotalCompra={setTotal} productos={productos}/>

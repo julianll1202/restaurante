@@ -1,7 +1,7 @@
 import { ActionIcon, Group, TextInput } from "@mantine/core"
 import { Minus, Plus } from "tabler-icons-react"
 import { PropTypes } from 'prop-types';
-import { useEffect, useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const QuantityPicker = ({ setQty, cantInicial }) => {
     const [quantity, setQuantity] = useState(cantInicial)
@@ -28,7 +28,7 @@ const QuantityPicker = ({ setQty, cantInicial }) => {
 }
 
 QuantityPicker.propTypes = {
-    setQty: PropTypes.func
+    cantInicial: PropTypes.number
 }
 
 export default QuantityPicker

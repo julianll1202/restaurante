@@ -44,7 +44,7 @@ export const getAllComandas = async (req, res) => {
 export const getComandaById = async (id) => {
     const comanda = await prisma.comandas.findMany({
         where: {
-            comandaId: id,
+            comandaId: Number(id),
         },
         select: {
             comandaId: true,

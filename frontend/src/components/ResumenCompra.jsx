@@ -1,10 +1,5 @@
-import { Button, Container, Flex, Group, Select, Tabs, Text, Textarea } from "@mantine/core"
-import { DateTimePicker } from "@mantine/dates"
+import { Container, Flex, Group, Tabs, Text } from "@mantine/core"
 import { useContext, useEffect, useState } from "react"
-import { Calendar } from "tabler-icons-react"
-import { getAllMesas } from "../controllers/mesaController"
-import { useForm } from "@mantine/form"
-import { getAllMeseros } from "../controllers/empleadoControllers"
 import ProductoEnLista from './ProductoEnLista';
 import { PropTypes } from 'prop-types';
 import { listaProd } from "./ModalCompras"
@@ -18,6 +13,7 @@ const ResumenCompra = ({productos, setTotalCompra}) => {
         let total = 0
         listaP.forEach((p) => {
             total += p.cantidad*p.precio
+            total = Math.round(total*100)/100
         })
         setSubTotal(total)
         setTotalCompra(total)

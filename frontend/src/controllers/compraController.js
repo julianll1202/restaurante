@@ -11,6 +11,11 @@ export const getCompraPorId = async (compraId) => {
     return res.data
 }
 
+export const getCompraById = async (compraId) => {
+    const res = await API.get(`compras/ver/${compraId}`)
+    return res.data
+}
+
 export const comprasConProductos = async() => {
     const res = await API.get('compras/comprasConProductos')
     return res.data
