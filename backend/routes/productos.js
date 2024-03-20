@@ -1,14 +1,15 @@
 import express from 'express'
 import { createProducto, deleteProducto, getAllProductos, updateProducto, getOneProducto } from '../controllers/productoController.js'
+import { authenticateProductos, isAuthenticated } from '../middlewares/authentication.js'
 
 const router = express.Router()
 
-router.get('/listar', async function (req, res) {
+router.get('/listar', authenticateProductos, isAuthenticated, async function (req, res) {
     const productos = await getAllProductos(req, res)
     res.status(200).send(productos)
 })
 
-router.get('/obtener/:id', async function (req, res) {
+router.get('/obtener/:id', authenticateProductos, isAuthenticated, async function (req, res) {
     const producto = await getOneProducto(req, res, req.params.id)
     if (!JSON.stringify(producto).startsWith('"Error')) {
         res.status(200).send(producto)
@@ -17,7 +18,7 @@ router.get('/obtener/:id', async function (req, res) {
     }
 })
 
-router.post('/crear', async function (req, res) {
+router.post('/crear', authenticateProductos, isAuthenticated, async function (req, res) {
     const producto = await createProducto(req, res)
     if (!JSON.stringify(producto).startsWith('"Error')) {
         res.status(200).send(producto)
@@ -26,7 +27,7 @@ router.post('/crear', async function (req, res) {
     }
 })
 
-router.put('/actualizar', async function (req, res) {
+router.put('/actualizar', authenticateProductos, isAuthenticated, async function (req, res) {
     const productoActualizado = await updateProducto(req, res)
     if (!JSON.stringify(productoActualizado).startsWith('"Error')) {
         res.status(200).send(productoActualizado)
@@ -34,7 +35,7 @@ router.put('/actualizar', async function (req, res) {
         res.status(400).send(productoActualizado)
     }
 })
-router.delete('/eliminar/:id', async function (req, res) {
+router.delete('/eliminar/:id', authenticateProductos, isAuthenticated, async function (req, res) {
     const productoD = await deleteProducto(req, res)
     if (!JSON.stringify(productoD).startsWith('"Error')) {
         res.status(200).send(productoD)
