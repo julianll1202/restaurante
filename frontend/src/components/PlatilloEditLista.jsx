@@ -3,6 +3,7 @@ import QuantityPicker from "./QuantityPicker"
 import { useContext, useEffect, useState } from "react"
 import { PropTypes } from 'prop-types';
 import { comandaE } from "../views/EditarComanda";
+import { STORED_IMAGES_URL } from "../utils/constants";
 
 const PlatilloEditLista = ({imagen, id, nombre, precio, cantidad}) => {
     const [quantity, setQuantity] = useState(cantidad)
@@ -15,8 +16,14 @@ const PlatilloEditLista = ({imagen, id, nombre, precio, cantidad}) => {
                 oldListaP.platillosEnComanda.splice(index,1)
             } else {
                 oldListaP.platillosEnComanda.forEach((item) => {
-                    if (item.platillo.platilloId === id) {
-                        item.cantidad = quantity
+                    if (item.platillo) {
+                        if (item.platillo.platilloId === id) {
+                            item.cantidad = quantity
+                        }
+                    } else {
+                        if (item.platilloId === id) {
+                            item.cantidad = quantity
+                        }
                     }
                 })
             }

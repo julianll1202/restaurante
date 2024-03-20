@@ -7,6 +7,15 @@ export const getAllMesas = async (req, res) => {
     return mesas
 }
 
+export const getMesasLibres = async () => {
+    const mesas = await prisma.mesas.findMany({
+        where: {
+            ocupada: false
+        }
+    })
+    return mesas
+}
+
 export const createMesa = async (req, res) => {
     const mesaInfo = req.body
     try {

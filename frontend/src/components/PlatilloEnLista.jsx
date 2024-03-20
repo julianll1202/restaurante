@@ -25,6 +25,10 @@ const PlatilloEnLista = ({imagen, id, nombre, precio, cantidad}) => {
     useEffect(() => {
         updateCantidad()
     }, [quantity])
+
+    useEffect(() => {
+        setQuantity(cantidad)
+    }, [cantidad])
     return (
         <Group mb={15}>
             <Avatar size='lg' radius='md' src={`${imagen}`} />

@@ -14,7 +14,6 @@ const EditarComanda = () => {
     const { id } = useParams()
     const [categoriasPAG, setCategoriasPAG] = useState([])
     const [ selectCat, setSelectCat] = useState(0)
-    // const [listaPlatillos, setListaPlatillos] = useState([])
     const [comandaEdit, setComandaEdit] = useState({})
     const getComandaInfo = async() => {
         const res = await getComanda(id)
@@ -30,7 +29,7 @@ const EditarComanda = () => {
     const addItem = (item) => {
         let lista = []
         if (comandaEdit.platillosEnComanda.length > 0) {
-            lista = [...comandaEdit]
+            lista = {...comandaEdit}
         }
         let existente = false
         lista.platillosEnComanda.forEach((i) => {
@@ -41,7 +40,7 @@ const EditarComanda = () => {
         })
         if(!existente) {
             item['cantidad'] = 1
-            lista.push(item)
+            lista.platillosEnComanda.push(item)
         }
         setComandaEdit(lista)
     }

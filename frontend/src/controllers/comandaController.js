@@ -6,9 +6,9 @@ export const getAllComandas = async() => {
     return res
 }
 
-export const createComanda = async(empleadoId, mesaId, precioFinal, platillos) => {
+export const createComanda = async(empleadoId, clienteId, mesaId, precioFinal, platillos) => {
     const res = await API.post('comandas/crear', {
-        clienteId: 1,
+        clienteId: clienteId,
         empleadoId: empleadoId,
         mesaId: mesaId,
         precioFinal: precioFinal,
@@ -17,10 +17,10 @@ export const createComanda = async(empleadoId, mesaId, precioFinal, platillos) =
     return res
 }
 
-export const updateComanda = async(comandaId, empleadoId, mesaId, precioFinal, platillos) => {
+export const updateComanda = async(comandaId, empleadoId, clienteId, mesaId, precioFinal, platillos) => {
     const res = await API.put('comandas/actualizar', {
         id: comandaId,
-        clienteId: 1,
+        clienteId: clienteId,
         empleadoId: empleadoId,
         mesaId: mesaId,
         precioFinal: precioFinal,
