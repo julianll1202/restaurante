@@ -110,7 +110,7 @@ export const createComanda = async (req, res) => {
                         },
                         data: {
                             cantidad: {
-                                decrement: p.cantidad
+                                decrement: p.cantidad*prod.cantidad
                             }
                         }
                     })
@@ -216,7 +216,7 @@ export const cancelComanda = async (id) => {
                     },
                     data: {
                         cantidad: {
-                            increment: p.cantidad
+                            increment: p.cantidad*prod.cantidad
                         }
                     }
                 })
