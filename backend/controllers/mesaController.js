@@ -64,6 +64,22 @@ export const deleteMesa = async (req, res) => {
     }
 }
 
+export const deleteMesaSOAP = async (mesaId) => {
+    if (!mesaId) {
+        return 'Error: El id de la mesa es necesario'
+    }
+    try {
+        const deletedMesa = await prisma.mesas.delete({
+            where: {
+                mesaId: mesaId
+            }
+        })
+        return deletedMesa
+    } catch (err) {
+        return 'Error: No se pudo eliminar el registro'
+    }
+}
+
 export const updateMesa = async (req, res) => {
     const mesa = req.body
     if (!mesa.id) {
@@ -79,6 +95,28 @@ export const updateMesa = async (req, res) => {
                 ubicacion: mesa.ubicacion,
                 tipoMesa: mesa.tipoMesa,
                 ocupada: mesa.ocupada
+            }
+        })
+        return updatedMesa
+    } catch (err) {
+        return 'Error: No se pudo actualizar el registro'
+    }
+}
+
+export const updateMesaSOAP = async (mesaId, capacidad, ubicacion, tipoMesa, ocupada) => {
+    if (!mesaId) {
+        return 'Error: El id de la mesa es necesario'
+    }
+    try {
+        const updatedMesa = await prisma.mesas.update({
+            where: {
+                mesaId: mesaId
+            },
+            data: {
+                capacidad: capacidad,
+                ubicacion: ubicacion,
+                tipoMesa: tipoMesa,
+                ocupada: ocupada
             }
         })
         return updatedMesa

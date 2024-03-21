@@ -16,7 +16,7 @@ import rolesRouter from './routes/roles.js'
 import imgRouter from './routes/imagenes.js'
 import cors from 'cors'
 import {soap} from 'express-soap';
-import { getAllMesas, createMesaSOAP } from './controllers/mesaController.js'
+import { getAllMesas, createMesaSOAP, updateMesaSOAP, deleteMesaSOAP } from './controllers/mesaController.js'
 
 const app = express()
 
@@ -69,10 +69,53 @@ app.use('/soap/calculation', soap({
                 },
                 Crear: function(args) {
                     return new Promise(async (resolve, reject) => {
-                        const mesa = await createMesaSOAP(args.capacidad, args.ubicacion, args.tipoMesa)
-                        resolve({
-                            result: mesa
-                        });
+                        try {
+                            if(args == undefined) reject('Error: Faltan datos')
+                            const capacidad = args.capacidad
+                            const ubicacion = args.ubicacion
+                            const tipoMesa = args.tipoMesa
+                            if(capacidad == undefined || ubicacion == undefined || tipoMesa == undefined) reject('Error: Faltan datos')
+                            const mesa = await createMesaSOAP(capacidad, ubicacion, tipoMesa)
+                            resolve({
+                                result: mesa
+                            });
+                        }catch(err){
+                            reject(err)
+                        }
+                    });
+                },
+                Actualizar: function(args) {
+                    return new Promise(async (resolve, reject) => {
+                        try {
+                            if(args == undefined) reject('Error: Faltan datos')
+                            const mesaId = args.mesaId
+                            const capacidad = args.capacidad
+                            const ubicacion = args.ubicacion
+                            const tipoMesa = args.tipoMesa
+                            const ocupada = args.ocupada
+                            if(mesaId == undefined || capacidad == undefined || ubicacion == undefined || tipoMesa == undefined) reject('Error: Faltan datos')
+                            const mesaActualizada = await updateMesaSOAP(mesaId, capacidad, ubicacion, tipoMesa, ocupada)
+                            resolve({
+                                result: mesaActualizada
+                            });
+                        } catch(err) {
+                            reject(err)
+                        }
+                    });
+                },
+                Eliminar: function(args) {
+                    return new Promise(async (resolve, reject) => {
+                        try{
+                            if(args == undefined) reject('Error: Faltan datos')
+                            const mesaId = args.mesaId
+                            if(mesaId == undefined) reject('Error: Faltan datos')
+                            const mesaD = await deleteMesaSOAP(mesaId)
+                            resolve({
+                                result: mesaD
+                            });
+                        }catch(err){
+                            reject(err)
+                        }
                     });
                 }
               }

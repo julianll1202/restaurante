@@ -63,6 +63,38 @@
                     </xsd:sequence>
                 </xsd:complexType>
             </xsd:element>
+            <xsd:element name="Actualizar">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="mesaId" type="xsd:int" />
+                        <xsd:element name="capacidad" type="xsd:int" />
+                        <xsd:element name="ubicacion" type="xsd:string" />
+                        <xsd:element name="tipoMesa" type="xsd:string" />
+                        <xsd:element name="ocupada" type="xsd:boolean" />
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="ActualizarResponse">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="result" type="xsd:string" />
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="Eliminar">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="mesaId" type="xsd:int" />
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="EliminarResponse">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="result" type="xsd:string" />
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
         </xsd:schema>
     </wsdl:types>
     <wsdl:message name="ICalculator_Add_InputMessage">
@@ -89,6 +121,18 @@
     <wsdl:message name="ICalculator_Crear_OutputMessage">
         <wsdl:part name="parameters" element="tns:CrearResponse" />
     </wsdl:message>
+    <wsdl:message name="ICalculator_Actualizar_InputMessage">
+        <wsdl:part name="parameters" element="tns:Actualizar" />
+    </wsdl:message>
+    <wsdl:message name="ICalculator_Actualizar_OutputMessage">
+        <wsdl:part name="parameters" element="tns:ActualizarResponse" />
+    </wsdl:message>
+    <wsdl:message name="ICalculator_Eliminar_InputMessage">
+        <wsdl:part name="parameters" element="tns:Eliminar" />
+    </wsdl:message>
+    <wsdl:message name="ICalculator_Eliminar_OutputMessage">
+        <wsdl:part name="parameters" element="tns:EliminarResponse" />
+    </wsdl:message>
     <wsdl:portType name="ICalculator">
         <wsdl:operation name="Add">
             <wsdl:input wsaw:Action="http://localhost:3000/soap/calculation/ICalculator/Add" message="tns:ICalculator_Add_InputMessage" />
@@ -105,6 +149,14 @@
         <wsdl:operation name="Crear">
             <wsdl:input wsaw:Action="http://localhost:3000/soap/calculation/ICalculator/Crear" message="tns:ICalculator_Crear_InputMessage" />
             <wsdl:output wsaw:Action="http://localhost:3000/soap/calculation/ICalculator/CrearResponse" message="tns:ICalculator_Crear_OutputMessage" />
+        </wsdl:operation>
+        <wsdl:operation name="Actualizar">
+            <wsdl:input wsaw:Action="http://localhost:3000/soap/calculation/ICalculator/Actualizar" message="tns:ICalculator_Actualizar_InputMessage" />
+            <wsdl:output wsaw:Action="http://localhost:3000/soap/calculation/ICalculator/Actualizar" message="tns:ICalculator_Actualizar_OutputMessage" />
+        </wsdl:operation>
+        <wsdl:operation name="Eliminar">
+            <wsdl:input wsaw:Action="http://localhost:3000/soap/calculation/ICalculator/Eliminar" message="tns:ICalculator_Eliminar_InputMessage" />
+            <wsdl:output wsaw:Action="http://localhost:3000/soap/calculation/ICalculator/Eliminar" message="tns:ICalculator_Eliminar_OutputMessage" />
         </wsdl:operation>
     </wsdl:portType>
     <wsdl:binding name="DefaultBinding_ICalculator" type="tns:ICalculator">
@@ -138,6 +190,24 @@
         </wsdl:operation>
         <wsdl:operation name="Crear">
             <soap:operation soapAction="http://localhost:3000/soap/calculation/ICalculator/Crear" style="document" />
+            <wsdl:input>
+                <soap:body use="literal" />
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="Actualizar">
+            <soap:operation soapAction="http://localhost:3000/soap/calculation/ICalculator/Actualizar" style="document" />
+            <wsdl:input>
+                <soap:body use="literal" />
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="Eliminar">
+            <soap:operation soapAction="http://localhost:3000/soap/calculation/ICalculator/Eliminar" style="document" />
             <wsdl:input>
                 <soap:body use="literal" />
             </wsdl:input>
