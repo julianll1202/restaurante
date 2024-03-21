@@ -1,4 +1,4 @@
-import { Button, Group, Text, TextInput, Title, Flex, Select, Container, Divider, Stack, Image } from "@mantine/core"
+import { Button, Group, TextInput, Title, Select, Container, Stack, Image } from "@mantine/core"
 import { AdjustmentsHorizontal, CirclePlus, Search } from "tabler-icons-react"
 import Tabla from "../components/Tabla"
 import { useEffect, useState } from "react"

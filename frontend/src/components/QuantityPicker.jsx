@@ -28,6 +28,7 @@ const QuantityPicker = ({ setQty, cantInicial }) => {
 }
 
 QuantityPicker.propTypes = {
+    setQty: PropTypes.func,
     cantInicial: PropTypes.number
 }
 

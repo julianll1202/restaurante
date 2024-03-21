@@ -148,7 +148,7 @@ const Platillos = () => {
                         {value: 'NOMBREM', label: 'Ordenar por nombre de mayor a menor'},
                         {value: 'PRECIO', label: 'Ordenar por precio de menor a mayor'},
                         {value: 'PRECIOM', label: 'Ordenar por precio de mayor a menor'},
-                    ]} onChange={(_value, option) => ordenarDatos(_value)} />
+                    ]} onChange={(_value) => ordenarDatos(_value)} />
             </Group>
             }
             {

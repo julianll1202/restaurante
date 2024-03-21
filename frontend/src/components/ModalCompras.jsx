@@ -18,7 +18,6 @@ function ModalCompras ({opened, close, update, updateInfo}) {
     const [ currentlySelected, setCurrentlySelected ] = useState(0)
     const [total, setTotal] = useState(0)
     const [compraIdUpdate, setCompraIdUpdate] = useState(0)
-    const [ precioU, setPrecioU ] = useState(0)
 
     const getComprasList = async() => {
         const lista = await getAllProductos()
