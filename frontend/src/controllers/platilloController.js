@@ -18,13 +18,14 @@ export const getPlatillosCategoria = async (categoriaId) => {
     return res.data
 }
 
-export const createPlatillo = async (platilloNombre, descripcion, precio, categoriaId, imagenId) => {
+export const createPlatillo = async (platilloNombre, descripcion, precio, categoriaId, imagenId, productos) => {
     const res = await API.post('platillos/crear', {
         nombre: platilloNombre,
         descripcion: descripcion,
         precio: precio,
         categoriaId: categoriaId,
-        imagenId: imagenId
+        imagenId: imagenId,
+        productos: productos
     })
     return res
 }

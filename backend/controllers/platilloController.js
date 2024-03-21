@@ -38,11 +38,18 @@ export const createPlatillo = async (req, res) => {
                 descripcion: platilloInfo.descripcion,
                 precio: platilloInfo.precio,
                 categoriaId: platilloInfo.categoriaId,
-                imagenId: platilloInfo.imagenId
+                imagenId: platilloInfo.imagenId,
             }
+        })
+        platilloInfo.productos.forEach((p) => {
+            p.platilloId = platilloNuevo.platilloId
+        });
+        await prisma.productosEnPlatillos.createMany({
+            data: platilloInfo.productos
         })
         return platilloNuevo
     } catch (err) {
+        console.error(err)
         return 'Error: No se pudo crear el registro'
     }
 }

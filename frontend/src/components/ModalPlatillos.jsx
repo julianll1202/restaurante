@@ -1,5 +1,5 @@
 'use client'
-import { Group, Modal, Button, Flex, Text,TextInput, NumberInput, FileButton, Select, Image, Tabs,
+import { Group, Modal, Button, Flex, Text,TextInput, NumberInput, FileButton, Select, Image, Tabs, List
 } from "@mantine/core";
 import { DeviceFloppy } from "tabler-icons-react";
 import { PropTypes } from 'prop-types';
@@ -11,9 +11,11 @@ import { getAllCategorias, createCategoria } from "./../controllers/categoriaCon
 import { useInputState } from "@mantine/hooks";
 import { createImagen, getCatImagenes } from "../controllers/imagenController";
 import { STORED_IMAGES_URL } from "../utils/constants";
+import { getAllProductos } from './../controllers/productoController';
 
 function ModalPlatillos ({opened, close, update, updateInfo}) {
     const [categorias, setCategorias] = useState([])
+    const [productos, setProductos] = useState([])
     const [categoriasC, setCategoriasC] = useState([])
     const [categoria, setCategoria] = useState('')
     const [newCategoriaN, setNewCategoriaN] = useInputState('')
@@ -25,7 +27,22 @@ function ModalPlatillos ({opened, close, update, updateInfo}) {
     const [imgCategoria, setImgCategoria] = useState([])
     const [imgList, setImgList] = useState([])
     const [imgForCat, setImgForCat] = useState(0)
+    const [currentlySelected, setCurrentlySelected] = useState({})
+    const [cantidad, setCantidad] = useState(1)
+    const [listaProductos, setListaProductos] = useState([])
 
+    const getProductosList = async () => {
+        const lista = await getAllProductos()
+        const listaP = []
+        lista.forEach((p) => {
+            const prod = {
+                "value": p.productoId.toString(),
+                "label": p.productoNombre
+            }
+            listaP.push(prod)
+        })
+        setProductos(listaP)
+    }
     const getCategoriaImagenes = async() => {
         const lista = await getCatImagenes()
         const list = lista.data.map((p) => Object.values(p))
@@ -87,6 +104,7 @@ function ModalPlatillos ({opened, close, update, updateInfo}) {
 
     useEffect(() => {
         getCategorias()
+        getProductosList()
         getCategoriaImagenes()
         if (update) {
             form.setValues({
@@ -119,7 +137,12 @@ function ModalPlatillos ({opened, close, update, updateInfo}) {
         form.validate()
         const img = await saveImage()
         if (img.status === 200) {
-            const res = await createPlatillo(values.platilloNombre, values.descripcion, values.precio, Number(categoria), img.data.imagenId)
+            const listaProd = [...listaProductos]
+            listaProd.forEach((p) => {
+                delete p['productoNombre']
+                p['productoId'] = Number(p['productoId'])
+            })
+            const res = await createPlatillo(values.platilloNombre, values.descripcion, values.precio, Number(categoria), img.data.imagenId, listaProductos)
             if (res.status === 200) {
                 console.log(res)
                 close()
@@ -153,6 +176,58 @@ function ModalPlatillos ({opened, close, update, updateInfo}) {
         }
     }
     
+    const addToList = () => {
+        if(currentlySelected === 0){
+            // const producto = productosT.find((p) => p.productoId === currentlySelected)
+            let lista = []
+            if (listaProductos.length > 0) {
+                lista = [...listaProductos]
+            }
+            let existente = false
+            lista.forEach((i) => {
+                if (i.productoId === currentlySelected.productoId) {
+                    i.cantidad += cantidad
+                    existente = true
+                }
+            })
+            if(!existente) {
+                if(currentlySelected === undefined){
+                    console.log('No se puede agregar un producto inexistente')
+                    return;
+                } else {
+                    currentlySelected['cantidad'] = cantidad
+                    lista.push(currentlySelected)
+                }
+            }
+            console.log(lista)
+            setListaProductos(lista)
+        } else {
+            // const producto = productosT.find((p) => p.productoId === currentlySelected)
+            let lista = []
+            if (listaProductos.length > 0) {
+                lista = [...listaProductos]
+            }
+            let existente = false
+            lista.forEach((i) => {
+                if (i.productoId === currentlySelected.productoId) {
+                    i.cantidad += cantidad
+                    existente = true
+                }
+            })
+            if(!existente) {
+                if(currentlySelected === undefined){
+                    console.log('No se puede agregar un producto inexistente')
+                    return;
+                } else {
+                    currentlySelected['cantidad'] = cantidad
+                    lista.push(currentlySelected)
+                }
+            }
+            console.log(lista)
+            setListaProductos(lista)
+        }
+
+    }
     return (
         <Modal.Root opened={opened} onClose={close} centered size="xl" closeOnClickOutside w={200} h={500}>
             <Modal.Overlay />
@@ -243,6 +318,20 @@ function ModalPlatillos ({opened, close, update, updateInfo}) {
                                         {(props) => <Button color="brown.9" {...props}>Subir imagen</Button>}
                                     </FileButton>
                                 </Group>
+                                <Text fw="bold">Ingredientes</Text>
+                                <Group>
+                                    <Select w='60%' data={productos} label="Productos" onChange={(value, option) => setCurrentlySelected({productoId: value, productoNombre: option.label})} />
+                                    <NumberInput w='35%' label='Cantidad' value={cantidad} onChange={setCantidad}/>
+                                </Group>
+                                <List mt={10} mb={10}>
+                                    { listaProductos.length > 0 ?
+                                        listaProductos.map((producto, index) =>{
+                                            return(
+                                                <List.Item key={index}>{`${producto.cantidad} ${producto.productoNombre}`}</List.Item>
+                                            )
+                                        }) : null}
+                                </List>
+                                <Button onClick={addToList}>Agregar</Button>
                             </Flex>
                         </Flex>
                         <Group justify='center' align="center" mt={16}>
