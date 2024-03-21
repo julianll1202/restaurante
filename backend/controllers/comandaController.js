@@ -96,12 +96,31 @@ export const createComanda = async (req, res) => {
                 }
             })
             const platillos = comandaInfo.platillos
-            platillos.forEach((p) => {
+            platillos.forEach(async(p) => {
                 p.comandaId = comandaNueva.comandaId
+                const productos = await prisma.productosEnPlatillos.findMany({
+                    where: {
+                        platilloId: p.platilloId
+                    }
+                })
+                productos.forEach(async(prod) => {
+                    await prisma.productos.update({
+                        where: {
+                            productoId: prod.productoId
+                        },
+                        data: {
+                            cantidad: {
+                                decrement: p.cantidad*prod.cantidad
+                            }
+                        }
+                    })
+                })
             })
             await prisma.platillosEnComandas.createMany({
                 data: platillos
             })
+
+
             return comandaNueva
         } else {
             return 'Error: La mesa esta ocupada'
@@ -146,21 +165,128 @@ export const updateComanda = async (req, res) => {
                 precioFinal: comanda.precioFinal,
             }
         })
-        comanda.platillos.forEach(async(p) => {
-            await prisma.platillosEnComandas.upsert({
-                where: {
-                    platilloId_comandaId: {comandaId:p.comandaId,platilloId:p.platilloId}
-                },
-                update: {
-                    cantidad: p.cantidad,
-                },
-                create: {
-                    platilloId: p.platilloId,
-                    comandaId: p.comandaId,
-                    cantidad: p.cantidad
-                }
-            })
+        const platillosAnt = await prisma.platillosEnComandas.findMany({
+            where: {
+                comandaId: comanda.id
+            }
         })
+        const platillos = comanda.platillos
+        for (let p = 0; p < platillos.length; p++) {
+            for (let pA = 0; pA < platillosAnt.length; pA++) {
+                if (platillos[p].platilloId === platillosAnt[pA].platilloId) {
+                    let diferencia = platillos[p].cantidad - platillosAnt[pA].cantidad
+                    if (diferencia > 0) {
+                        await prisma.platillosEnComandas.update({
+                            where: {
+                                platilloId_comandaId: {platilloId: platillos[p].platilloId , comandaId: comanda.id}
+                            },
+                            data: {
+                                cantidad: platillos[p].cantidad
+                            }
+                        })
+                        const productos = await prisma.productosEnPlatillos.findMany({
+                            where: {
+                                platilloId: platillos[p].platilloId
+                            }
+                        })
+                        productos.forEach(async (p) => {
+                            await prisma.productos.update({
+                                where: {
+                                    productoId: p.productoId
+                                },
+                                data: {
+                                    cantidad: {
+                                        decrement: diferencia*p.cantidad
+                                    }
+                                }
+                            })
+                        })
+                        break
+                    } else if (diferencia < 0) {
+                        await prisma.platillosEnComandas.update({
+                            where: {
+                                platilloId_comandaId: {platilloId: platillos[p].platilloId , comandaId: comanda.id}
+                            },
+                            data: {
+                                cantidad: platillos[p].cantidad
+                            }
+                        })
+                        const productos = await prisma.productosEnPlatillos.findMany({
+                            where: {
+                                platilloId: platillos[p].platilloId
+                            }
+                        })
+                        productos.forEach(async (p) => {
+                            await prisma.productos.update({
+                                where: {
+                                    productoId: p.productoId
+                                },
+                                data: {
+                                    cantidad: {
+                                        increment: Math.abs(diferencia*p.cantidad)
+                                    }
+                                }
+                            })
+                        })
+                        break
+                    } else {
+                        break
+                    }
+                }
+                if (pA === productosEnCompra.length - 1) {
+                    await prisma.productosEnCompras.create({
+                        data: {
+                            precioTotal: productos[p].precioTotal,
+                            compraId: productos[p].compraId,
+                            productoId: productos[p].productoId,
+                            cantidad: productos[p].cantidad
+                        }
+                    })
+
+                    await prisma.productos.update({
+                        where: {
+                            productoId: productos[p].productoId
+                        },
+                        data: {
+                            cantidad: {
+                                increment: productos[p].cantidad
+                            }
+                        }
+                    })
+                }
+            }
+
+        }
+        for (let plA = 0; plA < platillosAnt.length; plA++) {
+            for (let pl = 0; pl < platillos.length; pl++) {
+                if (platillos[pl].platilloId === platillosAnt[plA].platilloId)
+                    break
+                    if (pl === platillos.length - 1) {
+                        await prisma.platillosEnComandas.delete({
+                            where: {
+                                platilloId_comandaId: {comandaId: platillosAnt[plA].comandaId, platilloId: platillosAnt[plA].platilloId}
+                            }
+                        })
+                        const productos = await prisma.productosEnPlatillos.findMany({
+                            where: {
+                                platilloId: platillosAnt[plA].platilloId
+                            }
+                        })
+                        productos.forEach(async (p) => {
+                            await prisma.productos.update({
+                                where: {
+                                    productoId: p.productoId
+                                },
+                                data: {
+                                    cantidad: {
+                                        increment: p.cantidad*platillosAnt[plA].cantidad
+                                    }
+                                }
+                            })
+                        })
+                    }
+            }
+        }
         return updatedComanda
     } catch (err) {
         console.error(err)
@@ -177,6 +303,31 @@ export const cancelComanda = async (id) => {
             data: {
                 completada: Estatus.CANCELADA
             }
+        })
+
+        const platillos = await prisma.platillosEnComandas.findMany({
+            where: {
+                comandaId: Number(id)
+            }
+        })
+        platillos.forEach(async(p) => {
+            const productos = await prisma.productosEnPlatillos.findMany({
+                where: {
+                    platilloId: p.platilloId
+                }
+            })
+            productos.forEach(async(prod) => {
+                await prisma.productos.update({
+                    where: {
+                        productoId: prod.productoId
+                    },
+                    data: {
+                        cantidad: {
+                            increment: p.cantidad*prod.cantidad
+                        }
+                    }
+                })
+            })
         })
         await prisma.mesas.update({
             where: {
