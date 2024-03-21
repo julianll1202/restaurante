@@ -96,12 +96,31 @@ export const createComanda = async (req, res) => {
                 }
             })
             const platillos = comandaInfo.platillos
-            platillos.forEach((p) => {
+            platillos.forEach(async(p) => {
                 p.comandaId = comandaNueva.comandaId
+                const productos = await prisma.productosEnPlatillos.findMany({
+                    where: {
+                        platilloId: p.platilloId
+                    }
+                })
+                productos.forEach(async(prod) => {
+                    await prisma.productos.update({
+                        where: {
+                            productoId: prod.productoId
+                        },
+                        data: {
+                            cantidad: {
+                                decrement: p.cantidad
+                            }
+                        }
+                    })
+                })
             })
             await prisma.platillosEnComandas.createMany({
                 data: platillos
             })
+
+
             return comandaNueva
         } else {
             return 'Error: La mesa esta ocupada'
@@ -177,6 +196,31 @@ export const cancelComanda = async (id) => {
             data: {
                 completada: Estatus.CANCELADA
             }
+        })
+
+        const platillos = await prisma.platillosEnComandas.findMany({
+            where: {
+                comandaId: Number(id)
+            }
+        })
+        platillos.forEach(async(p) => {
+            const productos = await prisma.productosEnPlatillos.findMany({
+                where: {
+                    platilloId: p.platilloId
+                }
+            })
+            productos.forEach(async(prod) => {
+                await prisma.productos.update({
+                    where: {
+                        productoId: prod.productoId
+                    },
+                    data: {
+                        cantidad: {
+                            increment: p.cantidad
+                        }
+                    }
+                })
+            })
         })
         await prisma.mesas.update({
             where: {
