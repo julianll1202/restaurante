@@ -1,6 +1,10 @@
 import API from "./api";
 import Cookies from 'js-cookie';
 
+export const getRoles = async () => {
+    const res = await API.get('roles/listar')
+    return res.data
+}
 export const login = async(username, password) => {
     const res = await API.post('users/login', {
         username: username, password: password
@@ -9,10 +13,6 @@ export const login = async(username, password) => {
     return res;
 }
 
-export const prueba = async () => {
-    const res = await API.get('/')
-    return res;
-}
 
 export const setAuthUser = async (accessToken, refreshToken) => {
     Cookies.set('access_token', accessToken, {

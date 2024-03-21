@@ -37,7 +37,7 @@ const Comandas = () => {
                 <Title ta='left' order={1} mb={10}>Comandas</Title>
                 {/* { mesaId ? <Title ta='left' order={4}>{mesaId}</Title> : null} */}
                 <Group mt={10} mb={15} align='flex-start' justify='flex-start'>
-                    <Button leftSection={<CirclePlus />} onClick={() => navigate('/crear-comanda')} color="brown.9" >Crear comanda</Button>
+                    <Button leftSection={<CirclePlus />} onClick={() => navigate('/comandas/crear-comanda')} color="brown.9" >Crear comanda</Button>
                     <TextInput  rightSection={<Search />} />
                     <Select rightSection={<AdjustmentsHorizontal />} data={[
                         {value: 'NOMBRE', label: 'Ordenar por nombre'},

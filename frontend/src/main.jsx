@@ -50,7 +50,7 @@ const router = createBrowserRouter([
         element: <Platillos />
       },
       {
-        path: '/crear-comanda',
+        path: '/comandas/crear-comanda',
         element: <CrearComanda />,
       },
       {
@@ -58,7 +58,7 @@ const router = createBrowserRouter([
         element: <Compras />
       },
       {
-        path: '/editar-comanda/:id',
+        path: '/comandas/editar-comanda/:id',
         element: <EditarComanda />,
       }
     ]

@@ -72,9 +72,9 @@ async function main() {
     //     data: permisos
     // })
 
-    await prisma.permitsInRole.createMany({
-        data: permisosEnRoles
-    })
+//     await prisma.permitsInRole.createMany({
+//         data: permisosEnRoles
+//     })
 }
 
 main()

@@ -61,7 +61,7 @@ const Comanda = ({ comandaInfo, color, prev, next }) => {
                 <Group justify="center">
                     <ActionIcon display={prev === 0 ? 'none' : 'block'} color="gray" radius='xl' size='lg' onClick={async() => cambiarEstatus(Number(comandaInfo.comandaId), prev)} ><ChevronLeft /></ActionIcon>
                     <ActionIcon color="red" radius='xl' size='lg' p={5} onClick={async() => cancelarComanda(Number(comandaInfo.comandaId))}><Trash /></ActionIcon>
-                    <ActionIcon radius='xl' size='lg' onClick={() => navigate(`/editar-comanda/${comandaInfo.comandaId}`)}  ><Edit /></ActionIcon>
+                    <ActionIcon radius='xl' size='lg' onClick={() => navigate(`/comandas/editar-comanda/${comandaInfo.comandaId}`)}  ><Edit /></ActionIcon>
                     <ActionIcon display={next === 0  ? 'none' : 'block'} color="gray" radius='xl' size='lg' onClick={async() => cambiarEstatus(Number(comandaInfo.comandaId), next)} ><ChevronRight /></ActionIcon>
                 </Group>
             </Card.Section>

@@ -1,14 +1,65 @@
 import { Link, Navigate, Outlet, useLocation, useNavigate } from "react-router-dom";
 import useAuth from './../hooks/useAuth';
-import { ActionIcon, Anchor, AppShell, Button, Group, Menu, Title } from "@mantine/core";
+import { ActionIcon, AppShell, Button, Group, Menu, Title } from "@mantine/core";
 import { Bell, Settings, Soup, UserCircle } from "tabler-icons-react";
+import { getRoles } from "../utils/auth";
+import { useEffect, useState } from "react";
+import { all } from "axios";
 
 const MainLayout = () => {
     const { auth } = useAuth()
+    const [roles, setRoles] = useState([])
     const location = useLocation()
+    const getRolesList = async () => {
+        const rolesL = await getRoles()
+        setRoles(rolesL)
+        console.log(rolesL)
+        console.log(location.pathname.split('/'))
+    }
+    const getAllowedRoles = () => {
+        const allowedRoles = []
+        if (location.pathname.split('/')[1] === '')
+            return roles
+        for(let i = 0; i < roles.length; i++) {
+            let valid = false
+            for (let j = 0; j < roles[i].permits.length; j++) {
+                if (roles[i].permits[j].area === location.pathname.split('/')[1].toUpperCase()) {
+                    if (location.pathname.split('/').length > 2) {
+                        if (roles[i].permits[j].area.action === 'EDITAR')
+                            valid = true
+                    } else {
+                        valid = true
+                    }
+                }
+            }
+            if (valid)
+                allowedRoles.push(roles[i])
+        }
+    }
+    const isAuthorized = () => {
+        // auth.user.roleId
+        getRolesList()
+        const allowedRoles = getAllowedRoles()
+        console.log(allowedRoles)
+        let valid = false
+        if (auth.user) {
+            for (let i = 0; i < allowedRoles.length; i++) {
+                console.log(allowedRoles[i])
+                if (allowedRoles[i].roleId === auth.user.roleId) {
+                    valid = true
+                    break
+                }
+            }
+        }
+        console.log(valid)
+        return valid
+    }
+    useEffect(() => {
+        getRolesList()
+    }, [auth])
     const navigate = useNavigate()
     return (
-        auth?.user ?
+        roles.length > 0 ? isAuthorized()  ?
         <AppShell>
             <AppShell.Header>
                 <Group justify="space-between" bg='orange' p={10}>
@@ -57,7 +108,7 @@ const MainLayout = () => {
                 <Outlet />
             </AppShell.Main>
         </AppShell>
-        : <Navigate to="/iniciar-sesion"  state={{ from: location }} replace/>
+        : <Navigate to="/iniciar-sesion" state={{ from: location }} replace /> : null
     );
 };
 

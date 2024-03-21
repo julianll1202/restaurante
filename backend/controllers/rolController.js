@@ -3,7 +3,21 @@ import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 
 export const getAllRoles = async (req, res) => {
-    const roles = await prisma.roles.findMany()
+    const roles = await prisma.roles.findMany({
+        select: {
+            roleId: true,
+            permits: {
+                select: {
+                    permit: {
+                        select: {
+                            action: true,
+                            area: true
+                        }
+                    }
+                }
+            }
+        }
+    })
     return roles
 }
 
