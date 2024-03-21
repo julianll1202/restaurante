@@ -16,7 +16,7 @@ import rolesRouter from './routes/roles.js'
 import imgRouter from './routes/imagenes.js'
 import cors from 'cors'
 import {soap} from 'express-soap';
-import { getAllMesas } from './controllers/mesaController.js'
+import { getAllMesas, createMesaSOAP } from './controllers/mesaController.js'
 
 const app = express()
 
@@ -64,6 +64,14 @@ app.use('/soap/calculation', soap({
                         const mesas = await getAllMesas()
                         resolve({
                             result: mesas
+                        });
+                    });
+                },
+                Crear: function(args) {
+                    return new Promise(async (resolve, reject) => {
+                        const mesa = await createMesaSOAP(args.capacidad, args.ubicacion, args.tipoMesa)
+                        resolve({
+                            result: mesa
                         });
                     });
                 }

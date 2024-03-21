@@ -32,6 +32,21 @@ export const createMesa = async (req, res) => {
     }
 }
 
+export const createMesaSOAP = async (capacidad, ubicacion, tipoMesa) => {
+    try {
+        const mesaNueva = await prisma.mesas.create({
+            data: {
+                capacidad: capacidad,
+                ubicacion: ubicacion,
+                tipoMesa: tipoMesa
+            }
+        })
+        return mesaNueva
+    } catch (err) {
+        return 'Error: No se pudo crear el registro'
+    }
+}
+
 export const deleteMesa = async (req, res) => {
     const mesa = req.body
     if (!mesa.id) {

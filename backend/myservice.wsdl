@@ -47,6 +47,22 @@
                     </xsd:sequence>
                 </xsd:complexType>
             </xsd:element>
+            <xsd:element name="Crear">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="capacidad" type="xsd:int" />
+                        <xsd:element name="ubicacion" type="xsd:string" />
+                        <xsd:element name="tipoMesa" type="xsd:string" />
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="CrearResponse">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="result" type="xsd:string" />
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
         </xsd:schema>
     </wsdl:types>
     <wsdl:message name="ICalculator_Add_InputMessage">
@@ -67,6 +83,12 @@
     <wsdl:message name="ICalculator_Listar_OutputMessage">
         <wsdl:part name="parameters" element="tns:ListarResponse" />
     </wsdl:message>
+    <wsdl:message name="ICalculator_Crear_InputMessage">
+        <wsdl:part name="parameters" element="tns:Crear" />
+    </wsdl:message>
+    <wsdl:message name="ICalculator_Crear_OutputMessage">
+        <wsdl:part name="parameters" element="tns:CrearResponse" />
+    </wsdl:message>
     <wsdl:portType name="ICalculator">
         <wsdl:operation name="Add">
             <wsdl:input wsaw:Action="http://localhost:3000/soap/calculation/ICalculator/Add" message="tns:ICalculator_Add_InputMessage" />
@@ -79,6 +101,10 @@
         <wsdl:operation name="Listar">
             <wsdl:input wsaw:Action="http://localhost:3000/soap/calculation/ICalculator/Listar" message="tns:ICalculator_Listar_InputMessage" />
             <wsdl:output wsaw:Action="http://localhost:3000/soap/calculation/ICalculator/ListarResponse" message="tns:ICalculator_Listar_OutputMessage" />
+        </wsdl:operation>
+        <wsdl:operation name="Crear">
+            <wsdl:input wsaw:Action="http://localhost:3000/soap/calculation/ICalculator/Crear" message="tns:ICalculator_Crear_InputMessage" />
+            <wsdl:output wsaw:Action="http://localhost:3000/soap/calculation/ICalculator/CrearResponse" message="tns:ICalculator_Crear_OutputMessage" />
         </wsdl:operation>
     </wsdl:portType>
     <wsdl:binding name="DefaultBinding_ICalculator" type="tns:ICalculator">
@@ -103,6 +129,15 @@
         </wsdl:operation>
         <wsdl:operation name="Listar">
             <soap:operation soapAction="http://localhost:3000/soap/calculation/ICalculator/Listar" style="document" />
+            <wsdl:input>
+                <soap:body use="literal" />
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="Crear">
+            <soap:operation soapAction="http://localhost:3000/soap/calculation/ICalculator/Crear" style="document" />
             <wsdl:input>
                 <soap:body use="literal" />
             </wsdl:input>
