@@ -91,8 +91,8 @@ model Platillos {
 model Productos {
   productoId Int @id @default(autoincrement())
   productoNombre String
-  cantidad Int
-  cantidadMax Int
+  cantidad Int @db.UnsignedInt
+  cantidadMax Int @db.UnsignedInt
   fechaCaducidad DateTime @default(now())
   produdctosEnPlatillo ProductosEnPlatillos[]
   productosEnCompra ProductosEnCompras[]
@@ -176,7 +176,7 @@ enum Estatus {
 }
 
 model PlatillosEnComandas {
-  cantidad Int
+  cantidad Int @db.UnsignedInt
   platilloId Int
   platillo Platillos @relation(fields: [platilloId], references: [platilloId])
   comandaId Int
