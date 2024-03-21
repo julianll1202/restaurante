@@ -16,6 +16,7 @@ import rolesRouter from './routes/roles.js'
 import imgRouter from './routes/imagenes.js'
 import cors from 'cors'
 import {soap} from 'express-soap';
+import { getAllMesas } from './controllers/mesaController.js'
 
 const app = express()
 
@@ -45,14 +46,25 @@ app.use('/soap/calculation', soap({
     services: {
         CalculatorService: {
             ICalculator: {
-                Add({a, b}, res) {
-                    res({
-                            result: a + b
+                Add: function(args) {
+                    return new Promise((resolve, reject) => {
+                        let suma = args.a + args.b;
+                        resolve({
+                            result: suma
+                        });
                     });
                 },
                 Subtract({a, b}, res) {
                     res({
                             result: a - b
+                    });
+                },
+                Listar: function() {
+                    return new Promise(async (resolve, reject) => {
+                        const mesas = await getAllMesas()
+                        resolve({
+                            result: mesas
+                        });
                     });
                 }
               }

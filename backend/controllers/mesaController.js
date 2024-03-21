@@ -2,7 +2,7 @@ import { PrismaClient } from '@prisma/client'
 
 const prisma = new PrismaClient()
 
-export const getAllMesas = async (req, res) => {
+export const getAllMesas = async () => {
     const mesas = await prisma.mesas.findMany()
     return mesas
 }

@@ -19,7 +19,7 @@
             <xsd:element name="AddResponse">
                 <xsd:complexType>
                     <xsd:sequence>
-                        <xsd:element name="result" type="xsd:int" />
+                        <xsd:element name="result" type="xsd:string" />
                     </xsd:sequence>
                 </xsd:complexType>
             </xsd:element>
@@ -38,6 +38,15 @@
                     </xsd:sequence>
                 </xsd:complexType>
             </xsd:element>
+            <xsd:element name="Listar">
+            </xsd:element>
+            <xsd:element name="ListarResponse">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="result" type="xsd:string" />
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
         </xsd:schema>
     </wsdl:types>
     <wsdl:message name="ICalculator_Add_InputMessage">
@@ -52,6 +61,12 @@
     <wsdl:message name="ICalculator_Subtract_OutputMessage">
         <wsdl:part name="parameters" element="tns:SubtractResponse" />
     </wsdl:message>
+    <wsdl:message name="ICalculator_Listar_InputMessage">
+        <wsdl:part name="parameters" element="tns:Listar" />
+    </wsdl:message>
+    <wsdl:message name="ICalculator_Listar_OutputMessage">
+        <wsdl:part name="parameters" element="tns:ListarResponse" />
+    </wsdl:message>
     <wsdl:portType name="ICalculator">
         <wsdl:operation name="Add">
             <wsdl:input wsaw:Action="http://localhost:3000/soap/calculation/ICalculator/Add" message="tns:ICalculator_Add_InputMessage" />
@@ -60,6 +75,10 @@
         <wsdl:operation name="Subtract">
             <wsdl:input wsaw:Action="http://localhost:3000/soap/calculation/ICalculator/Subtract" message="tns:ICalculator_Subtract_InputMessage" />
             <wsdl:output wsaw:Action="http://localhost:3000/soap/calculation/ICalculator/SubtractResponse" message="tns:ICalculator_Subtract_OutputMessage" />
+        </wsdl:operation>
+        <wsdl:operation name="Listar">
+            <wsdl:input wsaw:Action="http://localhost:3000/soap/calculation/ICalculator/Listar" message="tns:ICalculator_Listar_InputMessage" />
+            <wsdl:output wsaw:Action="http://localhost:3000/soap/calculation/ICalculator/ListarResponse" message="tns:ICalculator_Listar_OutputMessage" />
         </wsdl:operation>
     </wsdl:portType>
     <wsdl:binding name="DefaultBinding_ICalculator" type="tns:ICalculator">
@@ -75,6 +94,15 @@
         </wsdl:operation>
         <wsdl:operation name="Subtract">
             <soap:operation soapAction="http://localhost:3000/soap/calculation/ICalculator/Subtract" style="document" />
+            <wsdl:input>
+                <soap:body use="literal" />
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="Listar">
+            <soap:operation soapAction="http://localhost:3000/soap/calculation/ICalculator/Listar" style="document" />
             <wsdl:input>
                 <soap:body use="literal" />
             </wsdl:input>
