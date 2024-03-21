@@ -1,10 +1,10 @@
 'use client'
-import { Group, Modal, Button, Flex, Text,TextInput, NumberInput, FileButton, Select, Image, Tabs, List
+import { Group, Modal, Button, Flex, Text,TextInput, NumberInput, FileButton, Select, Image, Tabs, ScrollArea
 } from "@mantine/core";
 import { DeviceFloppy } from "tabler-icons-react";
 import { PropTypes } from 'prop-types';
 import "../styles/ModalEmpleados.css";
-import { useEffect, useRef, useState } from "react";
+import { createContext, useEffect, useRef, useState } from "react";
 import { useForm } from "@mantine/form";
 import { createPlatillo, updatePlatillo } from "../controllers/platilloController"
 import { getAllCategorias, createCategoria } from "./../controllers/categoriaController"
@@ -12,6 +12,9 @@ import { useInputState } from "@mantine/hooks";
 import { createImagen, getCatImagenes } from "../controllers/imagenController";
 import { STORED_IMAGES_URL } from "../utils/constants";
 import { getAllProductos } from './../controllers/productoController';
+import ProductoEnReceta from "./ProductoEnReceta";
+
+export const productosReceta = createContext({})
 
 function ModalPlatillos ({opened, close, update, updateInfo}) {
     const [categorias, setCategorias] = useState([])
@@ -102,6 +105,17 @@ function ModalPlatillos ({opened, close, update, updateInfo}) {
         }
     })
 
+    const generateListaProductos = () => {
+        if (updateInfo.productosEnPlatillo) {
+            const prods = [...updateInfo.productosEnPlatillo]
+            prods.forEach((p) => {
+                p['productoNombre'] = p['producto']['productoNombre']
+                p['productoId'] = p['producto']['productoId']
+                delete p['producto']
+            })
+            setListaProductos(prods)
+        }
+    }
     useEffect(() => {
         getCategorias()
         getProductosList()
@@ -115,7 +129,7 @@ function ModalPlatillos ({opened, close, update, updateInfo}) {
             })
             console.log(updateInfo)
             setCategoria(updateInfo.categoriaId)
-            // setCategoria(getCategoriaId(updateInfo.categoria))
+            generateListaProductos()
         } else {
             form.setValues({
                 platilloNombre: '',
@@ -159,7 +173,7 @@ function ModalPlatillos ({opened, close, update, updateInfo}) {
             }
         }
         console.log(updateInfo)
-        const res = await updatePlatillo(updateInfo.platilloId, values.platilloNombre, values.descripcion, values.precio, Number(categoria), updateInfo.imagenId)
+        const res = await updatePlatillo(updateInfo.platilloId, values.platilloNombre, values.descripcion, values.precio, Number(categoria), updateInfo.imagenId, listaProductos)
         if (res.status === 200) {
             close()
         }
@@ -229,120 +243,135 @@ function ModalPlatillos ({opened, close, update, updateInfo}) {
 
     }
     return (
-        <Modal.Root opened={opened} onClose={close} centered size="xl" closeOnClickOutside w={200} h={500}>
-            <Modal.Overlay />
-            <Modal.Content>
-                <Modal.Header>
-                    <Modal.Title  fw="bold" ta="center" ml="auto">{ update ? 'Actualizar': 'Agregar' } platillo</Modal.Title>
-                    <Modal.CloseButton bg="gris" color="negro"></Modal.CloseButton>
-                </Modal.Header>
-                <Modal.Body>
-                    { update ?
-                        <form onSubmit={form.onSubmit(handleUpdatePlatillo)}>
-                        <Flex direction="row" align="flex-start" justify="center" gap={20}>
-                            <Flex direction="column" w="45%">
-                                <Text fw="bold">Información del platillo</Text>
-                                <TextInput {...form.getInputProps('platilloNombre')} label="Nombre" w='95%' />
-                                <TextInput {...form.getInputProps('descripcion')} label="Descripción" w='95%' />
-                                <NumberInput {...form.getInputProps('precio')} label="Precio" w='95%' />
-                                <Tabs value={aciveTab} onChange={setActiveTab} >
-                                    <Tabs.List>
-                                        <Tabs.Tab value="seleccionar" >Seleccionar categoría</Tabs.Tab>
-                                        <Tabs.Tab value="crear" >Crear categoría</Tabs.Tab>
-                                    </Tabs.List>
-                                    <Tabs.Panel value="seleccionar">
-                                        <Select label="Categoria" ref={categoriaIn}  w='95%' {...form.getInputProps('categoria')}  onChange={(value, option) => {
-                                            setCategoria(value)
-                                        }}  data={categorias}/>
-                                    </Tabs.Panel>
-                                    <Tabs.Panel value="crear">
-                                        <TextInput name="categoriaNombre" onChange={setNewCategoriaN}  label="Nombre de la categoría" w='95%' />
-                                        <TextInput name="descripcion" onChange={setNewCategoriaDesc}  label="Descripción de la categoría" w='95%' />
-                                        <Group mb={10} align="center">
-                                            <Select label='Imagenes' w='45%' data={imgCategoria} onChange={(value, option) => findImagen(value) }  />
-                                            <Image src={fileCategoria ? `${STORED_IMAGES_URL}${fileCategoria}`: null }radius='md' mt={10} w={80} h={80}  />
-                                        </Group>
-                                        <Button mt={10} onClick={handleCreateCategoria} >Crear categoría</Button>
-                                    </Tabs.Panel>
-                                </Tabs>
+        <productosReceta.Provider value={{listaProductos, setListaProductos}}>
+            <Modal.Root opened={opened} onClose={close} centered size="xl" closeOnClickOutside w={200} h={500}>
+                <Modal.Overlay />
+                <Modal.Content>
+                    <Modal.Header>
+                        <Modal.Title  fw="bold" ta="center" ml="auto">{ update ? 'Actualizar': 'Agregar' } platillo</Modal.Title>
+                        <Modal.CloseButton bg="gris" color="negro"></Modal.CloseButton>
+                    </Modal.Header>
+                    <Modal.Body>
+                        { update ?
+                            <form onSubmit={form.onSubmit(handleUpdatePlatillo)}>
+                            <Flex direction="row" align="flex-start" justify="center" gap={20}>
+                                <Flex direction="column" w="45%">
+                                    <Text fw="bold">Información del platillo</Text>
+                                    <TextInput {...form.getInputProps('platilloNombre')} label="Nombre" w='95%' />
+                                    <TextInput {...form.getInputProps('descripcion')} label="Descripción" w='95%' />
+                                    <NumberInput {...form.getInputProps('precio')} label="Precio" w='95%' />
+                                    <Tabs value={aciveTab} onChange={setActiveTab} >
+                                        <Tabs.List>
+                                            <Tabs.Tab value="seleccionar" >Seleccionar categoría</Tabs.Tab>
+                                            <Tabs.Tab value="crear" >Crear categoría</Tabs.Tab>
+                                        </Tabs.List>
+                                        <Tabs.Panel value="seleccionar">
+                                            <Select label="Categoria" ref={categoriaIn}  w='95%' {...form.getInputProps('categoria')}  onChange={(value) => {
+                                                setCategoria(value)
+                                            }}  data={categorias}/>
+                                        </Tabs.Panel>
+                                        <Tabs.Panel value="crear">
+                                            <TextInput name="categoriaNombre" onChange={setNewCategoriaN}  label="Nombre de la categoría" w='95%' />
+                                            <TextInput name="descripcion" onChange={setNewCategoriaDesc}  label="Descripción de la categoría" w='95%' />
+                                            <Group mb={10} align="center">
+                                                <Select label='Imagenes' w='45%' data={imgCategoria} onChange={(value) => findImagen(value) }  />
+                                                <Image src={fileCategoria ? `${STORED_IMAGES_URL}${fileCategoria}`: null }radius='md' mt={10} w={80} h={80}  />
+                                            </Group>
+                                            <Button mt={10} onClick={handleCreateCategoria} >Crear categoría</Button>
+                                        </Tabs.Panel>
+                                    </Tabs>
+                                </Flex>
+                                <Flex direction="column" w="45%">
+                                    <Text fw="bold">Imagen para el platillo</Text>
+                                    <Group mb={10}>
+                                        <Image src={file ? URL.createObjectURL(file) : `${STORED_IMAGES_URL}${updateInfo.imagen.url}`} radius='md' w={150} h={150}  />
+                                        <FileButton onChange={setFile} accept="image/png,image/jpeg">
+                                            {(props) => <Button color="brown.9" {...props}>Subir imagen</Button>}
+                                        </FileButton>
+                                    </Group>
+                                    <Text fw="bold">Ingredientes</Text>
+                                    <Group>
+                                        <Select w='60%' data={productos} label="Productos" onChange={(value, option) => setCurrentlySelected({productoId: value, productoNombre: option.label})} />
+                                        <NumberInput w='35%' label='Cantidad' value={cantidad} onChange={setCantidad}/>
+                                    </Group>
+                                    <ScrollArea mt={10} >
+                                        { listaProductos.length > 0 ?
+                                            listaProductos.map((producto, index) =>{
+                                                return(
+                                                    <ProductoEnReceta key={index} producto={producto} />
+                                                )
+                                            }) : null}
+                                    </ScrollArea>
+                                </Flex>
                             </Flex>
-                            <Flex direction="column" w="45%">
-                                <Text fw="bold">Imagen para el platillo</Text>
-                                <Group mb={10}>
-                                    <Image src={file ? URL.createObjectURL(file) : `${STORED_IMAGES_URL}${updateInfo.imagen.url}`} radius='md' w={150} h={150}  />
-                                    <FileButton onChange={setFile} accept="image/png,image/jpeg">
-                                        {(props) => <Button color="brown.9" {...props}>Subir imagen</Button>}
-                                    </FileButton>
-                                </Group>
+                            <Group justify='center' align="center" mt={16}>
+                                <Button type="submit" leftSection={<DeviceFloppy />} >Actualizar</Button>
+                                <Button color="black" onClick={close}>Cancelar</Button>
+                            </Group>
+                            </form>
+                        :
+                            <form onSubmit={form.onSubmit(handleCreatePlatillo)}>
+                            <Flex direction="row" align="flex-start" justify="center" gap={20}>
+                                <Flex direction="column" w="45%">
+                                    <Text fw="bold">Información del platillo</Text>
+                                    <TextInput {...form.getInputProps('platilloNombre')} label="Nombre" w='95%' />
+                                    <TextInput {...form.getInputProps('descripcion')} label="Descripción" w='95%' />
+                                    <NumberInput {...form.getInputProps('precio')} label="Precio" w='95%' />
+                                    <Tabs value={aciveTab} onChange={setActiveTab} >
+                                        <Tabs.List>
+                                            <Tabs.Tab value="seleccionar" >Seleccionar categoría</Tabs.Tab>
+                                            <Tabs.Tab value="crear" >Crear categoría</Tabs.Tab>
+                                        </Tabs.List>
+                                        <Tabs.Panel value="seleccionar">
+                                            <Select label="Categoria" ref={categoriaIn}  w='95%' {...form.getInputProps('categoria')} onChange={(value) => {
+                                                setCategoria(value)
+                                            }}  data={categorias}/>
+                                        </Tabs.Panel>
+                                        <Tabs.Panel value="crear">
+                                            <TextInput name="categoriaNombre" onChange={setNewCategoriaN}  label="Nombre de la categoría" w='95%' />
+                                            <TextInput name="descripcion" onChange={setNewCategoriaDesc}  label="Descripción de la categoría" w='95%' />
+                                            <Group mb={10} align="center">
+                                                <Select label='Imagenes' w='45%' data={imgCategoria} onChange={(value) => findImagen(value) }  />
+                                                <Image src={fileCategoria ? `${STORED_IMAGES_URL}${fileCategoria}`: null }radius='md' mt={10} w={80} h={80}  />
+                                            </Group>
+                                            <Button mt={10} onClick={handleCreateCategoria} >Crear categoría</Button>
+                                        </Tabs.Panel>
+                                    </Tabs>
+                                </Flex>
+                                <Flex direction="column" w="45%">
+                                    <Text fw="bold">Imagen para el platillo</Text>
+                                    <Group mb={10}>
+                                        <Image src={file ? URL.createObjectURL(file) : null} radius='md' w={150} h={150}  />
+                                        <FileButton onChange={setFile} accept="image/png,image/jpeg">
+                                            {(props) => <Button color="brown.9" {...props}>Subir imagen</Button>}
+                                        </FileButton>
+                                    </Group>
+                                    <Text fw="bold">Ingredientes</Text>
+                                    <Group>
+                                        <Select w='60%' data={productos} label="Productos" onChange={(value, option) => setCurrentlySelected({productoId: value, productoNombre: option.label})} />
+                                        <NumberInput w='35%' label='Cantidad' value={cantidad} onChange={setCantidad}/>
+                                    </Group>
+                                    <ScrollArea mt={10} >
+                                        { listaProductos.length > 0 ?
+                                            listaProductos.map((producto, index) =>{
+                                                return(
+                                                    <ProductoEnReceta key={index} producto={producto} />
+                                                )
+                                            }) : null}
+                                    </ScrollArea>
+                                    <Button mt={10} onClick={addToList}>Agregar</Button>
+                                </Flex>
                             </Flex>
-                        </Flex>
-                        <Group justify='center' align="center" mt={16}>
-                            <Button type="submit" leftSection={<DeviceFloppy />} >Actualizar</Button>
-                            <Button color="black" onClick={close}>Cancelar</Button>
-                        </Group>
-                        </form>
-                    :
-                        <form onSubmit={form.onSubmit(handleCreatePlatillo)}>
-                        <Flex direction="row" align="flex-start" justify="center" gap={20}>
-                            <Flex direction="column" w="45%">
-                                <Text fw="bold">Información del platillo</Text>
-                                <TextInput {...form.getInputProps('platilloNombre')} label="Nombre" w='95%' />
-                                <TextInput {...form.getInputProps('descripcion')} label="Descripción" w='95%' />
-                                <NumberInput {...form.getInputProps('precio')} label="Precio" w='95%' />
-                                <Tabs value={aciveTab} onChange={setActiveTab} >
-                                    <Tabs.List>
-                                        <Tabs.Tab value="seleccionar" >Seleccionar categoría</Tabs.Tab>
-                                        <Tabs.Tab value="crear" >Crear categoría</Tabs.Tab>
-                                    </Tabs.List>
-                                    <Tabs.Panel value="seleccionar">
-                                        <Select label="Categoria" ref={categoriaIn}  w='95%' {...form.getInputProps('categoria')} onChange={(value, option) => {
-                                            setCategoria(value)
-                                        }}  data={categorias}/>
-                                    </Tabs.Panel>
-                                    <Tabs.Panel value="crear">
-                                        <TextInput name="categoriaNombre" onChange={setNewCategoriaN}  label="Nombre de la categoría" w='95%' />
-                                        <TextInput name="descripcion" onChange={setNewCategoriaDesc}  label="Descripción de la categoría" w='95%' />
-                                        <Group mb={10} align="center">
-                                            <Select label='Imagenes' w='45%' data={imgCategoria} onChange={(value, option) => findImagen(value) }  />
-                                            <Image src={fileCategoria ? `${STORED_IMAGES_URL}${fileCategoria}`: null }radius='md' mt={10} w={80} h={80}  />
-                                        </Group>
-                                        <Button mt={10} onClick={handleCreateCategoria} >Crear categoría</Button>
-                                    </Tabs.Panel>
-                                </Tabs>
-                            </Flex>
-                            <Flex direction="column" w="45%">
-                                <Text fw="bold">Imagen para el platillo</Text>
-                                <Group mb={10}>
-                                    <Image src={file ? URL.createObjectURL(file) : null} radius='md' w={150} h={150}  />
-                                    <FileButton onChange={setFile} accept="image/png,image/jpeg">
-                                        {(props) => <Button color="brown.9" {...props}>Subir imagen</Button>}
-                                    </FileButton>
-                                </Group>
-                                <Text fw="bold">Ingredientes</Text>
-                                <Group>
-                                    <Select w='60%' data={productos} label="Productos" onChange={(value, option) => setCurrentlySelected({productoId: value, productoNombre: option.label})} />
-                                    <NumberInput w='35%' label='Cantidad' value={cantidad} onChange={setCantidad}/>
-                                </Group>
-                                <List mt={10} mb={10}>
-                                    { listaProductos.length > 0 ?
-                                        listaProductos.map((producto, index) =>{
-                                            return(
-                                                <List.Item key={index}>{`${producto.cantidad} ${producto.productoNombre}`}</List.Item>
-                                            )
-                                        }) : null}
-                                </List>
-                                <Button onClick={addToList}>Agregar</Button>
-                            </Flex>
-                        </Flex>
-                        <Group justify='center' align="center" mt={16}>
-                            <Button type="submit" leftSection={<DeviceFloppy />} >Guardar</Button>
-                            <Button color="black" onClick={close}>Cancelar</Button>
-                        </Group>
-                        </form>
-                    }
-                </Modal.Body>
-            </Modal.Content>
-        </Modal.Root>
+                            <Group justify='center' align="center" mt={16}>
+                                <Button type="submit" leftSection={<DeviceFloppy />} >Guardar</Button>
+                                <Button color="black" onClick={close}>Cancelar</Button>
+                            </Group>
+                            </form>
+                        }
+                    </Modal.Body>
+                </Modal.Content>
+            </Modal.Root>
+        </productosReceta.Provider>
     );
 }
 

@@ -30,13 +30,14 @@ export const createPlatillo = async (platilloNombre, descripcion, precio, catego
     return res
 }
 
-export const updatePlatillo = async (platilloId, platilloNombre, descripcion, precio, categoriaId, imagenId) => {
+export const updatePlatillo = async (platilloId, platilloNombre, descripcion, precio, categoriaId, imagenId, productos) => {
     const res = await API.put(`platillos/actualizar/${platilloId}`, {
         nombre: platilloNombre,
         descripcion: descripcion,
         precio: precio,
         categoriaId: categoriaId,
-        imagenId: imagenId
+        imagenId: imagenId,
+        productos: productos
     })
     return res
 }
