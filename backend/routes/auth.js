@@ -39,9 +39,10 @@ router.post('/refresh-token', async (req, res, next) => {
 
         await deleteRefreshToken(savedRefreshToken.id)
         const jti = randomUUID()
-        await addRefreshTokenToWhitelist({ jti, refreshToken: hashToken(refreshToken), userId: user.userId })
         const { accessToken, refreshToken: newRefreshToken } = generateTokens(user, jti)
+        await addRefreshTokenToWhitelist({ jti, refreshToken: hashToken(newRefreshToken), userId: user.userId })
         res.json({
+            user,
             accessToken,
             refreshToken: newRefreshToken
         })

@@ -1,6 +1,5 @@
 import { JWT_SECRET_KEY } from '../config'
-import { findUserByToken } from '../services/authServices'
-import { findUserById } from '../services/userServices'
+import { findUserByIdFull } from '../services/userServices'
 
 const jwt = require('jsonwebtoken')
 
@@ -36,7 +35,7 @@ export async function authenticateCompras (req, res, next) {
     try {
         const token = authorization.split(' ')[1]
         const userT = jwt.decode(token, JWT_SECRET_KEY)
-        const user = await findUserById(userT.userId)
+        const user = await findUserByIdFull(userT.userId)
         const ruta = req.route.path
         console.log(user.role.permits)
         console.log(req.method)
@@ -76,7 +75,7 @@ export async function authenticateUsuarios (req, res, next) {
     try {
         const token = authorization.split(' ')[1]
         const userT = jwt.decode(token, JWT_SECRET_KEY)
-        const user = await findUserById(userT.userId)
+        const user = await findUserByIdFull(userT.userId)
         const ruta = req.route.path
         console.log(user.role.permits)
         console.log(req.method)
@@ -116,7 +115,7 @@ export async function authenticatePlatillos (req, res, next) {
     try {
         const token = authorization.split(' ')[1]
         const userT = jwt.decode(token, JWT_SECRET_KEY)
-        const user = await findUserById(userT.userId)
+        const user = await findUserByIdFull(userT.userId)
         const ruta = req.route.path
         console.log(user.role.permits)
         console.log(req.method)
@@ -156,7 +155,7 @@ export async function authenticateEmpleados (req, res, next) {
     try {
         const token = authorization.split(' ')[1]
         const userT = jwt.decode(token, JWT_SECRET_KEY)
-        const user = await findUserById(userT.userId)
+        const user = await findUserByIdFull(userT.userId)
         const ruta = req.route.path
         console.log(user.role.permits)
         console.log(req.method)
@@ -196,7 +195,7 @@ export async function authenticateComandas (req, res, next) {
     try {
         const token = authorization.split(' ')[1]
         const userT = jwt.decode(token, JWT_SECRET_KEY)
-        const user = await findUserById(userT.userId)
+        const user = await findUserByIdFull(userT.userId)
         const ruta = req.route.path
         console.log(user.role.permits)
         console.log(req.method)
@@ -236,7 +235,7 @@ export async function authenticateProductos (req, res, next) {
     try {
         const token = authorization.split(' ')[1]
         const userT = jwt.decode(token, JWT_SECRET_KEY)
-        const user = await findUserById(userT.userId)
+        const user = await findUserByIdFull(userT.userId)
         const ruta = req.route.path
         console.log(user.role.permits)
         console.log(req.method)

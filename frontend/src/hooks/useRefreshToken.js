@@ -6,15 +6,11 @@ const useRefreshToken = () => {
     const { setAuth } = useAuth()
 
     const refresh = async () => {
-        console.log(Cookies.get('refresh_token'))
         const res = await API.post('/auth/refresh-token', {
             refreshToken: Cookies.get('refresh_token'),
         })
-        setAuth(prev => {
-            console.log(JSON.stringify(prev))
-            console.log(res.data.accessToken)
-            return {...prev, accessToken: res.data.accessToken}
-        })
+        console.log(res.data)
+        setAuth({ user: res.data.user, accessToken: res.data.accessToken, refreshToken: res.data.refreshToken })
         setAuthUser(res.data.accessToken, res.data.refreshToken)
         return res.data.accessToken
     }

@@ -10,7 +10,6 @@ const MainLayout = () => {
     const { auth, persist } = useAuth()
     const [roles, setRoles] = useState([])
     const location = useLocation()
-    const [isLoading, setIsLoading] = useState(true);
     const refresh = useRefreshToken();
 
     const getRolesList = async () => {
@@ -44,9 +43,6 @@ const MainLayout = () => {
         return allowedRoles
     }
 
-
-    
-
     const isAuthorized = (rolesL) => {
         // auth.user.roleId
         let valid = false
@@ -64,7 +60,6 @@ const MainLayout = () => {
     }
     const verifyRefreshToken = async () => {
         try {
-            console.log('hola')
             await refresh();
         }
         catch (err) {
@@ -72,12 +67,13 @@ const MainLayout = () => {
         }
     }
     useEffect(() => {
+        if (persist) {
+            verifyRefreshToken()
+            console.log(auth)
+        }
         getRolesList()
         console.log(persist)
         // Avoids unwanted call to verifyRefreshToken
-        if (persist) {
-            verifyRefreshToken()
-        }
 
     }, [location])
 

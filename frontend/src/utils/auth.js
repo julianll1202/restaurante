@@ -19,6 +19,8 @@ export const logout = async () => {
 }
 
 export const setAuthUser = async (accessToken, refreshToken) => {
+    Cookies.remove('access_token')
+    Cookies.remove('refresh_token')
     Cookies.set('access_token', accessToken, {
         expires: 1,
         secure: true

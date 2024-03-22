@@ -10,7 +10,7 @@ export function findUserByUsername (username) {
     })
 }
 
-export function findUserById (id) {
+export function findUserByIdFull (id) {
     return prisma.users.findUnique({
         where: {
             userId: id
@@ -32,6 +32,18 @@ export function findUserById (id) {
                     }
                 }
             }
+        }
+    })
+}
+
+export function findUserById (id) {
+    return prisma.users.findUnique({
+        where: {
+            userId: id
+        }, select: {
+            userId: true,
+            username: true,
+            roleId: true
         }
     })
 }
