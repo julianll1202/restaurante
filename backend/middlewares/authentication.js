@@ -41,7 +41,7 @@ export async function authenticateCompras (req, res, next) {
         console.log(user.role.permits)
         console.log(req.method)
         user.role.permits.forEach((p) => {
-            if (p.permit.area === 'COMPRAS') {
+            if (p.permit.area === 'COMPRAS' || p.permit.area === 'PRODUCTOS') {
                 if (p.permit.action === 'VER' || p.permit.action === 'EDITAR'){
                     if (isMethodValid(p.permit.action, ruta))
                         valid = true

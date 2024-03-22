@@ -13,6 +13,10 @@ export const login = async(username, password) => {
     return res;
 }
 
+export const logout = async () => {
+    const res = await API.post('users/logout')
+    return res
+}
 
 export const setAuthUser = async (accessToken, refreshToken) => {
     Cookies.set('access_token', accessToken, {
