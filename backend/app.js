@@ -42,23 +42,10 @@ app.use('/imagenes', imgRouter)
 
 var xml = require('fs').readFileSync('myservice.wsdl', 'utf8');
 
-app.use('/soap/calculation', soap({
+app.use('/soap/mesas', soap({
     services: {
-        CalculatorService: {
-            ICalculator: {
-                Add: function(args) {
-                    return new Promise((resolve, reject) => {
-                        let suma = args.a + args.b;
-                        resolve({
-                            result: suma
-                        });
-                    });
-                },
-                Subtract({a, b}, res) {
-                    res({
-                            result: a - b
-                    });
-                },
+        MesaService: {
+            CRUD: {
                 Listar: function() {
                     return new Promise(async (resolve, reject) => {
                         const mesas = await getAllMesas()

@@ -1,0 +1,13 @@
+POST http://localhost:3000/soap/mesas
+Content-Type: text/xml
+
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:cal="http://localhost:3000/soap/mesas">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <cal:Crear>
+      <capacidad>4</capacidad>
+      <ubicacion>Interior</ubicacion>
+      <tipoMesa>Redonda</tipoMesa>
+      </cal:Crear>
+   </soapenv:Body>
+</soapenv:Envelope>
