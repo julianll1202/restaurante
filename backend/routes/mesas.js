@@ -9,7 +9,7 @@ router.get('/listar', async function (req, res) {
     try {
         var client = await soap.createClientAsync(xml, { endpoint: 'http://localhost:3000/soap/mesas'});
         var result = await client.ListarAsync(args);
-        res.status(200).send(result[0])
+        res.status(200).send(result[0]['result'])
     } catch (error) {
         console.log(error);
         res.status(400).send('Error al listar las mesas')
@@ -42,8 +42,8 @@ router.put('/actualizar', async function (req, res) {
     }
 })
 
-router.delete('/eliminar', async function (req, res) {
-    const {mesaId} = req.body;
+router.delete('/eliminar/:mesaId', async function (req, res) {
+    const {mesaId} = req.params;
     var xml = 'C:/Users/JML15/Desktop/CODE/ProyectoWEBYAOS/restaurante/backend/myservice.wsdl'
     try {
         var client = await soap.createClientAsync(xml, { endpoint: 'http://localhost:3000/soap/mesas'});

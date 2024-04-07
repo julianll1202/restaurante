@@ -20,6 +20,7 @@ import Platillos from './views/Platillos.jsx';
 import CrearComanda from './views/CrearComanda.jsx';
 import Compras from './views/Compras.jsx';
 import EditarComanda from './views/EditarComanda.jsx';
+import MesasCRUD from './views/MesasCRUD.jsx';
 
 const router = createBrowserRouter([
   {
@@ -66,7 +67,12 @@ const router = createBrowserRouter([
   {
     path: '/iniciar-sesion',
     element: <Login />,
+  },
+  {
+    path: '/mesas-crud',
+    element: <MesasCRUD />,
   }
+
 ]);
 
 ReactDOM.createRoot(document.getElementById('root')).render(
