@@ -1,11 +1,27 @@
 import express from 'express'
 import { createMesa, deleteMesa, getAllMesas, getMesasLibres, updateEstatusMesa, updateMesa } from '../controllers/mesaController.js'
+var soap = require('soap');
 
 const router = express.Router()
 
-router.get('/listar', async function (req, res) {
+router.post('/listar', async function (req, res) {
+    /*
     const mesas = await getAllMesas(req, res)
     res.status(200).send(mesas)
+    */
+    var args = {};
+    var xml = 'C:/Users/JML15/Desktop/CODE/ProyectoWEBYAOS/restaurante/backend/myservice.wsdl'
+
+    try {
+        var client = await soap.createClientAsync(xml, { endpoint: 'http://localhost:3000/soap/mesas'});
+        var result = await client.ListarAsync(args);
+        console.log(result[0])
+        res.status(200).send(result)
+    } catch (error) {
+        console.log(error);
+        res.status(400).send('Error al listar las mesas')
+    }
+    
 })
 
 router.get('/libres', async function (req, res) {

@@ -19,7 +19,6 @@ import rolesRouter from './routes/roles.js'
 import imgRouter from './routes/imagenes.js'
 */
 import cors from 'cors'
-import {soap} from 'express-soap';
 
 const app = express()
 
@@ -43,8 +42,6 @@ app.use('/productos', productosRouter)
 app.use('/roles', rolesRouter)
 app.use('/imagenes', imgRouter)
 */
-
-var xml = require('fs').readFileSync('myservice.wsdl', 'utf8');
 app.use('/mesas', mesasRouter)
 
 export default app
