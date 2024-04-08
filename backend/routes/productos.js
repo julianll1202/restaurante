@@ -4,12 +4,12 @@ import { authenticateProductos, isAuthenticated } from '../middlewares/authentic
 
 const router = express.Router()
 
-router.get('/listar', authenticateProductos, isAuthenticated, async function (req, res) {
+router.get('/listar', authenticateProductos, async function (req, res) {
     const productos = await getAllProductos(req, res)
     res.status(200).send(productos)
 })
 
-router.get('/obtener/:id', authenticateProductos, isAuthenticated, async function (req, res) {
+router.get('/obtener/:id', authenticateProductos, async function (req, res) {
     const producto = await getOneProducto(req, res, req.params.id)
     if (!JSON.stringify(producto).startsWith('"Error')) {
         res.status(200).send(producto)

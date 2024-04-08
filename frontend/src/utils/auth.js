@@ -1,5 +1,6 @@
 import API from "./api";
 import Cookies from 'js-cookie';
+import { jwtDecode } from 'jwt-decode';
 
 export const getRoles = async () => {
     const res = await API.get('roles/listar')
@@ -17,6 +18,16 @@ export const logout = async () => {
     const res = await API.post('users/logout')
     return res
 }
+
+export const isAccessTokenExpired = (accessToken) => {
+    try {
+      const decodedToken = jwtDecode(accessToken);
+      return decodedToken.exp <= (Date.now() / 10000);
+    } catch (error) {
+      return true;
+    }
+  };
+
 
 export const setAuthUser = async (accessToken, refreshToken) => {
     Cookies.remove('access_token')

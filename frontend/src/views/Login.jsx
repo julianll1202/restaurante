@@ -3,21 +3,19 @@ import { useForm } from "@mantine/form";
 import { login } from "../utils/auth";
 import { useContext } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import Cookies from "js-cookie";
 import AuthContext from "../contexts/AuthProvider";
 
 const Login = () => {
-    const { setAuth, persist, setPersist } = useContext(AuthContext)
+    const { setAuth, setPersist } = useContext(AuthContext)
     const location = useLocation()
     const from = location.state?.from?.pathname || '/'
     const navigate = useNavigate();
     const handleLogin = async(values) => {
         const res = await login(values.username, values.password)
         if (res.status === 200) {
-            Cookies.set('accessToken', res.data.accessToken);
             setAuth({ user: res.data.user, accessToken: res.data.accessToken, refreshToken: res.data.refreshToken });
-            setPersist(true)
-            localStorage.setItem('persist', persist)
+            setPersist('true')
+            localStorage.setItem('persist', 'true')
             navigate(from, { replace: true })
         }
     };

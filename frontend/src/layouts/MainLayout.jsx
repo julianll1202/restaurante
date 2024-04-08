@@ -16,7 +16,6 @@ const MainLayout = () => {
         const rolesL = await getRoles()
         const r = getAllowedRoles(rolesL)
         setRoles(r)
-        console.log(roles.find((r) => r.roleId === auth.user.roleId))
         console.log(r)
         isAuthorized(r)
     }
@@ -50,6 +49,7 @@ const MainLayout = () => {
         if (auth.user) {
             for (let i = 0; i < rolesL.length; i++) {
                 if (rolesL[i].roleId === auth.user.roleId) {
+                    console.log('hola')
                     valid = true
                     break
                 }
@@ -79,7 +79,7 @@ const MainLayout = () => {
 
     const navigate = useNavigate()
     return (
-        auth?.user ? isAuthorized(roles)  ?
+        (auth?.user || persist === 'true') ? isAuthorized(roles)  ?
         <AppShell>
             <AppShell.Header>
                 <Group justify="space-between" bg='orange' p={10}>

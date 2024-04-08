@@ -4,18 +4,18 @@ import { authenticateCompras, isAuthenticated } from '../middlewares/authenticat
 
 const router = express.Router()
 
-router.get('/listar', authenticateCompras, isAuthenticated, async function (req, res) {
+router.get('/listar', isAuthenticated,authenticateCompras, async function (req, res) {
     const compras = await getAllCompras(req, res)
     res.status(200).send(compras)
 })
 
-router.get('/ver/:id', authenticateCompras, isAuthenticated, async function (req, res) {
+router.get('/ver/:id', isAuthenticated,authenticateCompras, async function (req, res) {
     const id =req.params.id
     const compras = await getCompraById(id)
     res.status(200).send(compras)
 })
 
-router.get('/obtener/:id', authenticateCompras, isAuthenticated, async function (req, res) {
+router.get('/obtener/:id', isAuthenticated,authenticateCompras, async function (req, res) {
     const compra = await getCompraPorId(req, res, req.params.id)
     if (!JSON.stringify(compra).startsWith('"Error')) {
         res.status(200).send(compra)
@@ -24,12 +24,12 @@ router.get('/obtener/:id', authenticateCompras, isAuthenticated, async function 
     }
 })
 
-router.get('/comprasConProductos', authenticateCompras, isAuthenticated, async function (req, res) {
+router.get('/comprasConProductos', isAuthenticated, authenticateCompras, async function (req, res) {
     const comprasList = await comprasConProductos(req, res)
     res.status(200).send(comprasList)
 })
 
-router.post('/crear', authenticateCompras, isAuthenticated, async function (req, res) {
+router.post('/crear', async function (req, res) {
     const compra = await createCompra(req, res)
     if (!JSON.stringify(compra).startsWith('"Error')) {
         res.status(200).send(compra)
@@ -38,7 +38,7 @@ router.post('/crear', authenticateCompras, isAuthenticated, async function (req,
     }
 })
 
-router.put('/actualizar', authenticateCompras, isAuthenticated, async function (req, res) {
+router.put('/actualizar', async function (req, res) {
     const compraActualizada = await updateCompra(req, res)
     if (!JSON.stringify(compraActualizada).startsWith('"Error')) {
         res.status(200).send(compraActualizada)
