@@ -21,8 +21,9 @@ export const logout = async () => {
 
 export const isAccessTokenExpired = (accessToken) => {
     try {
-      const decodedToken = jwtDecode(accessToken);
-      return decodedToken.exp <= (Date.now() / 10000);
+      const decodedToken = jwtDecode(accessToken)
+      console.log(decodedToken.exp -(Date.now()/1000))
+      return (decodedToken.exp -(Date.now()/1000)) <= 700
     } catch (error) {
       return true;
     }
@@ -30,15 +31,13 @@ export const isAccessTokenExpired = (accessToken) => {
 
 
 export const setAuthUser = async (accessToken, refreshToken) => {
-    Cookies.remove('access_token')
-    Cookies.remove('refresh_token')
+    // Cookies.remove('access_token')
+    // Cookies.remove('refresh_token')
     Cookies.set('access_token', accessToken, {
-        expires: 1,
         secure: true
     })
 
     Cookies.set('refresh_token', refreshToken, {
-        expires: 1,
         secure: true
     })
 }

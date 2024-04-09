@@ -16,8 +16,6 @@ const MainLayout = () => {
         const rolesL = await getRoles()
         const r = getAllowedRoles(rolesL)
         setRoles(r)
-        console.log(r)
-        isAuthorized(r)
     }
     const getAllowedRoles = (rolesL) => {
         const allowedRoles = []
@@ -27,7 +25,6 @@ const MainLayout = () => {
             let valid = false
             for (let j = 0; j < rolesL[i].permits.length; j++) {
                 if (rolesL[i].permits[j].permit.area === location.pathname.split('/')[1].toUpperCase()) {
-                    console.log(rolesL[i].permits[j].permit)
                     if (location.pathname.split('/').length > 2) {
                         if (rolesL[i].permits[j].permit.area.action === 'EDITAR')
                             valid = true
@@ -43,23 +40,20 @@ const MainLayout = () => {
     }
 
     const isAuthorized = (rolesL) => {
-        // auth.user.roleId
         let valid = false
-        console.log(rolesL)
         if (auth.user) {
             for (let i = 0; i < rolesL.length; i++) {
                 if (rolesL[i].roleId === auth.user.roleId) {
-                    console.log('hola')
                     valid = true
                     break
                 }
             }
         }
-        console.log(valid)
         return valid
     }
     const verifyRefreshToken = async () => {
         try {
+            console.log('verifyRefreshToken')
             await refresh();
         }
         catch (err) {
@@ -67,19 +61,19 @@ const MainLayout = () => {
         }
     }
     useEffect(() => {
-        if (persist) {
+        if (persist === 'true') {
+            console.log('persist is true')
             verifyRefreshToken()
-            console.log(auth)
         }
-        getRolesList()
+    })
+    useEffect(() => {
         console.log(persist)
-        // Avoids unwanted call to verifyRefreshToken
-
+        getRolesList()
     }, [location])
 
     const navigate = useNavigate()
     return (
-        (auth?.user || persist === 'true') ? isAuthorized(roles)  ?
+        (persist === true || auth?.user) ? isAuthorized(roles)  ?
         <AppShell>
             <AppShell.Header>
                 <Group justify="space-between" bg='orange' p={10}>
@@ -128,7 +122,7 @@ const MainLayout = () => {
                 <Outlet />
             </AppShell.Main>
         </AppShell>
-        : <Navigate to="/"  replace /> : <Navigate to="/iniciar-sesion" state={{ from: location }} replace />
+        : <Navigate to="/" replace  /> : <Navigate to="/iniciar-sesion" state={{ from: location }} replace />
     );
 };
 

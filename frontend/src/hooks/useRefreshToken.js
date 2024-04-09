@@ -8,6 +8,7 @@ const useRefreshToken = () => {
     const refresh = async () => {
         const accessToken = Cookies.get('access_token')
         if (isAccessTokenExpired(accessToken)) {
+            console.log('Access token expired')
             const res = await API.post('/auth/refresh-token', {
                 refreshToken: Cookies.get('refresh_token'),
             })
