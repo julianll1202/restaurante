@@ -1,5 +1,5 @@
 import express from 'express'
-import { createRol, deleteRol, getAllRoles, updateRol } from '../controllers/rolController.js'
+import { createRol, deleteRol, getAllRoles, getRol, updateRol } from '../controllers/rolController.js'
 
 const router = express.Router()
 
@@ -8,6 +8,15 @@ router.get('/listar', async function (req, res) {
     res.status(200).send(roles)
 })
 
+router.get('/ver/:id', async function (req, res) {
+    try {
+        const id = req.params.id
+        const rol = await getRol(id)
+        res.status(200).send(rol)
+    } catch (err) {
+        res.status(400).send({message:'Rol no existe'})
+    }
+})
 router.post('/crear', async function (req, res) {
     const rol = await createRol(req, res)
     if (!JSON.stringify(rol).startsWith('"Error')) {

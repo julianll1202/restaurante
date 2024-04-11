@@ -9,6 +9,7 @@ import useRefreshToken from "../hooks/useRefreshToken";
 const MainLayout = () => {
     const { auth, persist } = useAuth()
     const [roles, setRoles] = useState([])
+    const [permisos, setPermisos] = useState([])
     const location = useLocation()
     const refresh = useRefreshToken();
 
@@ -17,27 +18,32 @@ const MainLayout = () => {
         const r = getAllowedRoles(rolesL)
         setRoles(r)
     }
-    const getAllowedRoles = (rolesL) => {
-        const allowedRoles = []
-        if (location.pathname.split('/')[1] === '')
-            return rolesL
-        for(let i = 0; i < rolesL.length; i++) {
-            let valid = false
-            for (let j = 0; j < rolesL[i].permits.length; j++) {
-                if (rolesL[i].permits[j].permit.area === location.pathname.split('/')[1].toUpperCase()) {
-                    if (location.pathname.split('/').length > 2) {
-                        if (rolesL[i].permits[j].permit.area.action === 'EDITAR')
-                            valid = true
-                    } else {
-                        valid = true
-                    }
-                }
-            }
-            if (valid)
-                allowedRoles.push(rolesL[i])
-        }
-        return allowedRoles
+
+    const getRol = async () => {
+        const rol = await getRol(localStorage.getItem('user_role'))
+        setPermisos(rol)
     }
+    // const getAllowedRoles = (rolesL) => {
+    //     const allowedRoles = []
+    //     if (location.pathname.split('/')[1] === '')
+    //         return rolesL
+    //     for(let i = 0; i < rolesL.length; i++) {
+    //         let valid = false
+    //         for (let j = 0; j < rolesL[i].permits.length; j++) {
+    //             if (rolesL[i].permits[j].permit.area === location.pathname.split('/')[1].toUpperCase()) {
+    //                 if (location.pathname.split('/').length > 2) {
+    //                     if (rolesL[i].permits[j].permit.area.action === 'EDITAR')
+    //                         valid = true
+    //                 } else {
+    //                     valid = true
+    //                 }
+    //             }
+    //         }
+    //         if (valid)
+    //             allowedRoles.push(rolesL[i])
+    //     }
+    //     return allowedRoles
+    // }
 
     const isAuthorized = (rolesL) => {
         let valid = false
@@ -68,7 +74,8 @@ const MainLayout = () => {
     })
     useEffect(() => {
         console.log(persist)
-        getRolesList()
+        // getRolesList()
+        getRol
     }, [location])
 
     const navigate = useNavigate()

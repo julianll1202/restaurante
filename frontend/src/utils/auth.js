@@ -6,6 +6,18 @@ export const getRoles = async () => {
     const res = await API.get('roles/listar')
     return res.data
 }
+
+export const getRol = async (rolId) => {
+    try {
+        const res = await API.get(`roles/ver/${Number(rolId)}`)
+        return res.data
+    } catch (err) {
+        return {
+            data: null,
+            status: 400
+        }
+    }
+}
 export const login = async(username, password) => {
     const res = await API.post('users/login', {
         username: username, password: password

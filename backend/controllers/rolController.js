@@ -21,6 +21,28 @@ export const getAllRoles = async (req, res) => {
     return roles
 }
 
+export const getRol = async(id) => {
+    const rol = await prisma.roles.findFirst({
+        where: {
+            roleId: id,
+        },
+        select: {
+            roleId: true,
+            permits: {
+                select: {
+                    permit: {
+                        select: {
+                            action: true,
+                            area: true
+                        }
+                    }
+                }
+            }
+        }
+    })
+    return rol
+}
+
 export const createRol = async (req, res) => {
     const rolInfo = req.body
     try {
