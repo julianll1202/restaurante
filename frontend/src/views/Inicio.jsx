@@ -20,7 +20,7 @@ const Inicio = () => {
         }}>
             <Title>Inicio</Title>
             <h2>Hola,</h2>
-            <p>{ auth.user.username }</p>
+            {/* <p>{ auth.user.username }</p> */}
         </Container>
     );
 };

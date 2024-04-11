@@ -16,6 +16,7 @@ const Login = () => {
             setAuth({ user: res.data.user, accessToken: res.data.accessToken, refreshToken: res.data.refreshToken });
             setPersist('true')
             localStorage.setItem('persist', 'true')
+            localStorage.setItem('user_role', res.data.user.roleId)
             navigate(from, { replace: true })
         }
     };

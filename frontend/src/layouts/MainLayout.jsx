@@ -47,14 +47,15 @@ const MainLayout = () => {
 
     const isAuthorized = (rolesL) => {
         let valid = false
-        if (auth.user) {
-            for (let i = 0; i < rolesL.length; i++) {
-                if (rolesL[i].roleId === auth.user.roleId) {
-                    valid = true
-                    break
-                }
+        console.log(auth)
+        const userRole = JSON.parse(localStorage.getItem('user_role'))
+        for (let i = 0; i < rolesL.length; i++) {
+            if (rolesL[i].roleId === Number(userRole)) {
+                valid = true
+                break
             }
         }
+        console.log(valid)
         return valid
     }
     const verifyRefreshToken = async () => {
@@ -67,7 +68,7 @@ const MainLayout = () => {
         }
     }
     useEffect(() => {
-        if (persist === 'true') {
+        if (persist === true) {
             console.log('persist is true')
             verifyRefreshToken()
         }
@@ -80,7 +81,7 @@ const MainLayout = () => {
 
     const navigate = useNavigate()
     return (
-        (persist === true || auth?.user) ? isAuthorized(roles)  ?
+        (auth?.user || persist === true) ? isAuthorized(roles)  ?
         <AppShell>
             <AppShell.Header>
                 <Group justify="space-between" bg='orange' p={10}>
@@ -129,7 +130,7 @@ const MainLayout = () => {
                 <Outlet />
             </AppShell.Main>
         </AppShell>
-        : <Navigate to="/" replace  /> : <Navigate to="/iniciar-sesion" state={{ from: location }} replace />
+        : <Navigate to="/" /> : <Navigate to="/iniciar-sesion" state={{ from: location }} replace />
     );
 };
 
