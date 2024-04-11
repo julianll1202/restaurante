@@ -140,7 +140,7 @@ const Platillos = () => {
                 {categoriaNombre !== '' ? <Title order={2}>{ categoriaNombre }</Title> : null}
             </Breadcrumbs>
             { platillosPAG === null || platillosPAG.length === 0 ?
-                <Button color="#4F4A45" w="10rem" radius="md" onClick={async () => openCreateModal()}>Crear platillo</Button>
+                <Button color="#4F4A45" w="10rem" radius="md" display={canEdit ? 'block' : 'none'} onClick={async () => openCreateModal()}>Crear platillo</Button>
                 :
             <Group mt={10} mb={15} align='flex-start' justify='flex-start'>
                     <Button color="#4F4A45" w="10rem" radius="md" display={canEdit ? 'block' : 'none' } onClick={async () => openCreateModal()}>Crear platillo</Button>

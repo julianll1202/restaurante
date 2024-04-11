@@ -22,7 +22,7 @@ const ModalLogout = ({opened, close}) => {
                 </Modal.Header>
                 <Modal.Body>
                     ¿Estas seguro de que deseas cerrar sesión? Todos los cambios no guardados serán descartados.
-                    <Group position="center" mt={16}>
+                    <Group align="center" justify="center" mt={16}>
                         <Button leftIcon={<Logout />} onClick={handleLogout} color="orange">Cerrar Sesión</Button>
                         <Button color="light-brown" onClick={close}>Cancelar</Button>
                     </Group>

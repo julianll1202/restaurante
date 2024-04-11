@@ -9,7 +9,7 @@ import ModalLogout from "../components/ModalLogout";
 import { useDisclosure } from '@mantine/hooks';
 
 const MainLayout = () => {
-    const { auth, persist, setCanEdit } = useAuth()
+    const { auth, persist, canEdit, setCanEdit } = useAuth()
     const [permisos, setPermisos] = useState([])
     const location = useLocation()
     const refresh = useRefreshToken();
@@ -27,21 +27,26 @@ const MainLayout = () => {
 
     const isAuthorized = (permits) => {
         let valid = false
+        let editable = false
         if (permits.length > 0) {
             if (location.pathname.split('/')[1] === '') {
                 valid = true
             } else {
                 for (let i = 0; i < permits.length; i++) {
-                    if (i === permits.length - 1)
-                        setCanEdit(false)
+                    if (i === (permits.length - 1))
+                        editable = false
                     if (permits[i].permit.area === location.pathname.split('/')[1].toUpperCase()) {
                         valid = true
-                        if (permits[i].permit.action === 'EDITAR')
-                            setCanEdit(true)
+                        if (permits[i].permit.action === 'EDITAR') {
+                            console.log(permits[i].permit.action)
+                            editable = true
+                        }
                     }
                 }
             }
         }
+        setCanEdit(editable)
+        console.log(canEdit)
         return valid
     }
     const verifyRefreshToken = async () => {

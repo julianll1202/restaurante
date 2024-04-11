@@ -27,6 +27,7 @@ const Comandas = () => {
         setComandas(res.data)
     }
     useEffect(() => {
+        console.log(canEdit)
         getComandasList()
         console.log(comandas.length)
     }, [activeTab])
