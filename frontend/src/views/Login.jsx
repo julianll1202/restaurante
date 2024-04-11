@@ -4,29 +4,38 @@ import { login } from "../utils/auth";
 import { useContext } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import AuthContext from "../contexts/AuthProvider";
+import { notifications } from "@mantine/notifications";
+import { X } from "tabler-icons-react";
 
 const Login = () => {
     const { setAuth, setPersist } = useContext(AuthContext)
     const location = useLocation()
     const from = location.state?.from?.pathname || '/'
     const navigate = useNavigate();
-    const handleLogin = async(values) => {
-        const res = await login(values.username, values.password)
-        if (res.status === 200) {
-            setAuth({ user: res.data.user, accessToken: res.data.accessToken, refreshToken: res.data.refreshToken });
-            setPersist('true')
-            localStorage.setItem('persist', 'true')
-            localStorage.setItem('user_role', res.data.user.roleId)
-            navigate(from, { replace: true })
-        }
-    };
-
     const form = useForm({
         initialValues: {
             username: '',
             password: '',
         },
     })
+    const handleLogin = async(values) => {
+        const res = await login(values.username, values.password)
+        console.log(res)
+        if (res.status === 200) {
+            setAuth({ user: res.data.user, accessToken: res.data.accessToken, refreshToken: res.data.refreshToken });
+            setPersist('true')
+            localStorage.setItem('persist', 'true')
+            localStorage.setItem('user_role', res.data.user.roleId)
+            navigate(from, { replace: true })
+        } else {
+            notifications.show({
+                message: 'Las credenciales de acceso son incorrectas',
+                color: 'red',
+                icon: <X size={20} />,
+            });
+        }
+    };
+
   return (
     <Group gap={0} align="center" justify="center" w="100vw" mih="100vh" wrap="nowrap">
         <Stack justify="center" align="center" bg="#6C5F5B" h="100vh" w="50%">

@@ -19,11 +19,18 @@ export const getRol = async (rolId) => {
     }
 }
 export const login = async(username, password) => {
-    const res = await API.post('users/login', {
-        username: username, password: password
-    })
-    setAuthUser(res.data.accessToken, res.data.refreshToken)
-    return res;
+    try {
+        const res = await API.post('users/login', {
+            username: username, password: password
+        })
+        setAuthUser(res.data.accessToken, res.data.refreshToken)
+        return res;
+    } catch (err) {
+        return {
+            data: null,
+            status: 400,
+        }
+    }
 }
 
 export const logout = async () => {

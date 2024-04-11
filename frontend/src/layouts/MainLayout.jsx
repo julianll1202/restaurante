@@ -3,14 +3,13 @@ import useAuth from './../hooks/useAuth';
 import { ActionIcon, AppShell, Button, Group, Menu, Title } from "@mantine/core";
 import { Bell, Settings, Soup, UserCircle } from "tabler-icons-react";
 import { getRol } from "../utils/auth";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import useRefreshToken from "../hooks/useRefreshToken";
 import ModalLogout from "../components/ModalLogout";
 import { useDisclosure } from '@mantine/hooks';
 
 const MainLayout = () => {
-    const { auth, persist, canEdit, setCanEdit } = useAuth({})
-    // const { setCanEdit } = useContext(AuthContext)
+    const { auth, persist, setCanEdit } = useAuth({})
     const [permisos, setPermisos] = useState([])
     const location = useLocation()
     const refresh = useRefreshToken();
