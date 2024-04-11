@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 
 const Comandas = () => {
-    const { canEdit } = useAuth()
+    const { canEdit } = useAuth({})
     // const location = useLocation();
     const navigate = useNavigate();
     const [activeTab, setActiveTab] = useState('pendiente')

@@ -51,6 +51,7 @@ export const setAuthUser = async (accessToken, refreshToken) => {
     })
 
     Cookies.set('refresh_token', refreshToken, {
+        expires: 1,
         secure: true
     })
 }

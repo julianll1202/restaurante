@@ -3,13 +3,14 @@ import useAuth from './../hooks/useAuth';
 import { ActionIcon, AppShell, Button, Group, Menu, Title } from "@mantine/core";
 import { Bell, Settings, Soup, UserCircle } from "tabler-icons-react";
 import { getRol } from "../utils/auth";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import useRefreshToken from "../hooks/useRefreshToken";
 import ModalLogout from "../components/ModalLogout";
 import { useDisclosure } from '@mantine/hooks';
 
 const MainLayout = () => {
-    const { auth, persist, canEdit, setCanEdit } = useAuth()
+    const { auth, persist, canEdit, setCanEdit } = useAuth({})
+    // const { setCanEdit } = useContext(AuthContext)
     const [permisos, setPermisos] = useState([])
     const location = useLocation()
     const refresh = useRefreshToken();
@@ -33,8 +34,6 @@ const MainLayout = () => {
                 valid = true
             } else {
                 for (let i = 0; i < permits.length; i++) {
-                    if (i === (permits.length - 1))
-                        editable = false
                     if (permits[i].permit.area === location.pathname.split('/')[1].toUpperCase()) {
                         valid = true
                         if (permits[i].permit.action === 'EDITAR') {
@@ -46,7 +45,6 @@ const MainLayout = () => {
             }
         }
         setCanEdit(editable)
-        console.log(canEdit)
         return valid
     }
     const verifyRefreshToken = async () => {
