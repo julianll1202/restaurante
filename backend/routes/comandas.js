@@ -1,20 +1,21 @@
 import express from 'express'
 import { cambiarEstatusComanda, cancelComanda, createComanda, deleteComanda, getAllComandas, getComandaById, updateComanda } from '../controllers/comandaController.js'
+import { authenticateComandas, isAuthenticated } from '../middlewares/authentication.js'
 
 const router = express.Router()
 
-router.get('/listar', async function (req, res) {
+router.get('/listar', authenticateComandas, isAuthenticated, async function (req, res) {
     const comandas = await getAllComandas(req, res)
     res.status(200).send(comandas)
 })
 
-router.get('/ver/:id', async function (req, res) {
+router.get('/ver/:id', authenticateComandas, isAuthenticated, async function (req, res) {
     const id = req.params.id
     const comanda = await getComandaById(Number(id))
     res.status(200).send(comanda)
 })
 
-router.post('/crear', async function (req, res) {
+router.post('/crear', authenticateComandas, isAuthenticated, async function (req, res) {
     const comanda = await createComanda(req, res)
     if (!JSON.stringify(comanda).startsWith('"Error')) {
         res.status(200).send(comanda)
@@ -23,7 +24,7 @@ router.post('/crear', async function (req, res) {
     }
 })
 
-router.put('/actualizar', async function (req, res) {
+router.put('/actualizar', authenticateComandas, isAuthenticated, async function (req, res) {
     const comandaActualizada = await updateComanda(req, res)
     if (!JSON.stringify(comandaActualizada).startsWith('"Error')) {
         res.status(200).send(comandaActualizada)
@@ -32,7 +33,7 @@ router.put('/actualizar', async function (req, res) {
     }
 })
 
-router.delete('/eliminar', async function (req, res) {
+router.delete('/eliminar', authenticateComandas, isAuthenticated, async function (req, res) {
     const comandaD = await deleteComanda(req, res)
     if (!JSON.stringify(comandaD).startsWith('"Error')) {
         res.status(200).send(comandaD)

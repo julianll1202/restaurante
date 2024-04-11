@@ -1,9 +1,11 @@
 import { Card, Image, Text, Button, Center } from '@mantine/core';
 import { PropTypes } from 'prop-types';
 import { CirclePlus, CircleX, Edit } from 'tabler-icons-react';
+import useAuth from './../hooks/useAuth';
 
 function Platillo ({direccionamientoEliminar, direccionamientoEditar, imagenURL_platillo, titulo_platillo, descripcion_platillo, precio_platillo, platillo_Id, miniVersion, direccionamientoAgregar}) {
-    return(
+  const { canEdit } = useAuth()
+  return(
         <Card
         shadow="sm"
         padding={miniVersion ? 'md': "lg"}
@@ -55,6 +57,7 @@ function Platillo ({direccionamientoEliminar, direccionamientoEditar, imagenURL_
           </Center>
         </Card.Section>
         :
+        canEdit ?
         <Card.Section inheritPadding mb={0} py="xs">
             <Button color="red" leftSection={<CircleX />} mr={10}  w="45%" mt="md" radius="md" onClick={direccionamientoEliminar}>
               Eliminar
@@ -63,6 +66,7 @@ function Platillo ({direccionamientoEliminar, direccionamientoEditar, imagenURL_
               Editar
             </Button>
         </Card.Section>
+        : null
       }
       </Card>
     );

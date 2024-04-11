@@ -2,14 +2,16 @@ import { PrismaClient } from '.prisma/client'
 
 const prisma = new PrismaClient()
 
-export function addRefreshTokenToWhitelist ({ jti, refreshToken, userId }) {
-    return prisma.refreshToken.create({
+export async function addRefreshTokenToWhitelist ({ jti, refreshToken, userId }) {
+    const reg = await prisma.refreshToken.create({
         data: {
             id: jti,
             hashedToken: refreshToken,
             userId: userId
         }
     })
+    console.log(reg)
+    return reg
 }
 
 export function findRefreshTokenById (id) {
@@ -19,6 +21,7 @@ export function findRefreshTokenById (id) {
         }
     })
 }
+
 
 export function deleteRefreshToken (id) {
     return prisma.refreshToken.update({

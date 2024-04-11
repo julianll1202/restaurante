@@ -3,8 +3,44 @@ import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 
 export const getAllRoles = async (req, res) => {
-    const roles = await prisma.roles.findMany()
+    const roles = await prisma.roles.findMany({
+        select: {
+            roleId: true,
+            permits: {
+                select: {
+                    permit: {
+                        select: {
+                            action: true,
+                            area: true
+                        }
+                    }
+                }
+            }
+        }
+    })
     return roles
+}
+
+export const getRol = async(id) => {
+    const rol = await prisma.roles.findFirst({
+        where: {
+            roleId: id,
+        },
+        select: {
+            roleId: true,
+            permits: {
+                select: {
+                    permit: {
+                        select: {
+                            action: true,
+                            area: true
+                        }
+                    }
+                }
+            }
+        }
+    })
+    return rol
 }
 
 export const createRol = async (req, res) => {

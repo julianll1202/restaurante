@@ -1,6 +1,6 @@
 import express from 'express'
 import { login, logout } from '../controllers/auth.js'
-import { isAuthenticated } from '../middlewares/authentication.js'
+import { authenticateUsuarios, isAuthenticated } from '../middlewares/authentication.js'
 import { createUser, deleteUser, getAllUsers, updateUser } from '../controllers/userController.js'
 const router = express.Router()
 
@@ -22,12 +22,12 @@ router.post('/logout', isAuthenticated, async function (req, res, next) {
     }
 })
 
-router.get('/listar', async function (req, res) {
+router.get('/listar', authenticateUsuarios, isAuthenticated, async function (req, res) {
     const users = await getAllUsers(req, res)
     res.status(200).send(users)
 })
 
-router.post('/crear', async function (req, res) {
+router.post('/crear', authenticateUsuarios, isAuthenticated, async function (req, res) {
     const user = await createUser(req, res)
     if (!JSON.stringify(user).startsWith('"Error')) {
         res.status(200).send(user)
@@ -36,7 +36,7 @@ router.post('/crear', async function (req, res) {
     }
 })
 
-router.put('/actualizar', async function (req, res) {
+router.put('/actualizar', authenticateUsuarios, isAuthenticated, async function (req, res) {
     const userActualizado = await updateUser(req, res)
     if (!JSON.stringify(userActualizado).startsWith('"Error')) {
         res.status(200).send(userActualizado)
@@ -45,7 +45,7 @@ router.put('/actualizar', async function (req, res) {
     }
 })
 
-router.delete('/eliminar', async function (req, res) {
+router.delete('/eliminar', authenticateUsuarios, isAuthenticated, async function (req, res) {
     const userD = await deleteUser(req, res)
     if (!JSON.stringify(userD).startsWith('"Error')) {
         res.status(200).send(userD)
