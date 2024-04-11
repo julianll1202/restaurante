@@ -247,7 +247,6 @@ export async function authenticateProductos (req, res, next) {
                     }
                 }
         })
-        console.log('hola')
         if (!valid) {
             console.log(valid)
             return res.status(401).send()

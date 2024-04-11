@@ -2,66 +2,54 @@ import { Link, Navigate, Outlet, useLocation, useNavigate } from "react-router-d
 import useAuth from './../hooks/useAuth';
 import { ActionIcon, AppShell, Button, Group, Menu, Title } from "@mantine/core";
 import { Bell, Settings, Soup, UserCircle } from "tabler-icons-react";
-import { getRoles } from "../utils/auth";
+import { getRol } from "../utils/auth";
 import { useEffect, useState } from "react";
 import useRefreshToken from "../hooks/useRefreshToken";
+import ModalLogout from "../components/ModalLogout";
+import { useDisclosure } from '@mantine/hooks';
 
 const MainLayout = () => {
-    const { auth, persist } = useAuth()
-    const [roles, setRoles] = useState([])
+    const { auth, persist, setCanEdit } = useAuth()
     const [permisos, setPermisos] = useState([])
     const location = useLocation()
     const refresh = useRefreshToken();
+    const [opened, {open, close}] = useDisclosure(false);
 
-    const getRolesList = async () => {
-        const rolesL = await getRoles()
-        const r = getAllowedRoles(rolesL)
-        setRoles(r)
+    const getUserRole = async () => {
+        const userRole = JSON.parse(localStorage.getItem('user_role')) || 0
+        if (userRole > 0) {
+            const rol = await getRol(userRole)
+            setPermisos(rol.permits)
+        } else {
+            setPermisos([])
+        }
     }
 
-    const getRol = async () => {
-        const rol = await getRol(localStorage.getItem('user_role'))
-        setPermisos(rol)
-    }
-    // const getAllowedRoles = (rolesL) => {
-    //     const allowedRoles = []
-    //     if (location.pathname.split('/')[1] === '')
-    //         return rolesL
-    //     for(let i = 0; i < rolesL.length; i++) {
-    //         let valid = false
-    //         for (let j = 0; j < rolesL[i].permits.length; j++) {
-    //             if (rolesL[i].permits[j].permit.area === location.pathname.split('/')[1].toUpperCase()) {
-    //                 if (location.pathname.split('/').length > 2) {
-    //                     if (rolesL[i].permits[j].permit.area.action === 'EDITAR')
-    //                         valid = true
-    //                 } else {
-    //                     valid = true
-    //                 }
-    //             }
-    //         }
-    //         if (valid)
-    //             allowedRoles.push(rolesL[i])
-    //     }
-    //     return allowedRoles
-    // }
-
-    const isAuthorized = (rolesL) => {
+    const isAuthorized = (permits) => {
         let valid = false
-        console.log(auth)
-        const userRole = JSON.parse(localStorage.getItem('user_role'))
-        for (let i = 0; i < rolesL.length; i++) {
-            if (rolesL[i].roleId === Number(userRole)) {
+        if (permits.length > 0) {
+            if (location.pathname.split('/')[1] === '') {
                 valid = true
-                break
+            } else {
+                for (let i = 0; i < permits.length; i++) {
+                    if (i === permits.length - 1)
+                        setCanEdit(false)
+                    if (permits[i].permit.area === location.pathname.split('/')[1].toUpperCase()) {
+                        valid = true
+                        if (permits[i].permit.action === 'EDITAR')
+                            setCanEdit(true)
+                    }
+                }
             }
         }
-        console.log(valid)
         return valid
     }
     const verifyRefreshToken = async () => {
         try {
             console.log('verifyRefreshToken')
-            await refresh();
+            const res = await refresh();
+            if (res === 'No refresh token available')
+                navigate('/iniciar-sesion')
         }
         catch (err) {
             console.error(err);
@@ -74,14 +62,12 @@ const MainLayout = () => {
         }
     })
     useEffect(() => {
-        console.log(persist)
-        // getRolesList()
-        getRol
+        getUserRole()
     }, [location])
 
     const navigate = useNavigate()
     return (
-        (auth?.user || persist === true) ? isAuthorized(roles)  ?
+        (auth?.user || persist === true) ? isAuthorized(permisos)  ?
         <AppShell>
             <AppShell.Header>
                 <Group justify="space-between" bg='orange' p={10}>
@@ -116,17 +102,14 @@ const MainLayout = () => {
                             </Menu.Target>
 
                             <Menu.Dropdown>
-                                <Menu.Item>MI PERFIL</Menu.Item>
-                                <Menu.Item>LISTA DE USUARIOS</Menu.Item>
-
-                                <Menu.Item>CAMBIO DE CONTRASEÑA</Menu.Item>
-                                <Menu.Item>CERRAR SESION</Menu.Item>
+                                <Menu.Item onClick={open}>CERRAR SESION</Menu.Item>
                             </Menu.Dropdown>
                         </Menu>
                     </Group>
                 </Group>
             </AppShell.Header>
             <AppShell.Main mt={50} p={20} w='100vw'>
+            <ModalLogout opened={opened} close={close} />
                 <Outlet />
             </AppShell.Main>
         </AppShell>

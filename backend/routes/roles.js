@@ -11,7 +11,7 @@ router.get('/listar', async function (req, res) {
 router.get('/ver/:id', async function (req, res) {
     try {
         const id = req.params.id
-        const rol = await getRol(id)
+        const rol = await getRol(Number(id))
         res.status(200).send(rol)
     } catch (err) {
         res.status(400).send({message:'Rol no existe'})

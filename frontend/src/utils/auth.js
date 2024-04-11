@@ -28,6 +28,9 @@ export const login = async(username, password) => {
 
 export const logout = async () => {
     const res = await API.post('users/logout')
+    Cookies.remove('access_token')
+    Cookies.remove('refresh_token')
+    localStorage.clear()
     return res
 }
 
@@ -43,8 +46,6 @@ export const isAccessTokenExpired = (accessToken) => {
 
 
 export const setAuthUser = async (accessToken, refreshToken) => {
-    // Cookies.remove('access_token')
-    // Cookies.remove('refresh_token')
     Cookies.set('access_token', accessToken, {
         secure: true
     })

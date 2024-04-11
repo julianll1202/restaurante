@@ -7,17 +7,23 @@ const useRefreshToken = () => {
 
     const refresh = async () => {
         const accessToken = Cookies.get('access_token')
-        if (isAccessTokenExpired(accessToken)) {
-            console.log('Access token expired')
-            const res = await API.post('/auth/refresh-token', {
-                refreshToken: Cookies.get('refresh_token'),
-            })
-            console.log(res.data)
-            setAuth({ user: res.data.user, accessToken: res.data.accessToken, refreshToken: res.data.refreshToken })
-            setAuthUser(res.data.accessToken, res.data.refreshToken)
-            return res.data.accessToken
+        const refreshToken = Cookies.get('access_token')
+        console.log(accessToken, refreshToken)
+        if (refreshToken) {
+            if (isAccessTokenExpired(accessToken)) {
+                console.log('Access token expired')
+                const res = await API.post('/auth/refresh-token', {
+                    refreshToken: refreshToken,
+                })
+                console.log(res.data)
+                setAuth({ user: res.data.user, accessToken: res.data.accessToken, refreshToken: res.data.refreshToken })
+                setAuthUser(res.data.accessToken, res.data.refreshToken)
+                return res.data.accessToken
+            } else {
+                return accessToken
+            }
         } else {
-            return accessToken
+            return 'No refresh token available'
         }
     }
     return refresh

@@ -5,8 +5,10 @@ import { useEffect, useState } from "react"
 import { useDisclosure } from "@mantine/hooks"
 import { deleteProducto, getAllProductos } from "../controllers/productoController"
 import ModalProductos from "../components/ModalProductos"
+import useAuth from "../hooks/useAuth"
 
 const Productos = () => {
+    const { canEdit } = useAuth()
     const header = [
         "Id", "Nombre del producto", "Fecha de caducidad", "", "Cantidad", "Valor total"
     ] // Encabezado de la tabla
@@ -171,12 +173,12 @@ const Productos = () => {
                         {value: 'VALOR', label: 'Ordenar de menor a mayor por valor total en inventario'},
                         {value: 'CANTIDADM', label: 'Ordenar de mayor a menor por cantidad en existencia'},
                         {value: 'CANTIDAD', label: 'Ordenar de menor a mayor por cantidad en existencia'},
-                        ]} onChange={(_value, option) => ordenarTabla(_value)} />
-                    <Button leftSection={<CirclePlus />} color="brown.9" onClick={openCreateModal}>Agregar producto</Button>
+                        ]} onChange={(_value) => ordenarTabla(_value)} />
+                    <Button leftSection={<CirclePlus />} display={canEdit ? 'block' : 'none' }  color="brown.9" onClick={openCreateModal}>Agregar producto</Button>
                 </Group>
                 <Tabla headers={header} content={content} row={setRowIndex} rowD={setRowDIndex} />
             </Container>
-            <ModalProductos opened={opened} close={handlers.close} update={row.puesto !== '' ? true : false} updateInfo={row}  />
+            <ModalProductos opened={opened} close={handlers.close} isEditable={canEdit} update={row.puesto !== '' ? true : false} updateInfo={row}  />
         </div>
     )
 }
