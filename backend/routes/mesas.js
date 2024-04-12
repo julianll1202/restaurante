@@ -5,7 +5,7 @@ const router = express.Router()
 
 router.get('/listar', async function (req, res) {
     var args = {};
-    var xml = 'C:/Users/JML15/Desktop/CODE/ProyectoWEBYAOS/restaurante/backend/myservice.wsdl'
+    var xml = 'http://localhost:3000/soap/mesas?wsdl'
     try {
         var client = await soap.createClientAsync(xml, { endpoint: 'http://localhost:3000/soap/mesas'});
         var result = await client.ListarAsync(args);
@@ -18,7 +18,7 @@ router.get('/listar', async function (req, res) {
 
 router.post('/crear', async function (req, res) {
     const {capacidad, ubicacion, tipoMesa} = req.body;
-    var xml = 'C:/Users/JML15/Desktop/CODE/ProyectoWEBYAOS/restaurante/backend/myservice.wsdl'
+    var xml = 'http://localhost:3000/soap/mesas?wsdl'
     try {
         var client = await soap.createClientAsync(xml, { endpoint: 'http://localhost:3000/soap/mesas'});
         var result = await client.CrearAsync({capacidad, ubicacion, tipoMesa});
@@ -31,7 +31,7 @@ router.post('/crear', async function (req, res) {
 
 router.put('/actualizar', async function (req, res) {
     const {mesaId, capacidad, ubicacion, tipoMesa, ocupada} = req.body;
-    var xml = 'C:/Users/JML15/Desktop/CODE/ProyectoWEBYAOS/restaurante/backend/myservice.wsdl'
+    var xml = 'http://localhost:3000/soap/mesas?wsdl'
     try {
         var client = await soap.createClientAsync(xml, { endpoint: 'http://localhost:3000/soap/mesas'});
         var result = await client.ActualizarAsync({mesaId, capacidad, ubicacion, tipoMesa, ocupada});
@@ -44,7 +44,7 @@ router.put('/actualizar', async function (req, res) {
 
 router.delete('/eliminar/:mesaId', async function (req, res) {
     const {mesaId} = req.params;
-    var xml = 'C:/Users/JML15/Desktop/CODE/ProyectoWEBYAOS/restaurante/backend/myservice.wsdl'
+    var xml = 'http://localhost:3000/soap/mesas?wsdl'
     try {
         var client = await soap.createClientAsync(xml, { endpoint: 'http://localhost:3000/soap/mesas'});
         var result = await client.EliminarAsync({mesaId});
