@@ -6,7 +6,7 @@ import { ChevronDown, ChevronLeft, ChevronRight, ChevronUp, Edit, Trash } from "
 import { cambiarEstatus, cancelarComanda } from "../controllers/comandaController";
 import { useNavigate } from "react-router";
 
-const Comanda = ({ comandaInfo, color, prev, next }) => {
+const Comanda = ({ comandaInfo, color, prev, next, isEditable }) => {
     const [comanda, setComanda] = useState({})
     const [seeDetails, setSeeDetails] = useState(false)
     const navigate = useNavigate()
@@ -58,12 +58,15 @@ const Comanda = ({ comandaInfo, color, prev, next }) => {
                 <Text display={!seeDetails ? 'none': 'block'} ta='left'><b>Total: </b>${comandaInfo ? comandaInfo.precioFinal : null}</Text>
             </Card.Section>
             <Card.Section>
+                { isEditable ?
                 <Group justify="center">
                     <ActionIcon display={prev === 0 ? 'none' : 'block'} color="gray" radius='xl' size='lg' onClick={async() => cambiarEstatus(Number(comandaInfo.comandaId), prev)} ><ChevronLeft /></ActionIcon>
                     <ActionIcon color="red" radius='xl' size='lg' p={5} onClick={async() => cancelarComanda(Number(comandaInfo.comandaId))}><Trash /></ActionIcon>
-                    <ActionIcon radius='xl' size='lg' onClick={() => navigate(`/editar-comanda/${comandaInfo.comandaId}`)}  ><Edit /></ActionIcon>
+                    <ActionIcon radius='xl' size='lg' onClick={() => navigate(`/comandas/editar-comanda/${comandaInfo.comandaId}`)}  ><Edit /></ActionIcon>
                     <ActionIcon display={next === 0  ? 'none' : 'block'} color="gray" radius='xl' size='lg' onClick={async() => cambiarEstatus(Number(comandaInfo.comandaId), next)} ><ChevronRight /></ActionIcon>
                 </Group>
+                : null
+            }
             </Card.Section>
             <Card.Section inheritPadding mt="sm" mb={5}>
                 <Button onClick={() => setSeeDetails(!seeDetails)} leftSection={!seeDetails ? <ChevronDown /> : <ChevronUp />} color="light-brown">{!seeDetails ? 'Ver' : 'Ocultar'} detalles</Button>
@@ -77,6 +80,7 @@ Comanda.propTypes = {
     color: PropTypes.string,
     prev: PropTypes.number,
     next: PropTypes.number,
+    isEditable: PropTypes.bool,
 }
 
 export default Comanda

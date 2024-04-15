@@ -1,4 +1,4 @@
-import { Button, Group, Text, TextInput, Title, Flex, Select, Container, Divider, Stack, Image } from "@mantine/core"
+import { Button, Group, TextInput, Title, Select, Container, Stack, Image } from "@mantine/core"
 import { AdjustmentsHorizontal, CirclePlus, Search } from "tabler-icons-react"
 import Tabla from "../components/Tabla"
 import { useEffect, useState } from "react"
@@ -7,8 +7,10 @@ import { getOneProducto } from "../controllers/productoController"
 import ModalCompras from "../components/ModalCompras"
 import { deleteCompra, comprasConProductos } from "../controllers/compraController"
 import GraficoBarras from "../components/GraficoBarras"
+import useAuth from "../hooks/useAuth"
 
 const Compras = () => {
+    const { canEdit } = useAuth()
     const header = [
         "Id de la compra", "Fecha de compra", "Productos", "Valor total"
     ] // Encabezado de la tabla
@@ -51,7 +53,7 @@ const Compras = () => {
     }
 
     const deleteOneCompra = async (id) => {
-        const deleteRes = await deleteCompra(id)
+        await deleteCompra(id)
     }
 
     const getComprasList = async () => {
@@ -198,7 +200,7 @@ const Compras = () => {
                         {value: 'CANTIDADM', label: 'Ordenar de mayor a menor por cantidad en existencia'},
                         {value: 'CANTIDAD', label: 'Ordenar de menor a mayor por cantidad en existencia'},
                         ]} onChange={(_value, option) => ordenarTabla(_value)} />
-                    <Button leftSection={<CirclePlus />} color="brown.9" onClick={openCreateModal}>Agregar producto</Button>
+                    <Button leftSection={<CirclePlus />} display={canEdit ? 'block' : 'none' } color="brown.9" onClick={openCreateModal}>Agregar compra</Button>
                 </Group>
                 <Tabla headers={header} content={content} row={setRowIndex} rowD={setRowDIndex} />
             </Container>

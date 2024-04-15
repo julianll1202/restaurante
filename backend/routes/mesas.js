@@ -1,9 +1,10 @@
 import express from 'express'
 import { createMesa, deleteMesa, getAllMesas, getMesasLibres, updateEstatusMesa, updateMesa } from '../controllers/mesaController.js'
+import { isAuthenticated } from '../middlewares/authentication.js'
 
 const router = express.Router()
 
-router.get('/listar', async function (req, res) {
+router.get('/listar', isAuthenticated, async function (req, res) {
     const mesas = await getAllMesas(req, res)
     res.status(200).send(mesas)
 })

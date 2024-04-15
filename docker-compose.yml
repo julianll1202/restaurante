@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  mysqldb:
+    container_name: mysqldatabase
+    image: mysql
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=tec20490712
+      - MYSQL_DATABASE=restaurant
+    ports:
+      - 3307:3306
+    networks:
+      - restaurant-network
+    volumes:
+      - db:/var/lib/mysql
+
+  backend:
+    container_name: restaurant_backend
+    restart: unless-stopped
+    image: restaurant-backend:1.0
+    build:
+      context: backend
+      target: proyecto
+      dockerfile: Dockerfile
+    ports:
+      - 3000:3000
+    networks:
+      - restaurant-network
+    depends_on:
+      - mysqldb
+    links:
+     - mysqldb
+
+  frontend:
+    container_name: restaurant_frontend
+    restart: unless-stopped
+    image: restaurant-frontend:1.0
+    build:
+      context: frontend
+      target: proyecto
+      dockerfile: Dockerfile
+    ports:
+      - 5173:5173
+    networks:
+      - restaurant-network
+    depends_on:
+      - backend
+
+networks:
+  restaurant-network:
+
+volumes:
+  db:

@@ -3,6 +3,7 @@ import '@mantine/core/styles.css';
 import '@mantine/dates/styles.css';
 import '@mantine/carousel/styles.css';
 import '@mantine/charts/styles.css';
+import '@mantine/notifications/styles.css';
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { RouterProvider, createBrowserRouter } from 'react-router-dom'
@@ -20,6 +21,7 @@ import Platillos from './views/Platillos.jsx';
 import CrearComanda from './views/CrearComanda.jsx';
 import Compras from './views/Compras.jsx';
 import EditarComanda from './views/EditarComanda.jsx';
+import { Notifications } from '@mantine/notifications';
 
 const router = createBrowserRouter([
   {
@@ -34,7 +36,7 @@ const router = createBrowserRouter([
         element: <Empleados />,
       },
       {
-        path: '/inventario',
+        path: '/productos',
         element: <Productos />
       },
       {
@@ -50,7 +52,7 @@ const router = createBrowserRouter([
         element: <Platillos />
       },
       {
-        path: '/crear-comanda',
+        path: '/comandas/crear-comanda',
         element: <CrearComanda />,
       },
       {
@@ -58,7 +60,7 @@ const router = createBrowserRouter([
         element: <Compras />
       },
       {
-        path: '/editar-comanda/:id',
+        path: '/comandas/editar-comanda/:id',
         element: <EditarComanda />,
       }
     ]
@@ -72,9 +74,9 @@ const router = createBrowserRouter([
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <MantineProvider theme={restauranteTheme} withGlobalStyles>
+    <Notifications/>
         <AuthProvider>
           <RouterProvider router={router} />
-
         </AuthProvider>
     </MantineProvider>
   </React.StrictMode>,

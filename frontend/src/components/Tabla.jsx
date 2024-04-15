@@ -2,7 +2,7 @@ import {  ActionIcon, Avatar, Badge, ScrollArea, Table } from '@mantine/core';
 import { PropTypes } from 'prop-types';
 import { Edit, ListSearch, Trash } from 'tabler-icons-react';
 import { STORED_IMAGES_URL } from '../utils/constants';
-function Tabla ({headers, content, row, rowD, useImage, useDetailView, useBadge}) {
+function Tabla ({headers, content, row, rowD, useImage, useDetailView, isEditable, useBadge}) {
     return(
 
         <ScrollArea w="90%" h="50vh" mah={500} maw={1200} type='always' ml='-8vw' >
@@ -21,11 +21,19 @@ function Tabla ({headers, content, row, rowD, useImage, useDetailView, useBadge}
                             :
                             fila.map( (celda, i) => i === 3 ? <Table.Td ta='center' key={i}><Badge variant='light' color='orange' size='lg' radius='sm'>{celda}</Badge></Table.Td> : <Table.Td ta='center' key={i}>{celda}</Table.Td>)
                         }
+                        { useDetailView ?
                         <Table.Td>
-                            { useDetailView ? <ActionIcon onClick={() => row(index)} mr={10} size={28} radius='xl' color='light-brown'><ListSearch size={20} /></ActionIcon> : null}
+                            <ActionIcon onClick={() => row(index)} mr={10} size={28} radius='xl' color='light-brown'><ListSearch size={20} /></ActionIcon>
+                        </Table.Td>
+                        : null
+                        }
+                        { isEditable ?
+                        <Table.Td>
                             <ActionIcon onClick={() => row(index)} size={28} mr={10} radius='xl'><Edit size={20} /></ActionIcon>
                             <ActionIcon onClick={() => rowD(index)} color='red' size={28} radius='xl'><Trash size={20} /></ActionIcon>
                         </Table.Td>
+                            : null
+                            }
                         </Table.Tr>
                     ) : <Table.Tr><Table.Td></Table.Td></Table.Tr>}
                 </Table.Tbody>
@@ -43,5 +51,6 @@ Tabla.propTypes = {
     useDetailView: PropTypes.bool,
     useImage: PropTypes.bool,
     useBadge: PropTypes.bool,
+    isEditable: PropTypes.bool,
 };
 export default Tabla;

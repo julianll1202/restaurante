@@ -9,8 +9,10 @@ import ModalPlatillos from "../components/ModalPlatillos"
 import { useDisclosure } from "@mantine/hooks"
 import { STORED_IMAGES_URL } from "../utils/constants"
 import { AdjustmentsHorizontal, Search } from "tabler-icons-react"
+import useAuth from "../hooks/useAuth"
 
 const Platillos = () => {
+    const { canEdit } = useAuth()
     const [opened, handlers] = useDisclosure(false); // Manejo de estado del modal
     const [row, setRow] = useState({categoriaId: '', imagen: {url: ''}}) // Fila a editar
 
@@ -138,17 +140,17 @@ const Platillos = () => {
                 {categoriaNombre !== '' ? <Title order={2}>{ categoriaNombre }</Title> : null}
             </Breadcrumbs>
             { platillosPAG === null || platillosPAG.length === 0 ?
-                <Button color="#4F4A45" w="10rem" radius="md" onClick={async () => openCreateModal()}>Crear platillo</Button>
+                <Button color="#4F4A45" w="10rem" radius="md" display={canEdit ? 'block' : 'none'} onClick={async () => openCreateModal()}>Crear platillo</Button>
                 :
             <Group mt={10} mb={15} align='flex-start' justify='flex-start'>
-                    <Button color="#4F4A45" w="10rem" radius="md" onClick={async () => openCreateModal()}>Crear platillo</Button>
+                    <Button color="#4F4A45" w="10rem" radius="md" display={canEdit ? 'block' : 'none' } onClick={async () => openCreateModal()}>Crear platillo</Button>
                     <TextInput  rightSection={<Search />} />
                     <Select rightSection={<AdjustmentsHorizontal />} data={[
                         {value: 'NOMBRE', label: 'Ordenar por nombre de menor a mayor'},
                         {value: 'NOMBREM', label: 'Ordenar por nombre de mayor a menor'},
                         {value: 'PRECIO', label: 'Ordenar por precio de menor a mayor'},
                         {value: 'PRECIOM', label: 'Ordenar por precio de mayor a menor'},
-                    ]} onChange={(_value, option) => ordenarDatos(_value)} />
+                    ]} onChange={(_value) => ordenarDatos(_value)} />
             </Group>
             }
             {

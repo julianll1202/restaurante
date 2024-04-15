@@ -1,6 +1,6 @@
 import express from 'express'
 import { JWT_SECRET_KEY } from '../config/index.js'
-import { deleteRefreshToken, findRefreshTokenById, revokeTokens } from '../services/authServices.js'
+import { addRefreshTokenToWhitelist, deleteRefreshToken, findRefreshTokenById, revokeTokens } from '../services/authServices.js'
 import { hashToken } from '../services/hashToken.js'
 import { randomUUID } from 'crypto'
 import { generateTokens } from '../services/tokenService.js'
@@ -16,7 +16,7 @@ router.post('/refresh-token', async (req, res, next) => {
             res.status(400)
             throw new Error('Missing refresh token')
         }
-
+        console.log(refreshToken)
         const payload = jwt.verify(refreshToken, JWT_SECRET_KEY)
         const savedRefreshToken = await findRefreshTokenById(payload.jti)
 
@@ -40,7 +40,9 @@ router.post('/refresh-token', async (req, res, next) => {
         await deleteRefreshToken(savedRefreshToken.id)
         const jti = randomUUID()
         const { accessToken, refreshToken: newRefreshToken } = generateTokens(user, jti)
+        await addRefreshTokenToWhitelist({ jti, refreshToken: hashToken(newRefreshToken), userId: user.userId })
         res.json({
+            user,
             accessToken,
             refreshToken: newRefreshToken
         })
@@ -58,3 +60,5 @@ router.post('/revoke/refresh-token', async (req, res, next) => {
         next(err)
     }
 })
+
+export default router
