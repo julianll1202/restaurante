@@ -1,0 +1,156 @@
+<wsdl:definitions 
+    xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" 
+    xmlns:tns="http://localhost:3000/soap/mesas" 
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+    xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" 
+    xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" 
+    targetNamespace="http://localhost:3000/soap/mesas" 
+    xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+    <wsdl:types>
+        <xsd:schema targetNamespace="http://localhost:3000/soap/mesas" elementFormDefault="qualified" >
+            <xsd:element name="Listar">
+            </xsd:element>
+            <xsd:element name="ListarResponse">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="result" type="xsd:string" />
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="Crear">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="capacidad" type="xsd:int" />
+                        <xsd:element name="ubicacion" type="xsd:string" />
+                        <xsd:element name="tipoMesa" type="xsd:string" />
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="CrearResponse">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="result" type="xsd:string" />
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="Actualizar">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="mesaId" type="xsd:int" />
+                        <xsd:element name="capacidad" type="xsd:int" />
+                        <xsd:element name="ubicacion" type="xsd:string" />
+                        <xsd:element name="tipoMesa" type="xsd:string" />
+                        <xsd:element name="ocupada" type="xsd:boolean" />
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="ActualizarResponse">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="result" type="xsd:string" />
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="Eliminar">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="mesaId" type="xsd:int" />
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="EliminarResponse">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="result" type="xsd:string" />
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+        </xsd:schema>
+    </wsdl:types>
+    <wsdl:message name="CRUD_Listar_InputMessage">
+        <wsdl:part name="parameters" element="tns:Listar" />
+    </wsdl:message>
+    <wsdl:message name="CRUD_Listar_OutputMessage">
+        <wsdl:part name="parameters" element="tns:ListarResponse" />
+    </wsdl:message>
+    <wsdl:message name="CRUD_Crear_InputMessage">
+        <wsdl:part name="parameters" element="tns:Crear" />
+    </wsdl:message>
+    <wsdl:message name="CRUD_Crear_OutputMessage">
+        <wsdl:part name="parameters" element="tns:CrearResponse" />
+    </wsdl:message>
+    <wsdl:message name="CRUD_Actualizar_InputMessage">
+        <wsdl:part name="parameters" element="tns:Actualizar" />
+    </wsdl:message>
+    <wsdl:message name="CRUD_Actualizar_OutputMessage">
+        <wsdl:part name="parameters" element="tns:ActualizarResponse" />
+    </wsdl:message>
+    <wsdl:message name="CRUD_Eliminar_InputMessage">
+        <wsdl:part name="parameters" element="tns:Eliminar" />
+    </wsdl:message>
+    <wsdl:message name="CRUD_Eliminar_OutputMessage">
+        <wsdl:part name="parameters" element="tns:EliminarResponse" />
+    </wsdl:message>
+    <wsdl:portType name="CRUD">
+        <wsdl:operation name="Listar">
+            <wsdl:input wsaw:Action="http://localhost:3000/soap/mesas/CRUD/Listar" message="tns:CRUD_Listar_InputMessage" />
+            <wsdl:output wsaw:Action="http://localhost:3000/soap/mesas/CRUD/ListarResponse" message="tns:CRUD_Listar_OutputMessage" />
+        </wsdl:operation>
+        <wsdl:operation name="Crear">
+            <wsdl:input wsaw:Action="http://localhost:3000/soap/mesas/CRUD/Crear" message="tns:CRUD_Crear_InputMessage" />
+            <wsdl:output wsaw:Action="http://localhost:3000/soap/mesas/CRUD/CrearResponse" message="tns:CRUD_Crear_OutputMessage" />
+        </wsdl:operation>
+        <wsdl:operation name="Actualizar">
+            <wsdl:input wsaw:Action="http://localhost:3000/soap/mesas/CRUD/Actualizar" message="tns:CRUD_Actualizar_InputMessage" />
+            <wsdl:output wsaw:Action="http://localhost:3000/soap/mesas/CRUD/Actualizar" message="tns:CRUD_Actualizar_OutputMessage" />
+        </wsdl:operation>
+        <wsdl:operation name="Eliminar">
+            <wsdl:input wsaw:Action="http://localhost:3000/soap/mesas/CRUD/Eliminar" message="tns:CRUD_Eliminar_InputMessage" />
+            <wsdl:output wsaw:Action="http://localhost:3000/soap/mesas/CRUD/Eliminar" message="tns:CRUD_Eliminar_OutputMessage" />
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="DefaultBinding_CRUD" type="tns:CRUD">
+        <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+        <wsdl:operation name="Listar">
+            <soap:operation soapAction="http://localhost:3000/soap/mesas/CRUD/Listar" style="document" />
+            <wsdl:input>
+                <soap:body use="literal" />
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="Crear">
+            <soap:operation soapAction="http://localhost:3000/soap/mesas/CRUD/Crear" style="document" />
+            <wsdl:input>
+                <soap:body use="literal" />
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="Actualizar">
+            <soap:operation soapAction="http://localhost:3000/soap/mesas/CRUD/Actualizar" style="document" />
+            <wsdl:input>
+                <soap:body use="literal" />
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="Eliminar">
+            <soap:operation soapAction="http://localhost:3000/soap/mesas/CRUD/Eliminar" style="document" />
+            <wsdl:input>
+                <soap:body use="literal" />
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service name="MesaService">
+        <wsdl:port name="CRUD" binding="tns:DefaultBinding_CRUD">
+            <soap:address location="http://localhost:3000/soap/mesas/CRUD" />
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>
